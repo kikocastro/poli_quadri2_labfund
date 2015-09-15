@@ -1,0 +1,72 @@
+; exercicio3.mvn
+; Dado uma lista iniciando em 0004 e com terminador FFFF
+; O programa salva em 0002 o menor valor da lista
+;
+0000 0100  ; Início do programa: pulo para as instruções
+0002 0000  ; Variável de saída
+; Lista inicia em 0004 (terminador: FFFF)
+;
+;Constantes do programa
+0040 FFFF ;	Terminador da lista
+0042 0002 ;	Constante 0002 (ADDR+1)
+0044 0004 ;	Início da lista
+0046 8000 ;	Código de operação LOAD, com operando 000
+0048 0001 ;	Constante 0001 (possível retorno da sub-rotina MENOR)
+;
+; Variáveis do programa
+0050 0000 ;	ANS (menor valor dentre os lidos)
+0052 0000 ;	Endereço do próximo valor da lista a ser lido
+;
+; Programa principal
+; Inicialização
+0100 8044 ;	Obtém o endereço de início da lista
+0102 9052 ;	Salva endereço do próximo valor da lista a ser lido
+0104 4046 ;	Compõe o endereço com o código de operação LOAD
+0106 9108 ;	Guarda instrução montada para ser executada
+0108 0000 ;	Executa a instrução recém-montada (le primeiro da lista)
+010A 9050 ;	Salva primeiro elemento da lista como menor parcial
+; Iteração pela lista
+010C 8052 ; 	Carrega o endereço do próximo valor da lista
+010E 4046 ;	Compõe o endereço com o código de operação LOAD
+0110 9112 ;	Guarda instrução montada para ser executada
+0112 0000 ;	Executa a instrução recém-montada (le i-ésimo valor da lista)
+; Checa se valor lido é terminador
+0114 5040 ;	Subtrai valor da lista de FFFF
+0116 1138 ;	Se acumulador é zero, chegamos ao fim do programa
+0118 4040 ;	Senão restituímos o valor da lista ao acumulador somando FFFF
+; Chamando MENOR(A, B)
+011A 9E00 ;	Armazena valor da lista no parâmetro X
+011C 8050 ;	Carrega conteudo de ANS
+011E 9E02 ;	Armazena ANS no parâmetro Y
+0120 AE04 ;	Chama a sub-rotina MENOR
+0122 112C ;	Salta para trecho de atualizar ANS se MENOR(X, Y) retorna 0
+0124 8052 ;	Carrega endereço do último valor lido da lista
+0126 4042 ; 	Soma com a constante 0002 (desloca uma posição)
+0128 9052 ; 	Altera o conteúdo de 0052 com o novo endereço
+012A 010C ;	Volta ao início do loop "Iteração pela lista"
+; Atualiza ANS com o valor atual da lista
+012C 8052 ;	Carrega o endereço do último valor lido da lista
+012E 4046 ;	Compõe o endereço com o código de operação LOAD
+0130 9132 ;	Guarda instrução montada para ser executada
+0132 0000 ;	Executa instrução recém-montada (le último valor escaneado da lista)
+0134 9050 ;	Atualiza ANS com último valor escaneado da lista
+0136 0124 ;	Retorna ao fluxo normal do programa
+; Fim do programa
+0138 8050 ;	Carrega ANS
+013A 9002 ;	Salva ANS em 0002
+013C C13C ;	Para em 0x13C
+;
+; Sub-rotina MENOR
+; Parâmetros
+0E00 0000 ; X
+0E02 0000 ; Y
+; Instruções da sub-rotina
+0E04 0000 ; Endereço de retorno
+0E06 8E00 ; Carrega o conteúdo de X
+0E08 5E02 ; Subtrai Y
+0E0A 2E10 ; Desvia para retornar zero se X < Y
+0E0C 8048 ; (X >= Y) Armazena 1 no Acumulador, pois X >= Y
+0E0E BE04 ; (X >= Y) Retorna Acumulador valendo 1
+0E10 804A ; (X < Y)  Armazena 0 no Acumulador, pois X < Y
+0E12 BE04 ; (X < Y)  Retorna Acumulador valendo 0
+

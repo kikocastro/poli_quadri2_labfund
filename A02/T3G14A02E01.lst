@@ -1,0 +1,43 @@
+; - PACK: Compõe uma word a partir de seus bytes. O
+; resultado está no acumulador.
+; Parâmetros: os dois endereços que contêm os bytes.
+; Retorno (acumulador): a palavra.
+; - Se os endereços que contêm os bytes (valores
+; binários) forem denotados por B1 e B2, sendo:
+; B1 = 00XY e B2 = 00ZT,
+; a word resultante será XYZT (valor binário).
+; Endereço de início do programa principal: 0000
+; Endereço das words de entrada: 0002 e 0004
+; Endereço da word de saída: 0006
+				;	@ /0000
+0000 0008		;	MAIN       JP INI
+0002 00fa		;	B1         K /00FA
+0004 0010		;	B2         K /0010
+0006 0000		;	OUT        K /0000
+0008 3002		;	INI        LV B1 ; Carrega o endereço de B1
+000a 9016		;	    	   MM PACK_INI1 ; Armazena esse valor em PACK_INI1 
+000c 3004		;	    	   LV B2 ; Carrega o endereço de B2
+000e 9018		;	    	   MM PACK_INI2 ; Armazena esse valor em PACK_INI2
+0010 a020		;	    	   SC PACK ; Chama sub rotina PACK
+0012 9006		;	    	   MM OUT
+0014 c014		;	FIM        HM FIM
+; Variaveis
+0016 0000		;	PACK_INI1   K /0000
+0018 0000		;	PACK_INI2   K /0000
+001a 8000		;	LOAD        LD /0000 
+001c 0000		;	SOMA        K /0000 
+001e 0100		;	SHIFT       K /0100
+; Sub rotina PACK
+0020 0000		;	PACK        K /0000
+0022 8016		;	            LD PACK_INI1 ; carrega valor de PACK_INI1 (Endereço de B1 0x0002)
+0024 401a		;	            + LOAD ; Soma load resultando em 8002
+0026 9028		;	            MM EXEC1 ; Armazena em EXEC1
+0028 0000		;	EXEC1       K /0000 ; Carrega valor de B1
+002a 601e		;	            * SHIFT ; Realiza shift de duas casa para esquerda
+002c 901c		;	            MM SOMA ; armazena valor em SOMA
+002e 8018		;	            LD PACK_INI2 ; carrega valor de PACK_INI2 (Endereço de B2 0x0004)
+0030 401a		;	            + LOAD ; Soma load resultando em 8004
+0032 9034		;	            MM EXEC2 ; Armazena em EXEC2
+0034 0000		;	EXEC2       K /0000 ; Carrega valor de B2
+0036 401c		;	            + SOMA ; soma B1 e B2
+0038 b020		;	            RS PACK ; Fim da sub rotina

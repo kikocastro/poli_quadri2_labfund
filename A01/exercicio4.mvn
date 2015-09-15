@@ -1,0 +1,88 @@
+; exercicio4.mvn
+; O programa salva em 0004 a quantidade de primos entre 1 e o numero dado em 0002 (inclusive)
+;
+0000 0100 ; Início do programa: pulo para as instruções
+;
+;Constantes do programa
+0040 0001 ;	Constante 0001
+0042 0002 ;	Constante 0002
+0044 FFFF ;	Constante FFFF
+;
+; Variáveis do programa
+0050 0000 ;	CURR (número atual na iteração em 1..N)
+0052 0000 ;	ANS
+;
+; Programa principal
+; Inicialização e corner-cases
+0100 3000 ;	Atribui valor 0 a Acumulador
+0102 9052 ;	Salva 0 em ANS
+0104 3001 ;	Atribui valor 1 a Acumulador
+0106 9050 ;	Salva 1 em CURR
+0108 8002 ;	Carrega X
+010A 112E ;	Encerra programa (Caso X-negativo), se X == 0
+010C 212E ;	Encerra programa (Caso X-negativo), se X < 0
+010E 5042 ;	Subtrai 2 do Acumulador
+0110 2134 ;	Encerra programa (Caso X-não-negativo), se X < 2
+; Iteração em 1..N
+0112 8050 ;	Carrega CURR
+0114 9E00 ;	Armazena CURR no parâmetro A
+0116 AE04 ;	Chama a subrotina PRIMO
+0118 1120 ;	Se Acumulador é zero, pula a parte de somar 1 a ANS
+011A 8052 ;	(ANS += 1) Carrega ANS
+011C 4040 ;	(ANS += 1) Soma 1 ao Acumulador
+011E 9052 ;	(ANS += 1) Salva ANS+1 em ANS
+; Testa se CURR == X
+0120 8050 ;	Carrega CURR
+0122 5002 ;	Subtrai X
+0124 1134 ;	Encerra programa (Caso X não-negativo), quando CURR == X
+0126 4002 ;	Restitui CURR a ANS, somando X
+0128 4040 ;	Soma 1 a Acumulador
+012A 9050 ;	Carrega CURR+1 em CURR
+012C 0112 ;	Retorna ao início do loop "Iteração em 1..N"
+; Encerramento::X-negativo
+012E 8044 ;	Carrega 0xFFFF
+0130 9004 ;	Salva 0xFFFF em 0004
+0132 C132 ;	Encerra programa
+; Encerramento::X-nao-negativo
+0134 8052 ;	Carrega ANS
+0136 9004 ;	Salva ANS em 0004
+0138 C138 ;	Encerra programa
+;
+; Sub-rotina PRIMO
+; Parâmetros
+0E00 0000 ; A
+; Variáveis
+0E02 0000 ; I
+; Instruções da sub-rotina
+; Inicialização
+0E04 0000 ;	Endereço de retorno
+; Inicialização::Corner-case::(A < 2)
+0E06 9E00 ;	Carrega valor de A
+0E08 5042 ;	Subtrai 2
+0E0A 2E32 ;	Salta para retorno de valor não primo se A < 2
+; Inicialização::VáriaveisLocais
+0E0C 3002 ;	Carrega 2 no Acumulador
+0E0E 9E02 ;	Salva 2 em I
+; Iteração até sqrt(A)
+; Testa se I > sqrt(A)
+0E10 8E02 ;	Carrega I
+0E12 6E02 ;	Multiplica por I
+0E14 5E00 ;	Subtrai A
+0E16 5040 ;	Subtrai 1 (Acumulador contem I*I-(A+1))
+0E18 2E1C ;	Processa teste de divisão se Acumulador é negativo (pois I <= sqrt(A))
+0E1A 0E2E ;	Retorna A é primo, testou todo I até que I > sqrt(A)
+; Testa se I divide A
+0E1C 8E00 ;	Carrega A
+0E1E 7E02 ;	Divide A por I (Acumulador recebe floor(A/I))
+0E20 6E02 ;	Multiplica por I
+0E22 5E00 ;	Subtrai A
+0E24 1E32 ;	Salta para retorno de valor não primo (se floor(A/I)*I - A é 0, então A%I == 0)
+0E26 8E02 ;	Carrega I
+0E28 4040 ;	Soma 1
+0E2A 9E02 ;	Salva I+1 em I
+0E2C 0E10 ;	Salta para inicio do loop "Iteração até sqrt(A)"
+0E2E 3001 ;	(A é primo) Carrega valor 1 ao Acumulador
+0E30 BE04 ;	(A é primo) Retorna Acumulador valendo 1
+0E32 3000 ;	(A não é primo) Zera Acumulador
+0E34 BE04 ;	(A não é primo) Retorna Acumulador valendo 0
+

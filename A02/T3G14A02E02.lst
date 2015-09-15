@@ -1,0 +1,83 @@
+; T3G14A02E02
+; -UNPACK: Extrai os bytes de uma word contida no acumulador 
+; colocando-os em dois endereços da memória. Parâmetros: os dois
+; endereços em que os byes serão armazenados.
+; Retorno (acumulador): não.
+; - Se a word for denotada por XYZT (valores binários) e os
+; endereços que conterão seus bytes forem denotados por B1 e B2,
+; devemos ter:B1 = 00XY  e B2 = 00ZT Endereço de início do programa
+; principal: 0000 Endereço da word de entrada: 0002 Endereço das 
+; words de saída: 0004 e 00006
+				;	@ /0000
+0000 0008		;	MAIN       JP INI
+0002 fa10		;	INPUT      K /FA10
+0004 0000		;	B1         K /0000
+0006 0000		;	B2         K /0000
+0008 3002		;	INI        LV INPUT ; Carrega o endereço de INPUT
+000a 9010		;	    	   MM UNPACK_INI ; Armazena esse valor em UNPACK_INI 
+000c a01c		;	    	   SC UNPACK ; Chama sub rotina UNPACK
+000e c00e		;	END        HM END
+; Variaveis
+0010 0000		;	UNPACK_INI      K /0000
+;
+0012 8000		;	LOAD            LD /0000
+0014 0000		;	TEMP            K /0000
+0016 0100		;	SHIFT           K /0100
+0018 8000		;	NEGATIVEREF     K /8000
+001a 0080		;	NEGATIVEFIX     K /0080
+;
+; Sub rotina UNPACK
+;
+001c 0000		;	UNPACK          K /0000
+001e a05c		;	                SC LOAD_INI_VALUE ; Carrega valor inicial
+0020 4018		;	                + NEGATIVEREF ; soma 8000
+0022 203c		;	                JN POSITIVE_CASE ; Caso < 0, o numero é positivo
+                ; caso negativo [ex: F123. Atualmente: F123 + 8000 = 7123]
+0024 7016		;	NEGATIVE_CASE   / SHIFT ; sem o sinal negativo com shift a direita [71]
+0026 9014		;	                MM TEMP ; Armazena na variavel temp
+                ; Parte XY
+0028 401a		;	                + NEGATIVEFIX ; soma 80 para devolver o bit de sinal negativo [F1]
+002a 9004		;	                MM B1 ; Armazena valor 00XY
+                ; Parte ZT
+002c 8014		;	                LD TEMP ; Carrega valor em temp [71]
+002e 6016		;	                * SHIFT ; Shift para esquerda [7100]
+0030 9014		;	                MM TEMP ; Salva em temp
+0032 a05c		;	                SC LOAD_INI_VALUE ; Carrega valor inicial
+0034 4018		;	                + NEGATIVEREF ; [F123 + 8000 = 7123] 
+0036 5014		;	                - TEMP ; Obtem 00ZT [7123 - 7100 = 23]
+0038 9006		;	                MM B2 ; Armazena 00 ZT em B2
+003a b01c		;	                RS UNPACK ; END da sub rotina
+                ; Caso positivo
+                ; Parte XY
+003c a05c		;	POSITIVE_CASE   SC LOAD_INI_VALUE ; Carrega valor inicial
+003e 7016		;	                / SHIFT ; Realiza shift de duas casa para direita
+0040 9004		;	                MM B1 ; Salva em B1 00XY
+                ; Parte ZT
+0042 6016		;	                * SHIFT ; Realiza shift de duas casa para esquerda, obtendo XY00
+0044 9014		;	                MM TEMP ; Salva valor temporario
+0046 a05c		;	                SC LOAD_INI_VALUE ; Carrega valor inicial
+0048 5014		;	                - TEMP ; Realiza XYZT - XY00 obtendo ZT
+004a 9006		;	                MM B2 ; Salva resultado
+004c b01c		;	                RS UNPACK ; END da sub rotina
+;
+; Subrotina para carregar um valor no endereço ADDRESS
+;
+; Variaveis
+004e 0000		;	ADDRESS         K /0000 ; Endereço em que esta o valor desejado
+;
+0050 0000		;	LOAD_VALUE      K /0000
+0052 804e		;	                LD ADDRESS ; carrega o endereço
+0054 4012		;	                + LOAD ; Soma load
+0056 9058		;	                MM EXEC_LOAD ; Armazena em EXEC_LOAD
+0058 0000		;	EXEC_LOAD       K /0000 ; Carrega valor do endereço
+005a b050		;	                RS LOAD_VALUE ; END da sub rotina
+;
+; Sub rotina para carregar valor inicial
+;
+005c 0000		;	LOAD_INI_VALUE  K /0000
+005e 8010		;	                LD UNPACK_INI ; Carrega endereço do UNPACK_INI
+0060 904e		;	                MM ADDRESS ; Salva na variavel Address
+0062 a050		;	                SC LOAD_VALUE ; Carrega valor inicial
+0064 b05c		;	                RS LOAD_INI_VALUE
+;
+;

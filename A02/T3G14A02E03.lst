@@ -1,0 +1,113 @@
+; T3G14A02E03
+; MEMCPY: Copia uma sequência de tamanho arbitrário de wordsda memória de uma
+; posição em outra. Retorna 0000 em caso de sucesso e FFFF em caso de erro 
+; (ex.: endereço de destino inválido).  Parâmetros: o número de words a ser
+; copiado, o endereço da sequência de origem e o endereço da sequência de 
+; destino.Retorno (acumulador): 0000 em caso de sucesso; FFFF caso contrário.
+; Endereço de início do programa principal: 0000Endereço do número de words
+; a ser copiado: 0002Endereço inicial da sequência de origem: 0004Endereço
+; inicial da sequência de destino: 0006Endereço  reservado  para  sequências
+; de  origem  e  destino:0008..0018		
+				;						@ 			/0000
+0000 003e		;						JP 			INI 
+
+;ENTRADAS
+0002 0005		;	NUM_WORDS			K 			/0005		;Numero de words a ser copiado
+0004 0008		;	END_ORIGEM			K 			/0008		;Endereço de origem da lista que sera copiada
+0006 0014		;	END_DEST			K 			/0014		;Endereço para onde vai a lista copiada
+
+;Alocação de memória
+0008 0000		;	MEM				    $ 			/0009 		;Alocando 16 posições a partir de AUX   0
+000a 0000		;	MEM				    $ 			/0009 		;Alocando 16 posições a partir de AUX   2
+000c 0000		;	MEM				    $ 			/0009 		;Alocando 16 posições a partir de AUX   4
+000e 0000		;	MEM				    $ 			/0009 		;Alocando 16 posições a partir de AUX   6
+0010 0000		;	MEM				    $ 			/0009 		;Alocando 16 posições a partir de AUX   8
+0012 0000		;	MEM				    $ 			/0009 		;Alocando 16 posições a partir de AUX   a
+0014 0000		;	MEM				    $ 			/0009 		;Alocando 16 posições a partir de AUX   c
+0016 0000		;	MEM				    $ 			/0009 		;Alocando 16 posições a partir de AUX   e
+0018 0000		;	MEM				    $ 			/0009 		;Alocando 16 posições a partir de AUX   10
+				;	MEM				    $ 			/0009 		;Alocando 16 posições a partir de AUX
+001a 0001		;	LISTA 				K			/0001		;0008
+001c 0002		;						K			/0002	 	;000A
+001e 0003		;						K			/0003		;000C
+0020 0004		;						K			/0004		;000E
+0022 ffff		;						K			/FFFF		;0010
+0024 ffff		;						K			/FFFF		;0012
+0026 ffff		;						K			/FFFF	 	;0014
+0028 ffff		;						K			/FFFF	 	;0016
+002a ffff		;						K			/FFFF	 	;0018
+
+;VARIAVEIS
+002c 0000		;	CONT				K 			/0000
+002e 0002		;	INC					K 			/0002
+
+;CONSTANTES
+0030 8000		;	LOAD				LD			/0000
+0032 9000		;	WRITE				MM			/0000
+
+0034 0001		;	CTE_1				K 			/0001
+0036 ffff		;	CTE_FFFF			K 			/FFFF
+0038 0000		;	CTE_ZERO			K			/0000
+003a 0008		;	MIN_END				K			/0008
+003c 0018		;	MAX_END				K			/0018
+	
+003e 803c		;	INI					LD      	MAX_END		;Carrega o endereço maximo de destino
+0040 5002		;						-			NUM_WORDS
+0042 5002		;						-			NUM_WORDS	;Subtrai numero de enderecos de words que serao copiadas
+0044 5006		;						-			END_DEST 	;Subtrai o endereço inicial do destino
+0046 208c		;						JN			END_FAIL	;Caso o endereço inicial + o numero de palavras > endereço maximo, ERRO
+
+0048 8006		;						LD 			END_DEST
+004a 503a		;						-			MIN_END		
+004c 208c		;						JN			END_FAIL	;Endereço de destino esta antes do intervalo
+
+004e 8004		;						LD 			END_ORIGEM
+0050 503a		;						-			MIN_END
+0052 208c		;						JN			END_FAIL	;Origem esta antes do intervalo
+
+0054 803c		;						LD 			MAX_END
+0056 5004		;						-			END_ORIGEM
+0058 5002		;						-			NUM_WORDS
+005a 5002		;						-			NUM_WORDS
+005c 208c		;						JN			END_FAIL 	;Origem esta a frente do intervalo
+					
+005e 8002		;	LOOP				LD			NUM_WORDS	;Carrega o numero de words no acumulador
+0060 502c		;						- 			CONT 		;Subtrai o contador do acumulador
+0062 1088		;						JZ			END_SUCCESS	;Caso o contador seja igual ao numero de words, encerra
+
+0064 8006		;						LD			END_DEST
+0066 4032		;						+			WRITE		;Armazena o valor no endereco de destino
+0068 9072		;						MM 			EXEC
+
+006a 8004		;						LD			END_ORIGEM	;Carrega endereço de origem
+006c 4030		;						+ 			LOAD		;Acrescenta a instrução de LOAD
+006e 9092		;						MM			MEM_ADDR	;Passa a instrução para a sub-rotina MEM_READ
+0070 a090		;						SC			MEM_READ	;Chama a sub-rotina
+
+0072 0000		;	EXEC				K			/0000
+0074 8006		;						LD			END_DEST	;Carrega o endereço de destino
+0076 402e		;						+			INC 		;Avança 2 posições na memoria
+0078 9006		;						MM 			END_DEST	;Atualiza END_DEST
+
+007a 8004		;						LD			END_ORIGEM	;Carrega o endereço de origem
+007c 402e		;						+			INC 		;Avança 2 posições na memoria
+007e 9004		;						MM 			END_ORIGEM	;Atualiza END_ORIGEM
+
+0080 802c		;						LD 			CONT 		;Carrega o contador no acumulador
+0082 4034		;						+			CTE_1 		;Soma 1
+0084 902c		;						MM 			CONT 		;Atualiza CONT
+
+0086 005e		;						JP			LOOP
+
+0088 8038		;	END_SUCCESS			LD 			CTE_ZERO 	;Se o programa finalizar com sucesso, coloca 0x0000 no acumulador
+
+008a c08a		;	FIM					HM			FIM
+
+008c 8036		;	END_FAIL			LD 			CTE_FFFF ;Se o programa finalizar com falhas, coloca 0xFFFF no acumulador
+008e 008a		;						JP			FIM
+
+;SUB-ROTINA MEM_READ
+0090 0000		;	MEM_READ			K 			/0000
+0092 0000		;	MEM_ADDR			K 			/0000
+0094 b090		;						RS 			MEM_READ
+

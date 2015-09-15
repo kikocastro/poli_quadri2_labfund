@@ -1,0 +1,71 @@
+; T1G14A01E02.mvn
+; Desenvolva  um  programa  que,  dada  uma  lista
+; de  números  inteiros positivos {a1, a2, ... an},
+; terminada por FFFF, calcula a soma dos fatoriais de
+; cada  um  dos  elementos  s  =  (a1)!  +  (a2)!  +
+; ...  +  (an)!.
+; Use  auto-modificação do código
+; para ler a sequência de entrada e desenvolva
+; uma sub-rotina Fatorial(x) que calcula x! para
+; auxiliar o processo.
+;
+; Endereço de início do programa principal: 0000
+; Endereço do resultado da soma (saída): 0002
+; Endereço da lista de entrada: 0004..(terminador: FFFF
+0000 0100  ; Ponto de entrada: pulo para as instruções
+0002 0000 ; RESULTADO da soma
+; Lista de entrada de inteiros positivos (Limitada de registrador 0004 ate 00FF) terminada com FFFF
+0004 0002
+0006 0005
+0008 0006
+000A FFFF
+000C 0005
+000E FFFF
+; Programa principal
+0100 8F00 ; Obtém o endereço de onde se deseja ler o dado
+0102 4F02 ; Compõe o endereço com o código de operação LOAD
+0104 9106 ; Guarda instrução montada para ser executada
+0106 0000 ; Executa a instrução recém-montada (ie coloca no acumulador o valor da vez da lista de entrada)
+0108 211A ; Se o valor carregado da lista for negativo (x == FFFF), termina o programa saltando para 011A
+010A 9500 ; Se nao negativo, x = AC
+010C A600 ; Chama a sub-rotina Fatorial
+010E 4002 ; Adiciona o resultado da sub-rotina ao resultado da soma
+0110 9002 ; Armazena novo valor da soma no endereço do resultado da soma
+; prepara novo endereço da lista
+0112 8F00 ; Carrega o endereço da variável na lista
+0114 4348 ; Soma com a constante 0002 (desloca uma posição)
+0116 9F00 ; Altera o conteúdo de 0F00 com o novo endereço
+0118 0100 ; Volta para o início
+011A C11A ; Termina o programa
+;
+;
+0348 0002 ;   Constante 0002 (ADDR+1)
+;
+; Sub-rotina Fatorial(x)
+; Parâmetros formais
+0500 0000 ; x
+0502 0001 ; multiplicacao_parcial
+0504 0001 ; Constante 0001
+0506 0001 ; Resultado
+; Corpo da sub-rotina
+0600 0000 ; Endereço de retorno
+0602 8500 ; Carrega o conteudo de x (AC = x)
+0604 1614 ; se AC == 0, encerra sub-rotina com resultado 1
+0606 6502 ; AC = AC * multiplicacao_parcial
+0608 9502 ; Altera conteudo de multiplicacao_parcial para novo valor
+060A 8500 ; AC = x
+060C 5504 ; AC = x - 1
+060E 1614 ; se (AC == 0) pula para encerra sub-rotina
+0610 9500 ; se (AC != 0), x = x - 1
+0612 0602 ; retorna para inicio da sub-rotina
+; encerra sub-rotina
+0614 8502 ; AC = multiplicacao_parcial
+0616 9506 ; Resultado = AC
+0618 8504 ; AC = constante 1
+061A 9502 ; reinicia multiplicacao_parcial = AC
+061C 8506 ; AC = Resultado
+061E B600 ; Retorna para o endereço contido em 0x600
+;
+;
+0F00 0004 ; Endereço (0004) de onde se deseja ler o dado
+0F02 8000 ; Código de operação LOAD, com operando 000
