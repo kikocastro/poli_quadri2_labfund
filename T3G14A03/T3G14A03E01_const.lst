@@ -1,0 +1,40 @@
+; Exporta constantes
+;
+2000 0000 ; "LOAD>"		;	LOAD        >   
+2002 0000 ; "WRITE>"		;	WRITE       >
+
+2004 0000 ; "CONST_0>"		;	CONST_0     >                
+2006 0000 ; "CONST_1>"		;	CONST_1     >               
+2008 0000 ; "CONST_2>"		;	CONST_2     >  
+200a 0000 ; "CONST_80>"		;	CONST_80    >
+200c 0000 ; "CONST_100>"		;	CONST_100   >              
+200e 0000 ; "CONST_1000>"		;	CONST_1000  >
+2010 0000 ; "CONST_8000>"		;	CONST_8000  >
+2012 0000 ; "CONST_FFFF>"		;	CONST_FFFF  >
+;
+;
+				;	& /0000 ; Origem relocavel
+;
+;
+; CONSTANTES
+;
+; ###################################
+; Operacoes
+; ###################################
+;
+8000 8000		;	LOAD                    LD  /0000
+8002 9000		;	WRITE		        	MM  /0000
+;
+; ###################################
+; Numeros
+; ###################################
+;
+8004 0000		;	CONST_0                 K   /0000
+8006 0001		;	CONST_1                 K   /0001
+8008 0002		;	CONST_2                 K   /0002
+800a 0080		;	CONST_80                K   /0080
+800c 0100		;	CONST_100               K   /0100
+800e 1000		;	CONST_1000              K   /1000
+8010 8000		;	CONST_8000              K   /8000
+8012 ffff		;	CONST_FFFF  			K   /FFFF
+

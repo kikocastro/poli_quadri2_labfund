@@ -21,24 +21,24 @@ CONST_FFFF  <
 ;
 ; Variaveis
 ;
-PACK_INI1       K /0000 ; Endereco da entrada 1
-PACK_INI2       K /0000 ; Endereco da entrada 2
+PACK_INPUT_1    K /0000 ; Endereco da entrada 1
+PACK_INPUT_2    K /0000 ; Endereco da entrada 2
 SUM             K /0000
 ;
 ; Rotina 
 ;
 PACK            K /0000
-                LD PACK_INI1 ; carrega valor de PACK_INI1 
+                LD PACK_INPUT_1 ; carrega valor do endereco em PACK_INPUT_1 
                 + LOAD ; Soma load resultando em 8002
                 MM PACK_EXEC1 ; Armazena em PACK_EXEC1
-PACK_EXEC1      K /0000 ; Carrega valor de B1
-                * C_HUNDRED ; Realiza shift de duas casa para esquerda
-                MM SOMA ; armazena valor em SOMA
-                LD PACK_INI2 ; carrega valor de PACK_INI2 
+PACK_EXEC1      K /0000 ; Carrega valor de PACK_INPUT_1
+                * CONST_100 ; Realiza shift de duas casa para esquerda
+                MM SUM ; armazena valor em SUM
+                LD PACK_INPUT_2 ; carrega valor do endereco em PACK_INPUT_2 
                 + LOAD ; Soma load resultando em 8004
                 MM PACK_EXEC2 ; Armazena em PACK_EXEC2
-PACK_EXEC2      K /0000 ; Carrega valor de B2
-                + SOMA ; soma B1 e B2
+PACK_EXEC2      K /0000 ; Carrega valor de PACK_INPUT_2
+                + SUM ; soma PACK_INPUT_1 + PACK_INPUT_2
                 RS PACK ; Fim da sub rotina
 ;
 ;
@@ -49,9 +49,11 @@ PACK_EXEC2      K /0000 ; Carrega valor de B2
 ; Variaveis
 ;
 UNPACK_INI      K /0000 ; Endereco de entrada
+UNPACK_OUTPUT_1 K /0000
+UNPACK_OUTPUT_2 K /0000
 TEMP            K /0000
-NEGATIVEREF     CONST_8000 ; Para corrigir o sinal negativo
-NEGATIVEFIX     CONST_80 ; Para corrigir o sinal negativo
+NEGATIVEREF     LD CONST_8000 ; Para corrigir o sinal negativo
+NEGATIVEFIX     LD CONST_80 ; Para corrigir o sinal negativo
 ;
 ; Rotina
 ;
@@ -64,7 +66,7 @@ NEGATIVE_CASE   / CONST_100 ; sem o sinal negativo com shift a direita [71]
                 MM TEMP ; Armazena na variavel temp
                 ; Parte XY
                 + NEGATIVEFIX ; soma 80 para devolver o bit de sinal negativo [F1]
-                MM B1 ; Armazena valor 00XY
+                MM UNPACK_OUTPUT_1 ; Armazena valor 00XY
                 ; Parte ZT
                 LD TEMP ; Carrega valor em temp [71]
                 * CONST_100 ; Shift para esquerda [7100]
@@ -72,19 +74,19 @@ NEGATIVE_CASE   / CONST_100 ; sem o sinal negativo com shift a direita [71]
                 SC LOAD_INI_VALUE ; Carrega valor inicial
                 + NEGATIVEREF ; [F123 + 8000 = 7123] 
                 - TEMP ; Obtem 00ZT [7123 - 7100 = 23]
-                MM B2 ; Armazena 00 ZT em B2
+                MM UNPACK_OUTPUT_2 ; Armazena 00 ZT em UNPACK_OUTPUT_2
                 RS UNPACK ; END da sub rotina
                 ; Caso positivo
                 ; Parte XY
 POSITIVE_CASE   SC LOAD_INI_VALUE ; Carrega valor inicial
                 / CONST_100 ; Realiza shift de duas casa para direita
-                MM B1 ; Salva em B1 00XY
+                MM UNPACK_OUTPUT_1 ; Salva em UNPACK_OUTPUT_1 00XY
                 ; Parte ZT
                 * CONST_100 ; Realiza shift de duas casa para esquerda, obtendo XY00
                 MM TEMP ; Salva valor temporario
                 SC LOAD_INI_VALUE ; Carrega valor inicial
                 - TEMP ; Realiza XYZT - XY00 obtendo ZT
-                MM B2 ; Salva resultado
+                MM UNPACK_OUTPUT_2 ; Salva resultado
                 RS UNPACK ; END da sub rotina
 ;
 ;
@@ -186,16 +188,16 @@ RETURN_MEMCPY		RS 			MEMCPY
 ; LOAD_VALUE
 ; ###################################
 ;
-; Subrotina para carregar um valor que esta no endereço ADDRESS
+; Subrotina para carregar um valor que esta no endereço TARGET_ADDRESS
 ;
 ; Variaveis
 ;
-ADDRESS         K /0000 ; Endereço em que esta o valor desejado
+TARGET_ADDRESS  K /0000 ; Endereço em que esta o valor desejado
 ;
 ; Rotina
 ;
 LOAD_VALUE      K /0000
-                LD ADDRESS ; carrega o endereço
+                LD TARGET_ADDRESS ; carrega o endereço
                 + LOAD ; Soma load
                 MM EXEC_LOAD ; Armazena em EXEC_LOAD
 EXEC_LOAD       K /0000 ; Carrega valor do endereço
@@ -214,7 +216,7 @@ EXEC_LOAD       K /0000 ; Carrega valor do endereço
 ;
 LOAD_INI_VALUE  K /0000
                 LD UNPACK_INI ; Carrega endereço do UNPACK_INI
-                MM ADDRESS ; Salva na variavel Address
+                MM TARGET_ADDRESS ; Salva na variavel Address
                 SC LOAD_VALUE ; Carrega valor inicial
                 RS LOAD_INI_VALUE
 ;
