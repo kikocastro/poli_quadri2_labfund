@@ -12,13 +12,13 @@
 					JP 			INI 
 
 ;ENTRADAS
-NUM_WORDS			K 			/0005		;Numero de words a ser copiado
-END_ORIGEM			K 			/0008		;Endereço de origem da lista que sera copiada
-END_DEST			K 			/0014		;Endereço para onde vai a lista copiada
+SIZE 				K 			/0000		;Numero de words a ser copiado
+ORIGIN				K 			/0008		;Endereço de origem da lista que sera copiada
+DESTINATION			K 			/0012		;Endereço para onde vai a lista copiada
 
 ;Alocação de memória
-MEM				    $ 			/0009 		;Alocando 16 posições a partir de AUX
-LISTA 				K			/0001		;0008
+;MEM				    $ 			/0009 		;Alocando 16 posições a partir de AUX
+TEST_LIST			K			/0001		;0008
 					K			/0002	 	;000A
 					K			/0003		;000C
 					K			/0004		;000E
@@ -27,79 +27,119 @@ LISTA 				K			/0001		;0008
 					K			/FFFF	 	;0014
 					K			/FFFF	 	;0016
 					K			/FFFF	 	;0018
-
+INI					LV			SIZE
+					MM			MEMCPY_SIZE_PTR
+					LV			ORIGIN
+					MM			MEMCPY_ORIGIN_PTR
+					LV			DESTINATION
+					MM			MEMCPY_DESTINATION_PTR
+					SC 			MEMCPY
+END					HM			END
+;
+; SUB-ROTINA MEMCPY
 ;VARIAVEIS
-CONT				K 			/0000
-INC					K 			/0002
+COUNT 					K 			/0000
+MEMCPY_ORIGIN_PTR	 	K			/0000
+MEMCPY_DESTINATION_PTR  K			/0000
+MEMCPY_SIZE_PTR 		K			/0000
+MEMCPY_ORIGIN		 	K			/0000
+MEMCPY_DESTINATION		K			/0000
+MEMCPY_SIZE				K			/0000
 
 ;CONSTANTES
 LOAD				LD			/0000
 WRITE				MM			/0000
+INCREMENT 			K			/0002
 
-CTE_1				K 			/0001
-CTE_FFFF			K 			/FFFF
-CTE_ZERO			K			/0000
-MIN_END				K			/0008
-MAX_END				K			/0018
-	
-INI					LD      	MAX_END		;Carrega o endereço maximo de destino
-					-			NUM_WORDS
-					-			NUM_WORDS	;Subtrai numero de enderecos de words que serao copiadas
-					-			END_DEST 	;Subtrai o endereço inicial do destino
-					JN			END_FAIL	;Caso o endereço inicial + o numero de palavras > endereço maximo, ERRO
+CONST_1				K 			/0001
+CONST_FFFF			K 			/FFFF
+CONST_0				K			/0000
+RANGE_START			K			/0008 ; Inicio do intervalo determinado
+RANGE_END			K			/0018 ; Fim do intervalo determinado
+; Rotina
+MEMCPY				K			/0000
+					; Carrega valores de entrada
+	                LD 			MEMCPY_ORIGIN_PTR ; carrega o endereço
+	                + 			LOAD ; Soma load
+	                MM 			EXEC1 ; Armazena em EXEC1
+EXEC1   			K 			/0000 ; Carrega valor do endereço
+					MM 			MEMCPY_ORIGIN ; Armazena
+	                LD 			MEMCPY_DESTINATION_PTR ; carrega o endereço
+	                + 			LOAD ; Soma load
+	                MM 			EXEC2 ; Armazena em EXEC2
+EXEC2   			K 			/0000 ; Carrega valor do endereço
+					MM 			MEMCPY_DESTINATION ; Armazena
+	                LD 			MEMCPY_SIZE_PTR ; carrega o endereço
+	                + 			LOAD ; Soma load
+	                MM 			EXEC3 ; Armazena em EXEC3
+EXEC3   			K 			/0000 ; Carrega valor do endereço
+					MM 			MEMCPY_SIZE ; Armazena
+					; Tratamento de erros de Input
+					; 1) Endereço inicial + o numero de palavras > endereço maximo
+					LD      	RANGE_END		; Carrega o endereço maximo de destino
+					-			MEMCPY_SIZE
+					-			MEMCPY_SIZE	; Subtrai numero de enderecos de words que serao copiadas (Duas vezes pois cada palavra ocupa 2 Bytes)
+					-			MEMCPY_DESTINATION 	; Subtrai o endereço inicial do destino
+					JN			END_FAIL	; Caso o endereço inicial + o numero de palavras > endereço maximo, ERRO
+					; 2) Endereço de destino esta antes do intervalo
+					LD 			MEMCPY_DESTINATION
+					-			RANGE_START		
+					JN			END_FAIL	
+					; 3) Origem esta antes do intervalo
+					LD 			MEMCPY_ORIGIN
+					-			RANGE_START
+					JN			END_FAIL	 
+					; 4) Origem esta a frente do intervalo
+					LD 			RANGE_END
+					-			MEMCPY_ORIGIN
+					-			MEMCPY_SIZE
+					-			MEMCPY_SIZE
+					JN			END_FAIL 	
+					; Comeco de MEMCPY
+LOOP				LD			MEMCPY_SIZE	; Carrega o numero de words no acumulador
+					- 			COUNT 		; Subtrai o contador do acumulador
+					JZ			END_SUCCESS	; Caso o contador seja igual ao numero de words, encerra
 
-					LD 			END_DEST
-					-			MIN_END		
-					JN			END_FAIL	;Endereço de destino esta antes do intervalo
+					LD			MEMCPY_DESTINATION ; Carrega endereco de destino
+					+			WRITE		; Adiciona comando MM
+					MM 			EXEC		; Armazena em EXEC
 
-					LD 			END_ORIGEM
-					-			MIN_END
-					JN			END_FAIL	;Origem esta antes do intervalo
+					LD			MEMCPY_ORIGIN	; Carrega endereço de origem
+					MM 			TARGET_ADDRESS 
+					SC			LOAD_VALUE ; Carrega valor no endereco de origem
 
-					LD 			MAX_END
-					-			END_ORIGEM
-					-			NUM_WORDS
-					-			NUM_WORDS
-					JN			END_FAIL 	;Origem esta a frente do intervalo
-					
-LOOP				LD			NUM_WORDS	;Carrega o numero de words no acumulador
-					- 			CONT 		;Subtrai o contador do acumulador
-					JZ			END_SUCCESS	;Caso o contador seja igual ao numero de words, encerra
+EXEC				K			/0000 ; Armazena o valor no endereco de destino
+					LD			MEMCPY_DESTINATION	; Carrega o endereço de destino
+					+			INCREMENT 	; Avança 2 posições na memoria
+					MM 			MEMCPY_DESTINATION	; Atualiza MEMCPY_DESTINATION
 
-					LD			END_DEST
-					+			WRITE		;Armazena o valor no endereco de destino
-					MM 			EXEC
+					LD			MEMCPY_ORIGIN	; Carrega o endereço de origem
+					+			INCREMENT 	; Avança 2 posições na memoria
+					MM 			MEMCPY_ORIGIN	; Atualiza MEMCPY_ORIGIN
 
-					LD			END_ORIGEM	;Carrega endereço de origem
-					+ 			LOAD		;Acrescenta a instrução de LOAD
-					MM			MEM_ADDR	;Passa a instrução para a sub-rotina MEM_READ
-					SC			MEM_READ	;Chama a sub-rotina
-
-EXEC				K			/0000
-					LD			END_DEST	;Carrega o endereço de destino
-					+			INC 		;Avança 2 posições na memoria
-					MM 			END_DEST	;Atualiza END_DEST
-
-					LD			END_ORIGEM	;Carrega o endereço de origem
-					+			INC 		;Avança 2 posições na memoria
-					MM 			END_ORIGEM	;Atualiza END_ORIGEM
-
-					LD 			CONT 		;Carrega o contador no acumulador
-					+			CTE_1 		;Soma 1
-					MM 			CONT 		;Atualiza CONT
+					LD 			COUNT 		; Carrega o contador no acumulador
+					+			CONST_1 		; Soma 1
+					MM 			COUNT 		; Atualiza CONT
 
 					JP			LOOP
 
-END_SUCCESS			LD 			CTE_ZERO 	;Se o programa finalizar com sucesso, coloca 0x0000 no acumulador
+END_SUCCESS			LD 			CONST_0 	; Se o programa finalizar com sucesso, coloca 0x0000 no acumulador
+					JP 			RETURN_MEMCPY 
+END_FAIL			LD 			CONST_FFFF ; Se o programa finalizar com falhas, coloca 0xFFFF no acumulador
+					
+RETURN_MEMCPY		RS 			MEMCPY
 
-FIM					HM			FIM
+# INI
 
-END_FAIL			LD 			CTE_FFFF ;Se o programa finalizar com falhas, coloca 0xFFFF no acumulador
-					JP			FIM
-
-;SUB-ROTINA MEM_READ
-MEM_READ			K 			/0000
-MEM_ADDR			K 			/0000
-					RS 			MEM_READ
-					# INI
-
+;
+; Subrotina para carregar um valor no endereço ADDRESS
+;
+; Variaveis
+TARGET_ADDRESS  K /0000 ; Endereço em que esta o valor desejado
+;
+LOAD_VALUE      K /0000
+                LD TARGET_ADDRESS ; carrega o endereço
+                + LOAD ; Soma load
+                MM EXEC_LOAD ; Armazena em EXEC_LOAD
+EXEC_LOAD       K /0000 ; Carrega valor do endereço
+                RS LOAD_VALUE ; END da sub rotina

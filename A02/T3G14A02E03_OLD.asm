@@ -25,10 +25,13 @@ EXIT_FAILURE    LD FAILURE
                 JP END ; termina com erro
                 ; continua se sequencia nao nula
                 ; Verificacoes de erro
-                ; Endereco de inicio maior que fim
-CONTINUE        LD SEQUENCE_END ; pega endereço de fim da sequencia
+                ; 1) Inicio + #palavras deve ser menor que fim
+CONTINUE        LD SEQUENCE_END
+                - NUMBER_OF_WORDS
+                - NUMBER_OF_WORDS ; numero de enderecos necessarios para palavras
                 - SEQUENCE_START
                 JZ EXIT_FAILURE
+                
                 ; MM CURRENT_ADDRESS
                 ; MM ADDRESS
                 ; SC LOAD_VALUE ; carrega valor
