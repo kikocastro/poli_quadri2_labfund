@@ -41,7 +41,6 @@ CONST_1000              K   /1000
 CONST_8000              K   /8000
 CONST_FFFF  			K   /FFFF
 ;
-
 ;
 ; ###################################
 ; Sub rotinas

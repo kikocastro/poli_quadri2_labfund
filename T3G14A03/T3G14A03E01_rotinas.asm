@@ -10,6 +10,8 @@ CONST_100   <
 CONST_1000  < 
 CONST_8000  <
 CONST_FFFF  <
+RANGE_START <
+RANGE_END   <
 ; 
 ; Entradas e saidas
 ;
@@ -113,11 +115,6 @@ POSITIVE_CASE       LD UNPACK_INPUT ; Carrega valor inicial
 ; ###################################
 ; MEMCPY
 ; ###################################
-;
-; Constantes
-;
-RANGE_START             K       /0014 ; Inicio do intervalo determinado
-RANGE_END               K       /0024 ; Fim do intervalo determinado
 ;
 ; Variaveis
 ;

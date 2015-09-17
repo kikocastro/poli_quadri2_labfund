@@ -11,6 +11,9 @@
 200e 0000 ; "CONST_1000>"		;	CONST_1000  >
 2010 0000 ; "CONST_8000>"		;	CONST_8000  >
 2012 0000 ; "CONST_FFFF>"		;	CONST_FFFF  >
+
+2014 0000 ; "RANGE_START>"		;	RANGE_START >
+2016 0000 ; "RANGE_END>"		;	RANGE_END   >
 ;
 ;
 				;	& /0000 ; Origem relocavel
@@ -37,4 +40,11 @@
 800e 1000		;	CONST_1000              K   /1000
 8010 8000		;	CONST_8000              K   /8000
 8012 ffff		;	CONST_FFFF  			K   /FFFF
-
+;
+; ###################################
+; Sub rotinas
+; ###################################
+;
+; Limite de memoria para aa sequencia de UNPACK
+8014 0014		;	RANGE_START             K       /0014 ; Inicio do intervalo determinado
+8016 0024		;	RANGE_END               K       /0024 ; Fim do intervalo determinado

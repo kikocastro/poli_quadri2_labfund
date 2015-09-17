@@ -10,6 +10,8 @@
 4007 0000 ; "CONST_1000<"		;	CONST_1000  < 
 4008 0000 ; "CONST_8000<"		;	CONST_8000  <
 4009 0000 ; "CONST_FFFF<"		;	CONST_FFFF  <
+4010 0000 ; "RANGE_START<"		;	RANGE_START <
+4011 0000 ; "RANGE_END<"		;	RANGE_END   <
 ; 
 ; Entradas e saidas
 ;
@@ -17,19 +19,19 @@
 2006 0000 ; "PACK>"		;	PACK >
 2000 0000 ; "PACK_INPUT_1_PTR>"		;	PACK_INPUT_1_PTR >
 2002 0000 ; "PACK_INPUT_2_PTR>"		;	PACK_INPUT_2_PTR >
-4010 0000 ; "PACK_OUTPUT<"		;	PACK_OUTPUT <
+4012 0000 ; "PACK_OUTPUT<"		;	PACK_OUTPUT <
 ; 
 ; UNPACK
 2024 0000 ; "UNPACK>"		;	UNPACK >
 201e 0000 ; "UNPACK_INPUT_PTR>"		;	UNPACK_INPUT_PTR >
-4011 0000 ; "UNPACK_OUTPUT_1<"		;	UNPACK_OUTPUT_1 <
-4012 0000 ; "UNPACK_OUTPUT_2<"		;	UNPACK_OUTPUT_2 <
+4013 0000 ; "UNPACK_OUTPUT_1<"		;	UNPACK_OUTPUT_1 <
+4014 0000 ; "UNPACK_OUTPUT_2<"		;	UNPACK_OUTPUT_2 <
 ;
 ; MEMCPY
-206e 0000 ; "MEMCPY>"		;	MEMCPY >
-2062 0000 ; "MEMCPY_ORIGIN_PTR>"		;	MEMCPY_ORIGIN_PTR >
-2064 0000 ; "MEMCPY_DESTINATION_PTR>"		;	MEMCPY_DESTINATION_PTR >
-2066 0000 ; "MEMCPY_SIZE_PTR>"		;	MEMCPY_SIZE_PTR >
+206a 0000 ; "MEMCPY>"		;	MEMCPY >
+205e 0000 ; "MEMCPY_ORIGIN_PTR>"		;	MEMCPY_ORIGIN_PTR >
+2060 0000 ; "MEMCPY_DESTINATION_PTR>"		;	MEMCPY_DESTINATION_PTR >
+2062 0000 ; "MEMCPY_SIZE_PTR>"		;	MEMCPY_SIZE_PTR >
 ;
 				;	& /0000 ; Origem relocavel
 ;
@@ -49,15 +51,15 @@
 ;
 8006 0000		;	PACK                K  /0000
 a008 8000		;	                    LD PACK_INPUT_1_PTR ; carrega valor do endereco contido em PACK_INPUT_1_PTR 
-a00a 90de		;	                    MM TARGET_ADDRESS
-a00c a0e0		;	                    SC LOAD_VALUE ; Carrega valor de PACK_INPUT_1
+a00a 90da		;	                    MM TARGET_ADDRESS
+a00c a0dc		;	                    SC LOAD_VALUE ; Carrega valor de PACK_INPUT_1
 d00e 6006		;	                    *  CONST_100 ; Realiza shift de duas casa para esquerda
 a010 9004		;	                    MM SUM ; armazena valor em SUM
 a012 8002		;	                    LD PACK_INPUT_2_PTR ; carrega valor do endereco contido em PACK_INPUT_2 
-a014 90de		;	                    MM TARGET_ADDRESS
-a016 a0e0		;	                    SC LOAD_VALUE ; Carrega valor de PACK_INPUT_2 
+a014 90da		;	                    MM TARGET_ADDRESS
+a016 a0dc		;	                    SC LOAD_VALUE ; Carrega valor de PACK_INPUT_2 
 a018 4004		;	                    +  SUM ; soma PACK_INPUT_1 + PACK_INPUT_2
-d01a 9010		;	                    MM PACK_OUTPUT ; armazena na saida
+d01a 9012		;	                    MM PACK_OUTPUT ; armazena na saida
 a01c b006		;	                    RS PACK ; Fim da sub rotina
 ;
 ;
@@ -76,8 +78,8 @@ a01c b006		;	                    RS PACK ; Fim da sub rotina
 8024 0000		;	UNPACK              K  /0000
                     ; Carrega valor do endereco apontado por UNPACK_INPUT_PTR
 a026 801e		;	                    LD UNPACK_INPUT_PTR ; Carrega endereco contido em UNPACK_INPUT_PTR
-a028 90de		;	                    MM TARGET_ADDRESS
-a02a a0e0		;	                    SC LOAD_VALUE ; Carrega conteudo de entrada de UNPACK
+a028 90da		;	                    MM TARGET_ADDRESS
+a02a a0dc		;	                    SC LOAD_VALUE ; Carrega conteudo de entrada de UNPACK
 a02c 9020		;	                    MM UNPACK_INPUT ; Salva na variavel local
 d02e 4008		;	                    + CONST_8000 ; soma 8000
 a030 204a		;	                    JN POSITIVE_CASE ; Caso < 0, o numero é positivo
@@ -86,7 +88,7 @@ d032 7006		;	NEGATIVE_CASE       / CONST_100 ; sem o sinal negativo com shift a 
 a034 9022		;	                    MM TEMP ; Armazena na variavel temp
                     ; Parte XY
 d036 4005		;	                    + CONST_80 ; soma 80 para devolver o bit de sinal negativo [F1]
-d038 9011		;	                    MM UNPACK_OUTPUT_1 ; Armazena valor 00XY
+d038 9013		;	                    MM UNPACK_OUTPUT_1 ; Armazena valor 00XY
                     ; Parte ZT
 a03a 8022		;	                    LD TEMP ; Carrega valor em temp [71]
 d03c 6006		;	                    * CONST_100 ; Shift para esquerda [7100]
@@ -94,19 +96,19 @@ a03e 9022		;	                    MM TEMP ; Salva em temp
 a040 8020		;	                    LD UNPACK_INPUT ; Carrega valor inicial
 d042 4008		;	                    + CONST_8000 ; [F123 + 8000 = 7123] 
 a044 5022		;	                    - TEMP ; Obtem 00ZT [7123 - 7100 = 23]
-d046 9012		;	                    MM UNPACK_OUTPUT_2 ; Armazena 00 ZT em UNPACK_OUTPUT_2
+d046 9014		;	                    MM UNPACK_OUTPUT_2 ; Armazena 00 ZT em UNPACK_OUTPUT_2
 a048 b024		;	                    RS UNPACK ; END da sub rotina
                     ; Caso positivo
                     ; Parte XY
 a04a 8020		;	POSITIVE_CASE       LD UNPACK_INPUT ; Carrega valor inicial
 d04c 7006		;	                    / CONST_100 ; Realiza shift de duas casa para direita
-d04e 9011		;	                    MM UNPACK_OUTPUT_1 ; Salva em UNPACK_OUTPUT_1 00XY
+d04e 9013		;	                    MM UNPACK_OUTPUT_1 ; Salva em UNPACK_OUTPUT_1 00XY
                     ; Parte ZT
 d050 6006		;	                    * CONST_100 ; Realiza shift de duas casa para esquerda, obtendo XY00
 a052 9022		;	                    MM TEMP ; Salva valor temporario
 a054 8020		;	                    LD UNPACK_INPUT ; Carrega valor inicial
 a056 5022		;	                    - TEMP ; Realiza XYZT - XY00 obtendo ZT
-d058 9012		;	                    MM UNPACK_OUTPUT_2 ; Salva resultado
+d058 9014		;	                    MM UNPACK_OUTPUT_2 ; Salva resultado
 a05a b024		;	                    RS UNPACK ; END da sub rotina
 ;
 ;
@@ -114,94 +116,89 @@ a05a b024		;	                    RS UNPACK ; END da sub rotina
 ; MEMCPY
 ; ###################################
 ;
-; Constantes
-;
-805c 0014		;	RANGE_START             K       /0014 ; Inicio do intervalo determinado
-805e 0024		;	RANGE_END               K       /0024 ; Fim do intervalo determinado
-;
 ; Variaveis
 ;
-8060 0000		;	COUNT                   K       /0000
-8062 0000		;	MEMCPY_ORIGIN_PTR       K       /0000
-8064 0000		;	MEMCPY_DESTINATION_PTR  K       /0000
-8066 0000		;	MEMCPY_SIZE_PTR         K       /0000
-8068 0000		;	MEMCPY_ORIGIN           K       /0000
-806a 0000		;	MEMCPY_DESTINATION      K       /0000
-806c 0000		;	MEMCPY_SIZE             K       /0000
+805c 0000		;	COUNT                   K       /0000
+805e 0000		;	MEMCPY_ORIGIN_PTR       K       /0000
+8060 0000		;	MEMCPY_DESTINATION_PTR  K       /0000
+8062 0000		;	MEMCPY_SIZE_PTR         K       /0000
+8064 0000		;	MEMCPY_ORIGIN           K       /0000
+8066 0000		;	MEMCPY_DESTINATION      K       /0000
+8068 0000		;	MEMCPY_SIZE             K       /0000
 ;
 ; Rotina
 ;
-806e 0000		;	MEMCPY                  K       /0000
+806a 0000		;	MEMCPY                  K       /0000
                         ; Carrega valores de entrada
-a070 8062		;	                        LD      MEMCPY_ORIGIN_PTR ; carrega o endereço
-d072 4000		;	                        +       LOAD ; Soma load
-a074 9076		;	                        MM      UNPACK_EXEC1 ; Armazena em UNPACK_EXEC1
-8076 0000		;	UNPACK_EXEC1            K       /0000 ; Carrega valor do endereço
-a078 9068		;	                        MM      MEMCPY_ORIGIN ; Armazena
-a07a 8064		;	                        LD      MEMCPY_DESTINATION_PTR ; carrega o endereço
-d07c 4000		;	                        +       LOAD ; Soma load
-a07e 9080		;	                        MM      UNPACK_EXEC2 ; Armazena em UNPACK_EXEC2
-8080 0000		;	UNPACK_EXEC2            K       /0000 ; Carrega valor do endereço
-a082 906a		;	                        MM      MEMCPY_DESTINATION ; Armazena
-a084 8066		;	                        LD      MEMCPY_SIZE_PTR ; carrega o endereço
-d086 4000		;	                        +       LOAD ; Soma load
-a088 908a		;	                        MM      UNPACK_EXEC3 ; Armazena em UNPACK_EXEC3
-808a 0000		;	UNPACK_EXEC3            K       /0000 ; Carrega valor do endereço
-a08c 906c		;	                        MM      MEMCPY_SIZE ; Armazena
+a06c 805e		;	                        LD      MEMCPY_ORIGIN_PTR ; carrega o endereço
+d06e 4000		;	                        +       LOAD ; Soma load
+a070 9072		;	                        MM      UNPACK_EXEC1 ; Armazena em UNPACK_EXEC1
+8072 0000		;	UNPACK_EXEC1            K       /0000 ; Carrega valor do endereço
+a074 9064		;	                        MM      MEMCPY_ORIGIN ; Armazena
+a076 8060		;	                        LD      MEMCPY_DESTINATION_PTR ; carrega o endereço
+d078 4000		;	                        +       LOAD ; Soma load
+a07a 907c		;	                        MM      UNPACK_EXEC2 ; Armazena em UNPACK_EXEC2
+807c 0000		;	UNPACK_EXEC2            K       /0000 ; Carrega valor do endereço
+a07e 9066		;	                        MM      MEMCPY_DESTINATION ; Armazena
+a080 8062		;	                        LD      MEMCPY_SIZE_PTR ; carrega o endereço
+d082 4000		;	                        +       LOAD ; Soma load
+a084 9086		;	                        MM      UNPACK_EXEC3 ; Armazena em UNPACK_EXEC3
+8086 0000		;	UNPACK_EXEC3            K       /0000 ; Carrega valor do endereço
+a088 9068		;	                        MM      MEMCPY_SIZE ; Armazena
                         ; Tratamento de erros de Input
                         ; 1) Endereço inicial + o numero de palavras > endereço maximo
-a08e 805e		;	                        LD      RANGE_END   ; Carrega o endereço maximo de destino
-a090 506c		;	                        -       MEMCPY_SIZE
-a092 506c		;	                        -       MEMCPY_SIZE ; Subtrai numero de enderecos de words que serao copiadas (Duas vezes pois cada palavra ocupa 2 Bytes)
-a094 506a		;	                        -       MEMCPY_DESTINATION  ; Subtrai o endereço inicial do destino
-a096 20da		;	                        JN      END_FAIL  ; Caso o endereço inicial + o numero de palavras > endereço maximo, ERRO
+d08a 8011		;	                        LD      RANGE_END   ; Carrega o endereço maximo de destino
+a08c 5068		;	                        -       MEMCPY_SIZE
+a08e 5068		;	                        -       MEMCPY_SIZE ; Subtrai numero de enderecos de words que serao copiadas (Duas vezes pois cada palavra ocupa 2 Bytes)
+a090 5066		;	                        -       MEMCPY_DESTINATION  ; Subtrai o endereço inicial do destino
+a092 20d6		;	                        JN      END_FAIL  ; Caso o endereço inicial + o numero de palavras > endereço maximo, ERRO
                         ; 2) Endereço de destino esta antes do intervalo
-a098 806a		;	                        LD      MEMCPY_DESTINATION
-a09a 505c		;	                        -       RANGE_START   
-a09c 20da		;	                        JN      END_FAIL  
+a094 8066		;	                        LD      MEMCPY_DESTINATION
+d096 5010		;	                        -       RANGE_START   
+a098 20d6		;	                        JN      END_FAIL  
                         ; 3) Origem esta antes do intervalo
-a09e 8068		;	                        LD      MEMCPY_ORIGIN
-a0a0 505c		;	                        -       RANGE_START
-a0a2 20da		;	                        JN      END_FAIL   
+a09a 8064		;	                        LD      MEMCPY_ORIGIN
+d09c 5010		;	                        -       RANGE_START
+a09e 20d6		;	                        JN      END_FAIL   
                         ; 4) Origem esta a frente do intervalo
-a0a4 805e		;	                        LD      RANGE_END
-a0a6 5068		;	                        -       MEMCPY_ORIGIN
-a0a8 506c		;	                        -       MEMCPY_SIZE
-a0aa 506c		;	                        -       MEMCPY_SIZE
-a0ac 20da		;	                        JN      END_FAIL  
+d0a0 8011		;	                        LD      RANGE_END
+a0a2 5064		;	                        -       MEMCPY_ORIGIN
+a0a4 5068		;	                        -       MEMCPY_SIZE
+a0a6 5068		;	                        -       MEMCPY_SIZE
+a0a8 20d6		;	                        JN      END_FAIL  
                         ; Comeco de MEMCPY
-a0ae 806c		;	LOOP                    LD      MEMCPY_SIZE ; Carrega o numero de words no acumulador
-a0b0 5060		;	                        -       COUNT     ; Subtrai o contador do acumulador
-a0b2 10d6		;	                        JZ      END_SUCCESS ; Caso o contador seja igual ao numero de words, encerra
+a0aa 8068		;	LOOP                    LD      MEMCPY_SIZE ; Carrega o numero de words no acumulador
+a0ac 505c		;	                        -       COUNT     ; Subtrai o contador do acumulador
+a0ae 10d2		;	                        JZ      END_SUCCESS ; Caso o contador seja igual ao numero de words, encerra
                         
-a0b4 806a		;	                        LD      MEMCPY_DESTINATION ; Carrega endereco de destino
-d0b6 4001		;	                        +       WRITE   ; Adiciona comando MM
-a0b8 90c0		;	                        MM      MEMCPY_EXEC   ; Armazena em MEMCPY_EXEC
+a0b0 8066		;	                        LD      MEMCPY_DESTINATION ; Carrega endereco de destino
+d0b2 4001		;	                        +       WRITE   ; Adiciona comando MM
+a0b4 90bc		;	                        MM      MEMCPY_EXEC   ; Armazena em MEMCPY_EXEC
                         
-a0ba 8068		;	                        LD      MEMCPY_ORIGIN ; Carrega endereço de origem
-a0bc 90de		;	                        MM      TARGET_ADDRESS 
-a0be a0e0		;	                        SC      LOAD_VALUE ; Carrega valor no endereco de origem
+a0b6 8064		;	                        LD      MEMCPY_ORIGIN ; Carrega endereço de origem
+a0b8 90da		;	                        MM      TARGET_ADDRESS 
+a0ba a0dc		;	                        SC      LOAD_VALUE ; Carrega valor no endereco de origem
 
-80c0 0000		;	MEMCPY_EXEC             K       /0000 ; Armazena o valor no endereco de destino
-a0c2 806a		;	                        LD      MEMCPY_DESTINATION  ; Carrega o endereço de destino
-d0c4 4004		;	                        +       CONST_2   ; Avança 2 posições na memoria
-a0c6 906a		;	                        MM      MEMCPY_DESTINATION  ; Atualiza MEMCPY_DESTINATION
+80bc 0000		;	MEMCPY_EXEC             K       /0000 ; Armazena o valor no endereco de destino
+a0be 8066		;	                        LD      MEMCPY_DESTINATION  ; Carrega o endereço de destino
+d0c0 4004		;	                        +       CONST_2   ; Avança 2 posições na memoria
+a0c2 9066		;	                        MM      MEMCPY_DESTINATION  ; Atualiza MEMCPY_DESTINATION
                         
-a0c8 8068		;	                        LD      MEMCPY_ORIGIN ; Carrega o endereço de origem
-d0ca 4004		;	                        +       CONST_2   ; Avança 2 posições na memoria
-a0cc 9068		;	                        MM      MEMCPY_ORIGIN ; Atualiza MEMCPY_ORIGIN
+a0c4 8064		;	                        LD      MEMCPY_ORIGIN ; Carrega o endereço de origem
+d0c6 4004		;	                        +       CONST_2   ; Avança 2 posições na memoria
+a0c8 9064		;	                        MM      MEMCPY_ORIGIN ; Atualiza MEMCPY_ORIGIN
                         
-a0ce 8060		;	                        LD      COUNT     ; Carrega o contador no acumulador
-d0d0 4003		;	                        +       CONST_1     ; Soma 1
-a0d2 9060		;	                        MM      COUNT     ; Atualiza CONT
+a0ca 805c		;	                        LD      COUNT     ; Carrega o contador no acumulador
+d0cc 4003		;	                        +       CONST_1     ; Soma 1
+a0ce 905c		;	                        MM      COUNT     ; Atualiza CONT
                         
-a0d4 00ae		;	                        JP      LOOP
+a0d0 00aa		;	                        JP      LOOP
 
-d0d6 8002		;	END_SUCCESS             LD      CONST_0   ; Se o programa finalizar com sucesso, coloca 0x0000 no acumulador
-a0d8 00dc		;	                        JP      RETURN_MEMCPY 
-d0da 8009		;	END_FAIL                LD      CONST_FFFF ; Se o programa finalizar com falhas, coloca 0xFFFF no acumulador
+d0d2 8002		;	END_SUCCESS             LD      CONST_0   ; Se o programa finalizar com sucesso, coloca 0x0000 no acumulador
+a0d4 00d8		;	                        JP      RETURN_MEMCPY 
+d0d6 8009		;	END_FAIL                LD      CONST_FFFF ; Se o programa finalizar com falhas, coloca 0xFFFF no acumulador
           
-a0dc b06e		;	RETURN_MEMCPY           RS      MEMCPY
+a0d8 b06a		;	RETURN_MEMCPY           RS      MEMCPY
 ;
 ;
 ; ###################################
@@ -212,14 +209,14 @@ a0dc b06e		;	RETURN_MEMCPY           RS      MEMCPY
 ;
 ; Variaveis
 ;
-80de 0000		;	TARGET_ADDRESS  K /0000 ; Endereço em que esta o valor desejado
+80da 0000		;	TARGET_ADDRESS  K /0000 ; Endereço em que esta o valor desejado
 ;
 ; Rotina
 ;
-80e0 0000		;	LOAD_VALUE      K /0000
-a0e2 80de		;	                LD TARGET_ADDRESS ; carrega o endereço
-d0e4 4000		;	                + LOAD ; Soma load
-a0e6 90e8		;	                MM EXEC_LOAD ; Armazena em EXEC_LOAD
-80e8 0000		;	EXEC_LOAD       K /0000 ; Carrega valor do endereço
-a0ea b0e0		;	                RS LOAD_VALUE ; END da sub rotina
+80dc 0000		;	LOAD_VALUE      K /0000
+a0de 80da		;	                LD TARGET_ADDRESS ; carrega o endereço
+d0e0 4000		;	                + LOAD ; Soma load
+a0e2 90e4		;	                MM EXEC_LOAD ; Armazena em EXEC_LOAD
+80e4 0000		;	EXEC_LOAD       K /0000 ; Carrega valor do endereço
+a0e6 b0dc		;	                RS LOAD_VALUE ; END da sub rotina
 
