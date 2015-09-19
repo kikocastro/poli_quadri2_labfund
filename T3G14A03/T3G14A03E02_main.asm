@@ -20,9 +20,29 @@ MEMCPY_ORIGIN_PTR <
 MEMCPY_DESTINATION_PTR <
 MEMCPY_SIZE_PTR <
 ;
-; 
+; CHTOI
+CHTOI <
+CHTOI_INPUT_1_PTR <   
+CHTOI_INPUT_2_PTR <
+CHTOI_OUTPUT >
+;
+;
+; HALF_PACK
+HALF_PACK <
+HALF_PACK_INPUT_1_PTR <
+HALF_PACK_INPUT_2_PTR <
+
+HALF_PACK_OUTPUT >
+;
 &   /0000
 MAIN                JP  INI
+; Entradas / Saidas
+;
+; CHTOI
+;
+CHTOI_INPUT_1		K	/3739  
+CHTOI_INPUT_2 		K	/4142
+CHTOI_OUTPUT 		K 	/0000
 ; Entradas / Saidas
 ;
 ; PACK
@@ -56,28 +76,15 @@ TEST_LIST			K   /0001		; 0014
 ; 
 ; PACK
 ;
-INI                 LV PACK_INPUT_1 ; Carrega o endereço de PACK_INPUT_1
-    	            MM PACK_INPUT_1_PTR ; Armazena esse valor em PACK_INPUT_1_PTR 
-    	            LV PACK_INPUT_2 ; Carrega o endereço de PACK_INPUT_2
-                    MM PACK_INPUT_2_PTR ; Armazena esse valor em PACK_INPUT_2_PTR
-                    SC PACK ; Chama sub rotina PACK
-                    MM PACK_OUTPUT ; Salva na saida
-;
-; UNPACK
-;
-                    LV UNPACK_INPUT ; Carrega o endereço de UNPACK_INPUT
-    	            MM UNPACK_INPUT_PTR ; Armazena esse valor em UNPACK_INPUT_PTR 
-    	            SC UNPACK ; Chama sub rotina UNPACK
-;
-; MEMCPY
-;
-                    LV			MEMCPY_SIZE ; Carrega endereço de MEMCPY_SIZE
-					MM			MEMCPY_SIZE_PTR ; Salva no ponteiro
-					LV			MEMCPY_ORIGIN ; Carrega endereço de MEMCPY_ORIGIN
-					MM			MEMCPY_ORIGIN_PTR ; Salva no ponteiro
-					LV			MEMCPY_DESTINATION ; Carrega endereço de MEMCPY_DESTINATION
-					MM			MEMCPY_DESTINATION_PTR ; Salva no ponteiro
-					SC 			MEMCPY ; Chama sub rotina MEMCPY
+INI                 LV CHTOI_INPUT_1 ; Carrega o endereço de CHTOI_INPUT_1
+    	            MM CHTOI_INPUT_1_PTR ; Armazena esse valor em CHTOI_INPUT_1_PTR 
+    	            
+    	            LV CHTOI_INPUT_2 ; Carrega o endereço de CHTOI_INPUT_2
+                    MM CHTOI_INPUT_2_PTR ; Armazena esse valor em CHTOI_INPUT_2_PTR
+                    
+                    SC CHTOI ; Chama sub rotina CHTOI
+                    
+                    MM CHTOI_OUTPUT ; Salva na saida
 
 END                 HM END
 # MAIN
