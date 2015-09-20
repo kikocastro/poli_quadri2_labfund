@@ -19,8 +19,8 @@ CONST_1000  <
 CONST_8000  <              
 CONST_FFFF  <        
 
-RANGE_START <
-RANGE_END   <
+MEM_START   <
+MEM_END     <
 ; 
 ; Entradas e saidas
 ;
@@ -45,6 +45,7 @@ HALF_PACK   >
 INPUT_1_PTR    K /0000 ; Endereco da entrada 1
 INPUT_2_PTR    K /0000 ; Endereco da entrada 2
 INPUT_3_PTR    K /0000 ; Endereco da entrada 3
+;
 ;
 ; Rotinas
 ;
@@ -79,7 +80,7 @@ PACK                K  /0000
 ; Variaveis
 ;
 TEMP                K  /0000
-UNPACK_INPUT        K  /0000
+UNPACK_INPUT_LOCAL  K  /0000
 ;
 ; Rotina
 ;
@@ -88,7 +89,7 @@ UNPACK              K  /0000
                     LD INPUT_1_PTR ; Carrega endereco contido em INPUT_1_PTR
                     MM TARGET_ADDRESS
                     SC LOAD_VALUE ; Carrega conteudo de entrada de UNPACK
-                    MM UNPACK_INPUT ; Salva na variavel local
+                    MM UNPACK_INPUT_LOCAL ; Salva na variavel local
                     + CONST_8000 ; soma 8000
                     JN POSITIVE_CASE ; Caso < 0, o numero é positivo
                     ; caso negativo [ex: F123. Atualmente: F123 + 8000 = 7123]
@@ -101,20 +102,20 @@ NEGATIVE_CASE       / CONST_100 ; sem o sinal negativo com shift a direita [71]
                     LD TEMP ; Carrega valor em temp [71]
                     * CONST_100 ; Shift para esquerda [7100]
                     MM TEMP ; Salva em temp
-                    LD UNPACK_INPUT ; Carrega valor inicial
+                    LD UNPACK_INPUT_LOCAL ; Carrega valor inicial
                     + CONST_8000 ; [F123 + 8000 = 7123] 
                     - TEMP ; Obtem 00ZT [7123 - 7100 = 23]
                     MM OUTPUT_2 ; Armazena 00 ZT em OUTPUT_2
                     RS UNPACK ; END da sub rotina
                     ; Caso positivo
                     ; Parte XY
-POSITIVE_CASE       LD UNPACK_INPUT ; Carrega valor inicial
+POSITIVE_CASE       LD UNPACK_INPUT_LOCAL ; Carrega valor inicial
                     / CONST_100 ; Realiza shift de duas casa para direita
                     MM OUTPUT_1 ; Salva em OUTPUT_1 00XY
                     ; Parte ZT
                     * CONST_100 ; Realiza shift de duas casa para esquerda, obtendo XY00
                     MM TEMP ; Salva valor temporario
-                    LD UNPACK_INPUT ; Carrega valor inicial
+                    LD UNPACK_INPUT_LOCAL ; Carrega valor inicial
                     - TEMP ; Realiza XYZT - XY00 obtendo ZT
                     MM OUTPUT_2 ; Salva resultado
                     RS UNPACK ; END da sub rotina
@@ -127,9 +128,9 @@ POSITIVE_CASE       LD UNPACK_INPUT ; Carrega valor inicial
 ; Variaveis
 ;
 COUNT                   K       /0000
-MEMCPY_ORIGIN           K       /0000
-MEMCPY_DESTINATION      K       /0000
-MEMCPY_SIZE             K       /0000
+SIZE                    K       /0000
+ORIGIN                  K       /0000
+DESTINATION             K       /0000
 ;
 ; Rotina
 ;
@@ -139,59 +140,59 @@ MEMCPY                  K       /0000
                         +       LOAD ; Soma load
                         MM      UNPACK_EXEC1 ; Armazena em UNPACK_EXEC1
 UNPACK_EXEC1            K       /0000 ; Carrega valor do endereço
-                        MM      MEMCPY_ORIGIN ; Armazena
+                        MM      SIZE ; Armazena
                         LD      INPUT_2_PTR ; carrega o endereço
                         +       LOAD ; Soma load
                         MM      UNPACK_EXEC2 ; Armazena em UNPACK_EXEC2
 UNPACK_EXEC2            K       /0000 ; Carrega valor do endereço
-                        MM      MEMCPY_DESTINATION ; Armazena
+                        MM      ORIGIN ; Armazena
                         LD      INPUT_3_PTR ; carrega o endereço
                         +       LOAD ; Soma load
                         MM      UNPACK_EXEC3 ; Armazena em UNPACK_EXEC3
 UNPACK_EXEC3            K       /0000 ; Carrega valor do endereço
-                        MM      MEMCPY_SIZE ; Armazena
+                        MM      DESTINATION ; Armazena
                         ; Tratamento de erros de Input
                         ; 1) Endereço inicial + o numero de palavras > endereço maximo
-                        LD      RANGE_END   ; Carrega o endereço maximo de destino
-                        -       MEMCPY_SIZE
-                        -       MEMCPY_SIZE ; Subtrai numero de enderecos de words que serao copiadas (Duas vezes pois cada palavra ocupa 2 Bytes)
-                        -       MEMCPY_DESTINATION  ; Subtrai o endereço inicial do destino
+                        LD      MEM_END   ; Carrega o endereço maximo de destino
+                        -       SIZE
+                        -       SIZE ; Subtrai numero de enderecos de words que serao copiadas (Duas vezes pois cada palavra ocupa 2 Bytes)
+                        -       DESTINATION  ; Subtrai o endereço inicial do destino
                         JN      END_FAIL  ; Caso o endereço inicial + o numero de palavras > endereço maximo, ERRO
                         ; 2) Endereço de destino esta antes do intervalo
-                        LD      MEMCPY_DESTINATION
-                        -       RANGE_START   
+                        LD      DESTINATION
+                        -       MEM_START   
                         JN      END_FAIL  
                         ; 3) Origem esta antes do intervalo
-                        LD      MEMCPY_ORIGIN
-                        -       RANGE_START
+                        LD      ORIGIN
+                        -       MEM_START
                         JN      END_FAIL   
                         ; 4) Origem esta a frente do intervalo
-                        LD      RANGE_END
-                        -       MEMCPY_ORIGIN
-                        -       MEMCPY_SIZE
-                        -       MEMCPY_SIZE
+                        LD      MEM_END
+                        -       ORIGIN
+                        -       SIZE
+                        -       SIZE
                         JN      END_FAIL  
                         ; Comeco de MEMCPY
-LOOP                    LD      MEMCPY_SIZE ; Carrega o numero de words no acumulador
+LOOP                    LD      SIZE ; Carrega o numero de words no acumulador
                         -       COUNT     ; Subtrai o contador do acumulador
                         JZ      END_SUCCESS ; Caso o contador seja igual ao numero de words, encerra
                         
-                        LD      MEMCPY_DESTINATION ; Carrega endereco de destino
+                        LD      DESTINATION ; Carrega endereco de destino
                         +       WRITE   ; Adiciona comando MM
                         MM      MEMCPY_EXEC   ; Armazena em MEMCPY_EXEC
                         
-                        LD      MEMCPY_ORIGIN ; Carrega endereço de origem
+                        LD      ORIGIN ; Carrega endereço de origem
                         MM      TARGET_ADDRESS 
                         SC      LOAD_VALUE ; Carrega valor no endereco de origem
 
 MEMCPY_EXEC             K       /0000 ; Armazena o valor no endereco de destino
-                        LD      MEMCPY_DESTINATION  ; Carrega o endereço de destino
+                        LD      DESTINATION  ; Carrega o endereço de destino
                         +       CONST_2   ; Avança 2 posições na memoria
-                        MM      MEMCPY_DESTINATION  ; Atualiza MEMCPY_DESTINATION
+                        MM      DESTINATION  ; Atualiza DESTINATION
                         
-                        LD      MEMCPY_ORIGIN ; Carrega o endereço de origem
+                        LD      ORIGIN ; Carrega o endereço de origem
                         +       CONST_2   ; Avança 2 posições na memoria
-                        MM      MEMCPY_ORIGIN ; Atualiza MEMCPY_ORIGIN
+                        MM      ORIGIN ; Atualiza ORIGIN
                         
                         LD      COUNT     ; Carrega o contador no acumulador
                         +       CONST_1     ; Soma 1
@@ -412,12 +413,4 @@ HALF_PACK               K  /0000
                         MM OUTPUT_1 ; armazena na saida
                         
                         RS HALF_PACK ; Fim da sub rotina
-;
-; Ponteiros de entrada
-OUTPUT_1_PTR    K /0000 ; Endereco da entrada 1
-OUTPUT_2_PTR    K /0000 ; Endereco da entrada 2
-OUTPUT_3_PTR    K /0000 ; Endereco da entrada 3
-;
-;
-
 # PACK

@@ -32,8 +32,8 @@ a014 c014
 2038 0000 ; "CONST_1000>" 
 203a 0000 ; "CONST_8000>" 
 203c 0000 ; "CONST_FFFF>" 
-203e 0000 ; "RANGE_START>" 
-2040 0000 ; "RANGE_END>" 
+203e 0000 ; "MEM_START>" 
+2040 0000 ; "MEM_END>" 
 801c 8000
 801e 9000
 8020 5000
@@ -128,37 +128,37 @@ a0c0 90c2
 80c2 0000
 a0c4 90a4
 a0c6 8040
-a0c8 50a4
-a0ca 50a4
-a0cc 50a2
+a0c8 50a0
+a0ca 50a0
+a0cc 50a4
 a0ce 2112
-a0d0 80a2
+a0d0 80a4
 a0d2 503e
 a0d4 2112
-a0d6 80a0
+a0d6 80a2
 a0d8 503e
 a0da 2112
 a0dc 8040
-a0de 50a0
-a0e0 50a4
-a0e2 50a4
+a0de 50a2
+a0e0 50a0
+a0e2 50a0
 a0e4 2112
-a0e6 80a4
+a0e6 80a0
 a0e8 509e
 a0ea 110e
-a0ec 80a2
+a0ec 80a4
 a0ee 401e
 a0f0 90f8
-a0f2 80a0
+a0f2 80a2
 a0f4 9116
 a0f6 a118
 80f8 0000
-a0fa 80a2
+a0fa 80a4
 a0fc 4026
-a0fe 90a2
-a100 80a0
+a0fe 90a4
+a100 80a2
 a102 4026
-a104 90a0
+a104 90a2
 a106 809e
 a108 4024
 a10a 909e
@@ -274,6 +274,3 @@ a1e4 a118
 a1e6 41d2
 a1e8 9016
 a1ea b1d4
-81ec 0000
-81ee 0000
-81f0 0000

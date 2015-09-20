@@ -19,8 +19,8 @@
 201e 0000 ; "CONST_8000>"		;	CONST_8000  >              
 2020 0000 ; "CONST_FFFF>"		;	CONST_FFFF  >        
 
-2022 0000 ; "RANGE_START>"		;	RANGE_START >
-2024 0000 ; "RANGE_END>"		;	RANGE_END   >
+2022 0000 ; "MEM_START>"		;	MEM_START   >
+2024 0000 ; "MEM_END>"		;	MEM_END     >
 ;
 ;
 				;	& /0000 ; Origem relocavel
@@ -61,6 +61,6 @@
 ; ###################################
 ;
 ; Limite de memoria para aa sequencia de UNPACK
-8022 0014		;	RANGE_START             K       /0014 ; Inicio do intervalo determinado
-8024 0024		;	RANGE_END               K       /0024 ; Fim do intervalo determinado
+8022 0014		;	MEM_START               K       /0014 ; Inicio do intervalo determinado
+8024 0024		;	MEM_END                 K       /0024 ; Fim do intervalo determinado
 

@@ -19,8 +19,8 @@ CONST_1000  >
 CONST_8000  >              
 CONST_FFFF  >        
 
-RANGE_START >
-RANGE_END   >
+MEM_START   >
+MEM_END     >
 ;
 ;
 & /0000 ; Origem relocavel
@@ -61,7 +61,7 @@ CONST_FFFF  			K   /FFFF
 ; ###################################
 ;
 ; Limite de memoria para aa sequencia de UNPACK
-RANGE_START             K       /0014 ; Inicio do intervalo determinado
-RANGE_END               K       /0024 ; Fim do intervalo determinado
+MEM_START               K       /0014 ; Inicio do intervalo determinado
+MEM_END                 K       /0024 ; Fim do intervalo determinado
 
 # LOAD
