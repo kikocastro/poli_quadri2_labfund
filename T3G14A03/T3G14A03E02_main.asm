@@ -24,8 +24,8 @@ MAIN                JP  INI
 ;
 ; CHTOI
 ;
-CHTOI_INPUT_1		K	/4552     
-CHTOI_INPUT_2 		K	/524F
+CHTOI_INPUT_1		K	/3739     
+CHTOI_INPUT_2 		K	/4142
 CHTOI_OUTPUT 		K 	/0000
 ;
 ;
@@ -41,7 +41,8 @@ INI                 LV CHTOI_INPUT_1 ; Carrega o endereço de CHTOI_INPUT_1
 
 END                 HM END
 ;
-; Ponteiros de entrada
+; Saidas
+;
 OUTPUT_1    K /0000 ; Endereco da entrada 1
 OUTPUT_2    K /0000 ; Endereco da entrada 2
 OUTPUT_3    K /0000 ; Endereco da entrada 3

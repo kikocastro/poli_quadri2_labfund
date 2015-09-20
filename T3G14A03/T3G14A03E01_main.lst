@@ -2,27 +2,25 @@
 ; 
 ; Importa/ Exporta
 ;
-; PACK
-4000 0000 ; "PACK<"		;	PACK <
-4001 0000 ; "PACK_INPUT_1_PTR<"		;	PACK_INPUT_1_PTR <
-4002 0000 ; "PACK_INPUT_2_PTR<"		;	PACK_INPUT_2_PTR <
-2006 0000 ; "PACK_OUTPUT>"		;	PACK_OUTPUT >
-; 
-; UNPACK
-4003 0000 ; "UNPACK<"		;	UNPACK <
-4004 0000 ; "UNPACK_INPUT_PTR<"		;	UNPACK_INPUT_PTR <
-200a 0000 ; "UNPACK_OUTPUT_1>"		;	UNPACK_OUTPUT_1 >
-200c 0000 ; "UNPACK_OUTPUT_2>"		;	UNPACK_OUTPUT_2 >
+4000 0000 ; "INPUT_1_PTR<"		;	INPUT_1_PTR <
+4001 0000 ; "INPUT_2_PTR<"		;	INPUT_2_PTR <
+4002 0000 ; "INPUT_3_PTR<"		;	INPUT_3_PTR <
+
+2026 0000 ; "OUTPUT_1>"		;	OUTPUT_1    >
+2028 0000 ; "OUTPUT_2>"		;	OUTPUT_2    >
+202a 0000 ; "OUTPUT_3>"		;	OUTPUT_3    >
 ;
-; MEMCPY
-4005 0000 ; "MEMCPY<"		;	MEMCPY <
-4006 0000 ; "MEMCPY_ORIGIN_PTR<"		;	MEMCPY_ORIGIN_PTR <
-4007 0000 ; "MEMCPY_DESTINATION_PTR<"		;	MEMCPY_DESTINATION_PTR <
-4008 0000 ; "MEMCPY_SIZE_PTR<"		;	MEMCPY_SIZE_PTR <
-;
+; Rotinas
 ; 
+4003 0000 ; "PACK<"		;	PACK        <
+4004 0000 ; "UNPACK<"		;	UNPACK      <
+4005 0000 ; "MEMCPY<"		;	MEMCPY      <
+4006 0000 ; "CHTOI<"		;	CHTOI       <
+4007 0000 ; "HALF_PACK<"		;	HALF_PACK   <
+;
 				;	&   /0000
-a000 0026		;	MAIN                JP  INI
+a000 002c		;	MAIN                JP  INI 
+; ##############################################
 ; Entradas / Saidas
 ;
 ; PACK
@@ -41,7 +39,7 @@ a000 0026		;	MAIN                JP  INI
 ;
 800e 0003		;	MEMCPY_SIZE         K   /0003       ; 000E
 8010 0014		;	MEMCPY_ORIGIN       K   /0014       ; 0010
-8012 001c		;	MEMCPY_DESTINATION  K   /001c       ; 0012
+8012 001c		;	MEMCPY_DESTINATION  K   /001C       ; 0012
 8014 0001		;	TEST_LIST			K   /0001		; 0014
 8016 0002		;						K	/0002	 	; 0016
 8018 0003		;						K	/0003		; 0018
@@ -51,32 +49,44 @@ a000 0026		;	MAIN                JP  INI
 8020 ffff		;						K	/FFFF	 	; 0020
 8022 ffff		;						K	/FFFF	 	; 0022
 8024 ffff		;						K	/FFFF	 	; 0024
+; ##############################################
+;
+; Saidas
+;
+8026 0000		;	OUTPUT_1    K /0000 ; Endereco da entrada 1
+8028 0000		;	OUTPUT_2    K /0000 ; Endereco da entrada 2
+802a 0000		;	OUTPUT_3    K /0000 ; Endereco da entrada 3
+;					
 ;
 ; Programa
 ; 
 ; PACK
 ;
-a026 3002		;	INI                 LV PACK_INPUT_1 ; Carrega o endereço de PACK_INPUT_1
-d028 9001		;	    	            MM PACK_INPUT_1_PTR ; Armazena esse valor em PACK_INPUT_1_PTR 
-a02a 3004		;	    	            LV PACK_INPUT_2 ; Carrega o endereço de PACK_INPUT_2
-d02c 9002		;	                    MM PACK_INPUT_2_PTR ; Armazena esse valor em PACK_INPUT_2_PTR
-d02e a000		;	                    SC PACK ; Chama sub rotina PACK
-a030 9006		;	                    MM PACK_OUTPUT ; Salva na saida
+a02c 3002		;	INI                 LV PACK_INPUT_1 ; Carrega o endereço de PACK_INPUT_1
+d02e 9000		;	    	            MM INPUT_1_PTR ; Armazena esse valor em INPUT_1_PTR 
+a030 3004		;	    	            LV PACK_INPUT_2 ; Carrega o endereço de PACK_INPUT_2
+d032 9001		;	                    MM INPUT_2_PTR ; Armazena esse valor em INPUT_2_PTR
+d034 a003		;	                    SC PACK ; Chama sub rotina PACK
+a036 9006		;	                    MM PACK_OUTPUT ; Salva na saida
 ;
 ; UNPACK
 ;
-a032 3008		;	                    LV UNPACK_INPUT ; Carrega o endereço de UNPACK_INPUT
-d034 9004		;	    	            MM UNPACK_INPUT_PTR ; Armazena esse valor em UNPACK_INPUT_PTR 
-d036 a003		;	    	            SC UNPACK ; Chama sub rotina UNPACK
+a038 3008		;	                    LV UNPACK_INPUT ; Carrega o endereço de UNPACK_INPUT
+d03a 9000		;	    	            MM INPUT_1_PTR ; Armazena esse valor em INPUT_1_PTR 
+d03c a004		;	    	            SC UNPACK ; Chama sub rotina UNPACK
+a03e 8026		;	    	            LD OUTPUT_1
+a040 900a		;	                    MM UNPACK_OUTPUT_1 ; Salva na saida
+a042 8028		;	                    LD OUTPUT_2
+a044 900c		;	                    MM UNPACK_OUTPUT_2 ; Salva na saida
 ;
 ; MEMCPY
 ;
-a038 300e		;	                    LV			MEMCPY_SIZE ; Carrega endereço de MEMCPY_SIZE
-d03a 9008		;						MM			MEMCPY_SIZE_PTR ; Salva no ponteiro
-a03c 3010		;						LV			MEMCPY_ORIGIN ; Carrega endereço de MEMCPY_ORIGIN
-d03e 9006		;						MM			MEMCPY_ORIGIN_PTR ; Salva no ponteiro
-a040 3012		;						LV			MEMCPY_DESTINATION ; Carrega endereço de MEMCPY_DESTINATION
-d042 9007		;						MM			MEMCPY_DESTINATION_PTR ; Salva no ponteiro
-d044 a005		;						SC 			MEMCPY ; Chama sub rotina MEMCPY
+a046 300e		;	                    LV			MEMCPY_SIZE ; Carrega endereço de MEMCPY_SIZE
+d048 9000		;						MM			INPUT_1_PTR ; Salva no ponteiro
+a04a 3010		;						LV			MEMCPY_ORIGIN ; Carrega endereço de MEMCPY_ORIGIN
+d04c 9001		;						MM			INPUT_2_PTR ; Salva no ponteiro
+a04e 3012		;						LV			MEMCPY_DESTINATION ; Carrega endereço de MEMCPY_DESTINATION
+d050 9002		;						MM			INPUT_3_PTR ; Salva no ponteiro
+d052 a005		;						SC 			MEMCPY ; Chama sub rotina MEMCPY
 
-a046 c046		;	END                 HM END
+a054 c02c		;	END                 HM INI

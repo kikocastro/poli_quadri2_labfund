@@ -24,8 +24,8 @@ a000 0008		;	MAIN                JP  INI
 ;
 ; CHTOI
 ;
-8002 4552		;	CHTOI_INPUT_1		K	/4552     
-8004 524f		;	CHTOI_INPUT_2 		K	/524F
+8002 3739		;	CHTOI_INPUT_1		K	/3739     
+8004 4142		;	CHTOI_INPUT_2 		K	/4142
 8006 0000		;	CHTOI_OUTPUT 		K 	/0000
 ;
 ;
@@ -41,7 +41,8 @@ a012 9006		;	                    MM CHTOI_OUTPUT ; Salva na saida
 
 a014 c014		;	END                 HM END
 ;
-; Ponteiros de entrada
+; Saidas
+;
 8016 0000		;	OUTPUT_1    K /0000 ; Endereco da entrada 1
 8018 0000		;	OUTPUT_2    K /0000 ; Endereco da entrada 2
 801a 0000		;	OUTPUT_3    K /0000 ; Endereco da entrada 3
