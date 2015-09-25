@@ -42,12 +42,26 @@ public class MvnPcs{
 	 * @param args
 	 *          Parâmetros do programa. Não utilizado.
 	 */
-	public static void main(String args[]){	
+	public static void main(String args[]){
+		
+		Counter counter = new Counter();		
+		
+		counter.escrever(new Bits8(256));
+		
+		Bits8 a = new Bits8(2);
+		Bits8 b = new Bits8(258);
+		System.out.println(b);
+		System.out.println(a.compareTo(b));
+
+		System.out.println(b.compareTo(a));
+		
+		System.out.println(counter.podeLer());
 		
 		
-		mvnPcs = new MvnControle();
-		painel = new PainelControle(mvnPcs, false);
-		painel.mostrarTerminal();
+		
+//		mvnPcs = new MvnControle();
+//		painel = new PainelControle(mvnPcs, false);
+//		painel.mostrarTerminal();
 		
 		
 		
