@@ -1,0 +1,44 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package mvn.dispositivo;
+
+import mvn.Bits8;
+
+/**
+ *
+ * @author mjunior
+ */
+public class Counter implements Dispositivo {
+    
+	private Bits8 count = new Bits8();
+    
+	private Bits8 maxCount = new Bit8(255);
+    
+    public Counter() {
+		count.;
+	}	
+    
+    /**
+     * inicializa em 0 o atributo count
+     * @param count
+     */
+    public void escrever(int count) {
+		count.shiftRight(count.BYTE_SIZE);	
+	}
+    
+    public Bits8 ler() {
+		return count;
+	}
+    
+    public boolean podeLer() {
+		if (count) {
+			
+		} else {
+
+		}
+	}
+}

@@ -1,0 +1,54 @@
+package mvn.dispositivo;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+public class CounterTest {
+
+	@Test
+	public void testCounter() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testEscrever() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testLer() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testPodeLer() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testPodeEscrever() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testReset() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testPosition() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testSize() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testSkip() {
+		fail("Not yet implemented");
+	}
+
+}

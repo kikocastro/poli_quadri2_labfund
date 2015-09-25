@@ -1,0 +1,81 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package mvn.dispositivo;
+
+import mvn.Bits8;
+import mvn.Dispositivo;
+import mvn.controle.MVNException;
+
+/**
+ *
+ * @author mjunior
+ */
+public class Counter implements Dispositivo {
+    
+	private Bits8 count = new Bits8();
+    
+	private Bits8 maxCount = new Bits8(255);
+    
+	 /**
+     * inicializa em 0 o atributo count
+     * 
+     */
+    public Counter() {
+    	reset();
+	}	
+    
+   
+    public void escrever(Bits8 count) {
+    	reset();	
+    	count.add(new Bits8(count));
+	}
+    
+    public Bits8 ler() {
+		return count;
+	}
+    
+    /**
+     * 
+     * @return true caso count seja menor do que o valor máximo docontador (FF); false caso contrário
+     */
+    public boolean podeLer() {
+    	
+    	int compareResult = count.compareTo(maxCount);
+    	
+		if (compareResult > 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+    
+    public boolean podeEscrever() {
+		return true;
+	}
+    
+    public void reset() {
+    	count.shiftRight(count.BYTE_SIZE);	
+	}
+    
+    @Override
+    public Bits8 position() throws MVNException {
+    	// TODO Auto-generated method stub
+    	return null;
+    }
+    
+    @Override
+    public Bits8 size() throws MVNException {
+    	// TODO Auto-generated method stub
+    	return null;
+    }
+    
+    @Override
+    public Bits8 skip(Bits8 val) throws MVNException {
+    	// TODO Auto-generated method stub
+    	return null;
+    }
+}
