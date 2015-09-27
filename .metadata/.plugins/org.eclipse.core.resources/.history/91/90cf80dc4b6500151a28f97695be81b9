@@ -239,15 +239,7 @@ public class GerenciadorDispositivos{
 		Dispositivo device = CreateDeviceByClass(deviceClass, params);
 		addDispositivo(deviceType, logicalUnit, device);
 	}
-	
-	/**
-	 * 
-	 * @param deviceType
-	 * 				Tipo de device a ser adicionado (0 - Teclado, 1 - Monitor ou 4 - Counter)
-	 * @param logicalUnit
-	 * 				Unidade logica do device
-	 * @throws MVNException
-	 */
+
 	public void addDispSimples(int deviceType, int logicalUnit) throws MVNException{
 		switch (deviceType) {
 		case 0:

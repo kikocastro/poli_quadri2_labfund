@@ -694,10 +694,10 @@ public class UnidadeControle {
 
     /**
      * SVC: OP = 0x000F.<br/>
-     * Adiciona um device simples (TYPE 0 - Teclado, 1 - Monitor ou 4 - Counter).<br/>
+     * Nao executa nenhuma operacao.<br/>
      * <br/>
-     * <b>Pre-condicao</b>: Dois parametros no endereços anteriores å chamada da instrução: TYPE e UL (Unidade Lógica).<br/>
-     * <b>Pos-condicao</b>: Device adicionado a lista de dispositivo. Saída no Acumulador: 0 se sucesso, -1 se erro. 
+     * <b>Pre-condicao</b>: IC contem qualquer valor.<br/>
+     * <b>Pos-condicao</b>: IC <- IC + 1
      */
     private void instrucaoOS() throws MVNException {
         
