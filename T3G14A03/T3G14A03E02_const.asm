@@ -4,20 +4,22 @@ LOAD        >
 WRITE       >
 SUBTRACT    >
 
-CONST_0     >                 
-CONST_1     >                 
-CONST_2     >                 
-CONST_7     >                 
-CONST_9     >                 
-CONST_10    >                
-CONST_30    >                
-CONST_40    >                
-CONST_47    >                
-CONST_80    >                
-CONST_100   >               
-CONST_1000  >              
-CONST_8000  >              
-CONST_FFFF  >        
+CONST_0                 >
+CONST_1                 >
+CONST_2                 >
+CONST_7                 >
+CONST_9                 >
+CONST_10                >
+CONST_F                 >
+CONST_30                >
+CONST_3A                >
+CONST_40                >
+CONST_47                >
+CONST_80                >
+CONST_100               >
+CONST_1000              >
+CONST_8000              >
+CONST_FFFF              >       
 
 MEM_START   >
 MEM_END     >
@@ -46,7 +48,9 @@ CONST_2                 K   /0002
 CONST_7                 K   /0007
 CONST_9                 K   /0009
 CONST_10                K   /0010
+CONST_F                 K   /000F
 CONST_30                K   /0030
+CONST_3A                K   /003A
 CONST_40                K   /0040
 CONST_47                K   /0047
 CONST_80                K   /0080

@@ -4,20 +4,22 @@ LOAD        <
 WRITE       < 
 SUBTRACT    <
 
-CONST_0     <                 
-CONST_1     <                 
-CONST_2     <                 
-CONST_7     <                 
-CONST_9     <                 
-CONST_10    <                
-CONST_30    <                
-CONST_40    <                
-CONST_47    <                
-CONST_80    <                
-CONST_100   <               
-CONST_1000  <              
-CONST_8000  <              
-CONST_FFFF  <        
+CONST_0                 <
+CONST_1                 <
+CONST_2                 <
+CONST_7                 <
+CONST_9                 <
+CONST_10                <
+CONST_F                 <
+CONST_30                <
+CONST_3A                <
+CONST_40                <
+CONST_47                <
+CONST_80                <
+CONST_100               <
+CONST_1000              <
+CONST_8000              <
+CONST_FFFF              <      
 
 MEM_START   <
 MEM_END     <
@@ -38,6 +40,7 @@ PACK        >
 UNPACK      >
 MEMCPY      >
 CHTOI       >
+UITOCH      >
 HALF_PACK   >
 ;
 & /0000 ; Origem relocavel
@@ -110,7 +113,7 @@ NEGATIVE_CASE       / CONST_100 ; sem o sinal negativo com shift a direita [71]
                     ; Caso positivo
                     ; Parte XY
 POSITIVE_CASE       LD UNPACK_INPUT_LOCAL ; Carrega valor inicial
-                    / CONST_100 ; Realiza shift de duas casa para direita
+                    / CONST_100 ; Realiza shift de duas casas para direita
                     MM OUTPUT_1 ; Salva em OUTPUT_1 00XY
                     ; Parte ZT
                     * CONST_100 ; Realiza shift de duas casa para esquerda, obtendo XY00
@@ -225,6 +228,133 @@ LOAD_VALUE      K /0000
                 MM EXEC_LOAD ; Armazena em EXEC_LOAD
 EXEC_LOAD       K /0000 ; Carrega valor do endereço
                 RS LOAD_VALUE ; END da sub rotina
+;
+;
+; ###################################
+; UITOCH
+; ###################################
+;
+; Converte um numero intero para duas words contendo caracteres ASCII 
+; correspondentes. [exemplo: entra 79AB e saem 3739 e 4142]
+;
+; Variaveis
+;
+UITOCH_INPUT_PTR        K /0000
+UITOCH_TEMP_1           K /0000
+UITOCH_TEMP_2           K /0000
+;
+; Rotina
+;
+UITOCH                  K       /0000
+                        
+                        ; nesse ponto o endereço da entrada ja esta em INPUT_1_PTR, 
+                        ; entao, chama-se UNPACK diretamente.
+                        SC      UNPACK ; Chama a rotina
+                        
+                        LD      OUTPUT_2 ; Carrega a segunda metade [Ex: Se int = 79AB, carrega 00AB] 
+                        MM      UITOCH_TEMP_2 ; Armazena temporariamente
+                        
+                        ; Primeira palavra
+                        LV      OUTPUT_1 ; Carrega endereco que contem [0079]
+                        MM      INPUT_1_PTR ; Armazena
+                        SC      HALF_UNPACK ; Chama rotina
+                        LD      OUTPUT_1 ; [0007]
+                        MM      UITOCH_WORD_1
+                        LD      OUTPUT_2 ; [0009]
+                        MM      UITOCH_WORD_2
+                        SC      UITOCH_PROCESS_WORD ; Chama sub-rotina
+                        MM      UITOCH_TEMP_1 ; [3739]
+                        
+                        ; Verifica se houve erro
+                        -       CONST_FFFF 
+                        JZ      UITOCH_ERROR
+                        
+                        ; Segunda palavra
+                        LV      UITOCH_TEMP_2 ; Carrega endereco que tem [00AB]
+                        MM      INPUT_1_PTR ; Armazena
+                        SC      HALF_UNPACK ; Chama rotina
+                        LD      OUTPUT_1 
+                        MM      UITOCH_WORD_1 ; [000A]
+                        LD      OUTPUT_2
+                        MM      UITOCH_WORD_2 ; [000B]
+                        SC      UITOCH_PROCESS_WORD ; Chama sub-rotina
+                        MM      UITOCH_TEMP_2 ; [4142]
+                        
+                        ; Verifica se houve erro
+                        -       CONST_FFFF 
+                        JZ      UITOCH_ERROR
+                        
+                        ; Se nao houve, armazena na saida
+                        LD      UITOCH_TEMP_1
+                        MM      OUTPUT_1
+                        LD      UITOCH_TEMP_2
+                        MM      OUTPUT_2
+                        
+UITOCH_ERROR            LD      CONST_FFFF ; Carrega valor de erro
+                        
+END_UITOCH              RS      UITOCH ; END da sub rotina
+;
+;
+; ###################################
+; UITOCH_PROCESS_WORD
+; ###################################
+;
+; Sub rotina de UITOCH que carrega os inteiros [ex 0007 e 0009]
+; e devolve o caracter ASCII correspondente [ex 3739]
+;
+UITOCH_WORD_1               K       /0000
+UITOCH_WORD_2               K       /0000
+;
+UITOCH_PROCESS_WORD         K       /0000
+                            
+                            LD      UITOCH_WORD_1 ; Carrega valor  [exemplo: 0007]
+                            MM      UITOCH_TEMP_CHAR ; Armazena
+                            SC      UITOCH_PROCESS_CHAR ; Chama sub-rotina
+                            MM      UITOCH_WORD_1 ; Armazena [0037]
+                            
+                            LD      UITOCH_WORD_2 ; Carrega valor  [exemplo: 0009]
+                            MM      UITOCH_TEMP_CHAR ; Armazena
+                            SC      UITOCH_PROCESS_CHAR ; Cahama sub-rotina
+                            MM      UITOCH_WORD_2 ; Armazena [0039]
+                            
+                            LV      UITOCH_WORD_1 ; Carrega endereco [0037]
+                            MM      INPUT_1_PTR ; Armazena na entrada
+                            LV      UITOCH_WORD_2 ; Carrega endereco [0039]
+                            MM      INPUT_2_PTR ; Armazena na entrada
+                            
+                            SC      PACK ; Chama rotina [recebe 3739]
+
+END_UITOCH_PROCESS_WORD     RS      UITOCH_PROCESS_WORD
+;
+;
+; ###################################
+; UITOCH_PROCESS_CHAR
+; ###################################
+;
+; Sub rotina de UITOCH_CHTOI que recebe uma metade de palavra ASCII [ se palavra original XYZT, recebe 00XY]
+; e devolve o inteiro correspondente
+;
+;
+UITOCH_TEMP_CHAR            K       /0000
+UITOCH_CHAR_TEMP            K       /0000
+
+UITOCH_PROCESS_CHAR         K       /0000
+                            LD      UITOCH_TEMP_CHAR ; Carrega valor  [exemplo: 0007]
+                            +       CONST_30 ; [0037]
+                            MM      UITOCH_TEMP_CHAR ; Armazena em variavel temporaria
+                            -       CONST_3A ; UITOCH_TEMP_CHAR - 3A
+                            JN      UITOCH_IS_NUMBER ; Se negativo, trata-se de um numero, caso contrario char de A a F
+                            ; Caso char
+                            LD      UITOCH_TEMP_CHAR ; Carrega o valor de char [0037]
+                            +       CONST_7 ; soma 7 para encontrar o valor inteiro [0041]
+                            JP      END_UITOCH_PROCESS_CHAR ; Encerra
+                        
+UITOCH_IS_NUMBER            LD      UITOCH_TEMP_CHAR ; carrega o numero
+                            JP      END_UITOCH_PROCESS_CHAR
+                        
+UITOCH_PROCESS_CHAR_ERROR   LD      CONST_FFFF ; Carrega erro
+
+END_UITOCH_PROCESS_CHAR     RS      UITOCH_PROCESS_CHAR      
 ;
 ;
 ; ###################################
@@ -412,5 +542,40 @@ HALF_PACK               K  /0000
                         +  HALF_PACK_PARTIAL_SUM ; soma HALF_PACK_INPUT_1 + HALF_PACK_INPUT_2
                         MM OUTPUT_1 ; armazena na saida
                         
-                        RS HALF_PACK ; Fim da sub rotina
+                        RS HALF_PACK ; Fim da sub rotina  
+;
+;
+; ###################################
+; HALF_UNPACK
+; ###################################
+;
+; Recebe numero no format [00XY] e retorna [000X] e [000Y]
+;
+; Variaveis
+;
+HALF_UNPACK_TEMP1           K       /0000
+HALF_UNPACK_TEMP2           K       /0000
+;
+; Rotina
+;
+HALF_UNPACK                 K       /0000
+                            ; Carrega valor do endereco apontado por INPUT_1_PTR
+                            LD      INPUT_1_PTR ; Carrega endereco contido em INPUT_1_PTR
+                            MM      TARGET_ADDRESS
+                            SC      LOAD_VALUE ; Carrega conteudo de entrada de HALF_UNPACK
+                            MM      HALF_UNPACK_TEMP1 ; Salva na variavel local [00XY]
+                            ; Parte 000X
+                            /       CONST_10 ; Realiza shift de uma casa para direita [000X]
+                            MM      OUTPUT_1 ; Salva em OUTPUT_1 [000X]
+                            ; Parte 000Y
+                            *       CONST_10 ; Shif para esquerda [00X0]
+                            MM      HALF_UNPACK_TEMP2
+                            LV      HALF_UNPACK_TEMP2
+                            +       SUBTRACT
+                            MM      HALF_PACK_EXEC
+                            LD      HALF_UNPACK_TEMP1 ; [00XY]  
+HALF_PACK_EXEC              K       /0000 ; [00XY - 000Y = 00X0]
+
+                            MM OUTPUT_2 ; Salva resultado
+                            RS HALF_UNPACK ; END da sub rotina
 # PACK

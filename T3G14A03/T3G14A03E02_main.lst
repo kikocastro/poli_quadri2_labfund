@@ -1,49 +1,69 @@
 ; Main
-; 
+;
 ; Importa/ Exporta
 ;
 4000 0000 ; "INPUT_1_PTR<"		;	INPUT_1_PTR <
 4001 0000 ; "INPUT_2_PTR<"		;	INPUT_2_PTR <
 4002 0000 ; "INPUT_3_PTR<"		;	INPUT_3_PTR <
 
-2016 0000 ; "OUTPUT_1>"		;	OUTPUT_1    >
-2018 0000 ; "OUTPUT_2>"		;	OUTPUT_2    >
-201a 0000 ; "OUTPUT_3>"		;	OUTPUT_3    >
+202a 0000 ; "OUTPUT_1>"		;	OUTPUT_1    >
+202c 0000 ; "OUTPUT_2>"		;	OUTPUT_2    >
+202e 0000 ; "OUTPUT_3>"		;	OUTPUT_3    >
 ;
 ; Rotinas
-; 
+;
 4003 0000 ; "PACK<"		;	PACK        <
 4004 0000 ; "UNPACK<"		;	UNPACK      <
 4005 0000 ; "MEMCPY<"		;	MEMCPY      <
 4006 0000 ; "CHTOI<"		;	CHTOI       <
-4007 0000 ; "HALF_PACK<"		;	HALF_PACK   <
+4007 0000 ; "UITOCH<"		;	UITOCH      <
+4008 0000 ; "HALF_PACK<"		;	HALF_PACK   <
 ;
 				;	&   /0000
-a000 0008		;	MAIN                JP  INI
+a000 000e		;	MAIN                JP  INI
 ; Entradas / Saidas
+;
 ;
 ; CHTOI
 ;
-8002 3739		;	CHTOI_INPUT_1		K	/3739     
-8004 4142		;	CHTOI_INPUT_2 		K	/4142
-8006 0000		;	CHTOI_OUTPUT 		K 	/0000
+8002 4552		;	CHTOI_INPUT_1       K   /4552
+8004 524f		;	CHTOI_INPUT_2       K   /524F
+8006 0000		;	CHTOI_OUTPUT        K   /0000
 ;
+; UITOCH
 ;
-a008 3002		;	INI                 LV CHTOI_INPUT_1 ; Carrega o endereço de CHTOI_INPUT_1
-d00a 9000		;	    	            MM INPUT_1_PTR ; Armazena esse valor em INPUT_1_PTR 
-    	            
-a00c 3004		;	    	            LV CHTOI_INPUT_2 ; Carrega o endereço de CHTOI_INPUT_2
-d00e 9001		;	                    MM INPUT_2_PTR ; Armazena esse valor em INPUT_2_PTR
-                    
-d010 a006		;	                    SC CHTOI ; Chama sub rotina CHTOI
-                    
-a012 9006		;	                    MM CHTOI_OUTPUT ; Salva na saida
+8008 8000		;	UITOCH_INPUT		    K	  /8000
+800a 0000		;	UITOCH_OUTPUT_1 		K 	/0000
+800c 0000		;	UITOCH_OUTPUT_2 		K 	/0000
+; Programa
+;
+; PACK
+;
+a00e 3008		;	INI                 LV UITOCH_INPUT ; Carrega o endereço de UITOCH_INPUT
+d010 9000		;	    	              MM INPUT_1_PTR ; Armazena esse valor em INPUT_1_PTR
 
-a014 c014		;	END                 HM END
+d012 a007		;	                    SC UITOCH ; Chama sub rotina UITOCH
+
+a014 802a		;	                    LD OUTPUT_1 ; Carrega primeira palavra
+a016 900a		;	                    MM UITOCH_OUTPUT_1 ; Salva na saida
+
+a018 802c		;	                    LD OUTPUT_2 ; Carrega primeira palavra
+a01a 900c		;	                    MM UITOCH_OUTPUT_2 ; Salva na saida
+
+a01c 3002		;	                    LV CHTOI_INPUT_1 ; Carrega o endereço de CHTOI_INPUT_1
+d01e 9000		;	                    MM INPUT_1_PTR ; Armazena esse valor em INPUT_1_PTR
+
+a020 3004		;	                    LV CHTOI_INPUT_2 ; Carrega o endereço de CHTOI_INPUT_2
+d022 9001		;	                    MM INPUT_2_PTR ; Armazena esse valor em INPUT_2_PTR
+
+d024 a006		;	                    SC CHTOI ; Chama sub rotina CHTOI
+
+a026 9006		;	                    MM CHTOI_OUTPUT ; Salva na saida
+a028 c028		;	END                 HM END
 ;
 ; Saidas
 ;
-8016 0000		;	OUTPUT_1    K /0000 ; Endereco da entrada 1
-8018 0000		;	OUTPUT_2    K /0000 ; Endereco da entrada 2
-801a 0000		;	OUTPUT_3    K /0000 ; Endereco da entrada 3
+802a 0000		;	OUTPUT_1    K /0000 ; Endereco da entrada 1
+802c 0000		;	OUTPUT_2    K /0000 ; Endereco da entrada 2
+802e 0000		;	OUTPUT_3    K /0000 ; Endereco da entrada 3
 ;
