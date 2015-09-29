@@ -1,13 +1,13 @@
 /**
- * Escola PolitÃ©cnica da Universidade de SÃ£o Paulo Departamento de Engenharia de
- * ComputaÃ§Ã£o e Sistemas Digitais CopyrightÂ© 2001..2011, todos os direitos
+ * Escola Politécnica da Universidade de São Paulo Departamento de Engenharia de
+ * Computação e Sistemas Digitais Copyright© 2001..2011, todos os direitos
  * reservados.
  *
- * Este programa Ã© de uso exclusivo das disciplinas de LaboratÃ³rio de
- * Fundamentos de Engenharia de ComputaÃ§Ã£o (PCS2024 e PCS2302) e Linguagens e
- * Compiladores (PCS2056 e PCS2508). Ã‰ vetada a utilizaÃ§Ã£o e/ou distribuiÃ§Ã£o
- * deste cÃ³digo sem a autorizaÃ§Ã£o dos docentes responsÃ¡veis pela disciplina ou
- * do departamento responsÃ¡vel.
+ * Este programa é de uso exclusivo das disciplinas de Laboratório de
+ * Fundamentos de Engenharia de Computação (PCS2024 e PCS2302) e Linguagens e
+ * Compiladores (PCS2056 e PCS2508). É vetada a utilização e/ou distribuição
+ * deste código sem a autorização dos docentes responsáveis pela disciplina ou
+ * do departamento responsável.
  */
 package mvn;
 
@@ -300,7 +300,7 @@ public class UnidadeControle {
         // Carrega o valor do IC no MAR.
         regs.setValue(MAR, IC);
 
-        // Coloca no MDR o conteÃƒÂºdo da posicao de memoria indicada pelo MAR.
+        // Coloca no MDR o conteÃºdo da posicao de memoria indicada pelo MAR.
         // O MAR esta referenciando o endereco menos significativo e
         // precisamos
         // da palavra completa, i.e. a armazenada nos enderecos IC e IC+1.
@@ -401,8 +401,8 @@ public class UnidadeControle {
 
     /**
      * Desvio incondicional: OP = 0x0000. <br>
-     * Modifica o conteÃƒÂºdo do contador de instrucoes (IC) armazenando nele o
-     * conteÃƒÂºdo do registrador de operando (OI).<br/>
+     * Modifica o conteÃºdo do contador de instrucoes (IC) armazenando nele o
+     * conteÃºdo do registrador de operando (OI).<br/>
      * <br/>
      * <b>Pre-condicao</b>: IC contem qualquer valor.<br/>
      * <b>Pos-condicao</b>: IC <- OI
@@ -413,8 +413,8 @@ public class UnidadeControle {
 
     /**
      * Desvio se acumulador e zero: OP = 0x0001. <br>
-     * Se o conteÃƒÂºdo do acumulador for zero, entao modificar o conteÃƒÂºdo do
-     * contador de instrucoes (IC) armazenando nele o conteÃƒÂºdo do registrador
+     * Se o conteÃºdo do acumulador for zero, entao modificar o conteÃºdo do
+     * contador de instrucoes (IC) armazenando nele o conteÃºdo do registrador
      * de operando (OI).<br/>
      * <br/>
      * <b>Pre-condicao</b>: IC contem qualquer valor.<br/>
@@ -433,8 +433,8 @@ public class UnidadeControle {
 
     /**
      * Desvio se acumulador for negativo: OP = 0x0002. <br>
-     * Se o conteÃƒÂºdo do acumulador for negativo, entao modificar o conteÃƒÂºdo do
-     * contador de instrucoes (IC) armazenando nele o conteÃƒÂºdo do registrador
+     * Se o conteÃºdo do acumulador for negativo, entao modificar o conteÃºdo do
+     * contador de instrucoes (IC) armazenando nele o conteÃºdo do registrador
      * de operando (OI).<br/>
      * <br/>
      * <b>Pre-condicao</b>: IC contem qualquer valor.<br/>
@@ -454,7 +454,7 @@ public class UnidadeControle {
 
     /**
      * Move valor para acumulador: OP = 0x0003. <br>
-     * Modificar o conteÃƒÂºdo do acumulador (AC) com o conteÃƒÂºdo do registrador
+     * Modificar o conteÃºdo do acumulador (AC) com o conteÃºdo do registrador
      * operando (OI).<br/>
      * Por limitacao dessa implementacao, nao e possivel mover valores fora do
      * intervalo 0x000 e 0xFFF.<br/>
@@ -469,7 +469,7 @@ public class UnidadeControle {
 
     /**
      * Soma: OP = 0x0004.<br/>
-     * Somar ao conteÃƒÂºdo do acumulador (AC) ao conteÃƒÂºdo da posicao de memoria
+     * Somar ao conteÃºdo do acumulador (AC) ao conteÃºdo da posicao de memoria
      * indicada pelo registrador de operando (OI). Armazenar o resultado no
      * registrador acumulador.<br/>
      * <br/>
@@ -489,7 +489,7 @@ public class UnidadeControle {
 
     /**
      * Subtracao: OP = 0x0005. <br>
-     * Subtrair do conteÃƒÂºdo do acumulador (AC) o conteÃƒÂºdo da posicao de
+     * Subtrair do conteÃºdo do acumulador (AC) o conteÃºdo da posicao de
      * memoria indicada pelo registrador de operando (OI). Armazenar o resultado
      * no registrador acumulador.<br/>
      * <br/>
@@ -509,7 +509,7 @@ public class UnidadeControle {
 
     /**
      * Multiplicacao: OP = 0x0006. <br>
-     * Multiplicar o conteÃƒÂºdo do acumulador (AC) peloo conteÃƒÂºdo da posicao de
+     * Multiplicar o conteÃºdo do acumulador (AC) peloo conteÃºdo da posicao de
      * memoria indicada pelo registrador de operando (OI). Armazenar o resultado
      * no registrador acumulador.<br/>
      * <br/>
@@ -529,7 +529,7 @@ public class UnidadeControle {
 
     /**
      * Divisao inteira: OP = 0x0007. <br>
-     * Dividir o conteÃƒÂºdo do acumulador (AC) pelo conteÃƒÂºdo da posicao de
+     * Dividir o conteÃºdo do acumulador (AC) pelo conteÃºdo da posicao de
      * memoria indicada pelo registrador de operando (OI). Armazenar o resultado
      * no registrador acumulador.<br/>
      * <br/>
@@ -549,8 +549,8 @@ public class UnidadeControle {
 
     /**
      * LDA: OP = 0x0008. <br>
-     * Armazenar no acumulador (AC) o conteÃƒÂºdo da posicao de memoria cujo
-     * endereco e o conteÃƒÂºdo do OI.<br/>
+     * Armazenar no acumulador (AC) o conteÃºdo da posicao de memoria cujo
+     * endereco e o conteÃºdo do OI.<br/>
      * <br/>
      * <b>Pre-condicao</b>: AC contem qualquer valor<br/>
      * <b>Pos-condicao</b>: AC <- MEM[OI]<br/> IC <- IC + 1
@@ -565,7 +565,7 @@ public class UnidadeControle {
 
     /**
      * MD: OP = 0x0009. <br>
-     * Guardar o conteÃƒÂºdo do acumulador (AC) na posicao de memoria indicada
+     * Guardar o conteÃºdo do acumulador (AC) na posicao de memoria indicada
      * pelo OI.<br/>
      * <br/>
      * <b>Pre-condicao</b>: MEM[OI] contem qualquer valor<br/>
@@ -665,7 +665,7 @@ public class UnidadeControle {
 
     /**
      * OUT: OP = 0x000e. <br>
-     * Transferir o conteÃƒÂºdo do acumulador (AC) para o dispositivo de saida
+     * Transferir o conteÃºdo do acumulador (AC) para o dispositivo de saida
      * cuja identificacao esta no registrador OI. Acionar o dispositivo de saida
      * e aguardar que este termine de executar a operacao de saida. <br>
      * O formato padrao da saida e em hexadecimal.<br/>
@@ -694,70 +694,27 @@ public class UnidadeControle {
 
     /**
      * SVC: OP = 0x000F.<br/>
-     * Chamada de supervisor.<br/>
-     * Recebe um número variável de parâmetros (Posicoes de memória acima da chamada) <br/>
-     * e o código da operação a ser efetuada. 
+     * Adiciona um device simples (TYPE 0 - Teclado, 1 - Monitor ou 4 - Counter).<br/>
      * <br/>
-     * <b>Pre-condicao</b>: Dois parametros no endereÃ§os anteriores Ã¥ chamada da instruÃ§Ã£o: TYPE e UL (Unidade LÃ³gica).<br/>
-     * <b>Pos-condicao</b>: Device adicionado a lista de dispositivo. SaÃ­da no Acumulador: 0 se sucesso, -1 se erro. 
+     * <b>Pre-condicao</b>: Dois parametros no endereços anteriores å chamada da instrução: TYPE e UL (Unidade Lógica).<br/>
+     * <b>Pos-condicao</b>: Device adicionado a lista de dispositivo. Saída no Acumulador: 0 se sucesso, -1 se erro. 
      */
     private void instrucaoOS() throws MVNException {
         
-      // Obtem o numero de parametros
+//      // Obtem o numero de parametros
         int numeroDeParametros = regs.getRegister(OI).getNibbleInt(2);
         
-      // Obtem ID da operacao
+//      // Obtem ID da operacao
         int opId = regs.getRegister(OI).getLoWord().toInt();
         
-      // Obtem parametros
-        int[] OSParams = getOSParametros(numeroDeParametros); 
+//      // Endereco do primeiro parametro
+        int param1Address = regs.getRegister(MAR).toInt() - (2 * numeroDeParametros);
         
-      // Operacoes
-      int retorno = -1;
-      
-      /**
-       * Operacao 0xA
-       * Parametros:  
-       * type – o tipo de dispositivo (0, 1 ou 4, apenas)
-       * lu – o número da unidade lógica do dispositivo (0 a 255)
-       */
-      switch (opId) {
-      case 0xAD:
-    	  // Se o numero de parametros é 2 e
-    	  // a unidade logica (OSParams[0]) é valida e 
-    	  // o tipo de dispositivo (OSParams[1]) é valido 
-    	  // Adiciona o dispositivo e retorna 0 para sucesso ou -1 para erro
-	      if (numeroDeParametros == 2 && OSValidLU(OSParams[0]) && OSValidType(OSParams[1])) {
-	          io.addDispSimples(OSParams[1], OSParams[0]);
-	          retorno = 0;
-	      } else {
-	          retorno = -1;
-	      }
-	      break;
-
-	default:
-		break;
-	}
-      
-      // Armazena o valor de retorno no acumulador
-      Word saida = new Word(new Bits8(retorno), new Bits8(retorno));
-      regs.getRegister(AC).setValue(saida);
-      IncrementaIC();
-    }
-    
-    /**
-     * Armazena os valores dos parametros passados em um array para a operação OS
-     * @param numeroDeParametros
-     * @return array de inteiros com os valores dos parametros
-     * @throws MVNException
-     */
-    private int[] getOSParametros(int numeroDeParametros) throws MVNException {
-
+//      // Obtem parametros
         Bits8 HiWord;
         Bits8 LoWord;
         
-        int[] OSParams = new int[numeroDeParametros];
-        
+        int[] OSParams = new int[2];
         int j = 0;
         
         for (int i = numeroDeParametros; i > 0; i--) {
@@ -771,14 +728,27 @@ public class UnidadeControle {
             j ++;
         }
         
-        return OSParams;
+      // Executa operacao
+      int retorno;
+      
+      if (OSValidLU(OSParams[0]) && OSValidType(OSParams[1])) {
+            io.addDispSimples(OSParams[1], OSParams[0]);
+          retorno = 0;
+      } else {
+          retorno = -1;
+      }
+      
+      // Armazena o valor de retorno no acumulador
+      Word saida = new Word(new Bits8(retorno), new Bits8(retorno));
+      regs.getRegister(AC).setValue(saida);
+      IncrementaIC();
     }
     
     /**
      * 
      * @param type
      * 			Tipo do dispositivo na entrada de instrucaoOS
-     * @return true se type Ã© 0, 1 ou 4, false caso contrario
+     * @return true se type é 0, 1 ou 4, false caso contrario
      */
     private boolean OSValidType(int type) {
     	

@@ -1,13 +1,13 @@
 /**
- * Escola PolitÃ©cnica da Universidade de SÃ£o Paulo
- * Departamento de Engenharia de ComputaÃ§Ã£o e Sistemas Digitais
- * CopyrightÂ© 2001..2011, todos os direitos reservados.
+ * Escola Politécnica da Universidade de São Paulo
+ * Departamento de Engenharia de Computação e Sistemas Digitais
+ * Copyright© 2001..2011, todos os direitos reservados.
  *
- * Este programa Ã© de uso exclusivo das disciplinas de LaboratÃ³rio de
- * Fundamentos de Engenharia de ComputaÃ§Ã£o (PCS2024 e PCS2302) e Linguagens
+ * Este programa é de uso exclusivo das disciplinas de Laboratório de
+ * Fundamentos de Engenharia de Computação (PCS2024 e PCS2302) e Linguagens
  * e Compiladores (PCS2056 e PCS2508).
- * Ã‰ vetada a utilizaÃ§Ã£o e/ou distribuiÃ§Ã£o deste cÃ³digo sem a autorizaÃ§Ã£o
- * dos docentes responsÃ¡veis pela disciplina ou do departamento responsÃ¡vel.
+ * É vetada a utilização e/ou distribuição deste código sem a autorização
+ * dos docentes responsáveis pela disciplina ou do departamento responsável.
  */
 package mvn;
 
@@ -29,9 +29,9 @@ import mvn.dispositivo.*;
 
 /**
  * Representa o gerenciador de dispositivos para a MVN. O gerenciador e
- * responsÃ¡vel por habilitar e desabilitar dispositivos e intermediar a leitura
+ * responsável por habilitar e desabilitar dispositivos e intermediar a leitura
  * e escrita (encontrando o dispositivo adequado).<br>
- * Existem MAX_DEVICETYPES tipos de dispositivos aÂ  disposicao do usuaÂ¡rio da
+ * Existem MAX_DEVICETYPES tipos de dispositivos a  disposicao do usua¡rio da
  * MVN. Sendo que cada um dos tipos de dispositivos pode ter MAX_LOGICALUNITS
  * unidades logicas. <br>
  * Os dispositivos podem ser adicionados em tempo de execucao.
@@ -43,9 +43,9 @@ import mvn.dispositivo.*;
  */
 public class GerenciadorDispositivos{
 
-	/*** Quantidade maÂ¡xima de tipos de dispositivos suportados */
+	/*** Quantidade ma¡xima de tipos de dispositivos suportados */
         private static final int MAX_DEVICETYPES = (int) Math.pow(2,Bits8.NIBBLE_SIZE);// (nibble)
-        /*** Quantidade maÂ¡xima de unidades logicas suportadas */
+        /*** Quantidade ma¡xima de unidades logicas suportadas */
         private static final int MAX_LOGICALUNITS = (int) Math.pow(2,Bits8.BYTE_SIZE);// (byte)
 
 	/*** Nome do arquivo padrao de dispositivos */
@@ -58,22 +58,22 @@ public class GerenciadorDispositivos{
 	private static final String						MSG_FILE_INICIALIZATION					= "Inicializacao padrao de dispositivos baseada em arquivo: "
 																																						+ DEFAULT_DEVICE_FILE;
 
-	/*** Mensagem: Nao haÂ¡ dispositivos disponiveis */
-	private static final String						MSG_NO_DEVICES									= "Nao haÂ¡ dispositivos disponiveis.";
+	/*** Mensagem: Nao ha¡ dispositivos disponiveis */
+	private static final String						MSG_NO_DEVICES									= "Nao ha¡ dispositivos disponiveis.";
 
-	/*** Mensagem de erro para dispositivo invaÂ¡lido */
+	/*** Mensagem de erro para dispositivo inva¡lido */
 	private static final String						ERR_INVALID_DEVICE							= "Dispositivo invalido";
 
 	/*** Mensagem de erro para dispositivo nao encontrado */
 	private static final String						ERR_DEVICE_NOTFOUND							= "Dispositivo nao encontrado. [Tipo: %h, Unidade logica: %h]";
 
-	/*** Mensagem de erro para tipo de dispositivo invaÂ¡lido */
+	/*** Mensagem de erro para tipo de dispositivo inva¡lido */
 	private static final String						ERR_INVALID_DEVICETYPE					= "Tipo de dispositivo invalido (0.."
 																																						+ MAX_DEVICETYPES
 																																						+ ")";
 
-	/*** Mensagem de erro para unidade logica invaÂ¡lida */
-	private static final String						ERR_INVALID_LOGICALUNIT					= "Posicao da unidade logica invaÂ¡lida (0.."
+	/*** Mensagem de erro para unidade logica inva¡lida */
+	private static final String						ERR_INVALID_LOGICALUNIT					= "Posicao da unidade logica inva¡lida (0.."
 																																						+ MAX_LOGICALUNITS
 																																						+ ")";
 
@@ -82,21 +82,21 @@ public class GerenciadorDispositivos{
 
 	/***
 	 * Mensagem de erro da inicializacao por arquivo: tipo de argumento
-	 * invaÂ¡lido
+	 * inva¡lido
 	 */
 	private static final String						ERR_DEVICEFILE_ARGMUSTBENUMBER	= "Erro na linha %d: O argumento %d deve ser numerico.";
 
 	/***
 	 * Mensagem de erro da inicializacao por arquivo: impossivel instanciar o
-	 * dispositivo com os paraÂ¢metros especificados
+	 * dispositivo com os para¢metros especificados
 	 */
-	private static final String						ERR_DEVICEFILE_PARAMSETERROR		= "Erro na linha %d: Impossivel instanciar um dispositivo com os paraÂ¢metros especificados.";
+	private static final String						ERR_DEVICEFILE_PARAMSETERROR		= "Erro na linha %d: Impossivel instanciar um dispositivo com os para¢metros especificados.";
 
-	/*** Mensagem de erro: classe do dispositivo invaÂ¡lida */
+	/*** Mensagem de erro: classe do dispositivo inva¡lida */
 	private static final String						ERR_DEVICE_INVALIDCLASS					= "A classe de dispositivo especificada nao existe ou nao pode ser utilizada (%s).";
 
-	/*** Mensagem de erro: paraÂ¢metro incorreto */
-	private static final String						ERR_DEVICE_INCORRECTPARAM				= "Erro ao instanciar o dispositivo %s. ParaÂ¢metro incorreto.";
+	/*** Mensagem de erro: para¢metro incorreto */
+	private static final String						ERR_DEVICE_INCORRECTPARAM				= "Erro ao instanciar o dispositivo %s. Para¢metro incorreto.";
 
 	/*** Mensagem de erro: falha ao instanciar o dispositivo */
 	private static final String						ERR_DEVICE_DEVICEERROR					= "Dispositivo %s nao pode ser instanciado.";
@@ -132,17 +132,17 @@ public class GerenciadorDispositivos{
 
 
 	/**
-	 * Cria uma chave aÂºnica para o dispositivo/unidade logica.<br/>
+	 * Cria uma chave aºnica para o dispositivo/unidade logica.<br/>
 	 * <br/>
 	 * <b>Pre-condicao</b>: Nenhuma.<br/>
-	 * <b>Pos-condicao</b>: Uma chave e criada a partir dos paraÂ¢metros
+	 * <b>Pos-condicao</b>: Uma chave e criada a partir dos para¢metros
 	 * especificados.
 	 *
 	 * @param deviceType
 	 *          Tipo de dispositivo
 	 * @param logicalUnit
 	 *          Unidade logica
-	 * @return Uma chave aÂºnica formada com base nos dados fornecidos.
+	 * @return Uma chave aºnica formada com base nos dados fornecidos.
 	 */
 	private String MakeHashKey(int deviceType, int logicalUnit){
 		return String.format("%d.%d", deviceType, logicalUnit);
@@ -152,7 +152,7 @@ public class GerenciadorDispositivos{
 	/**
 	 * Extrai a tipo de dispositivo de uma chave.<br/>
 	 * <br/>
-	 * <b>Pre-condicao</b>: <i>key</i> deve ser uma chave vaÂ¡lida.<br/>
+	 * <b>Pre-condicao</b>: <i>key</i> deve ser uma chave va¡lida.<br/>
 	 * <b>Pos-condicao</b>: O tipo de dispositivo que gerou a chave e
 	 * retornado.
 	 *
@@ -169,7 +169,7 @@ public class GerenciadorDispositivos{
 	/**
 	 * Extrai a unidade logica de uma chave.<br/>
 	 * <br/>
-	 * <b>Pre-condicao</b>: <i>key</i> deve ser uma chave vaÂ¡lida.<br/>
+	 * <b>Pre-condicao</b>: <i>key</i> deve ser uma chave va¡lida.<br/>
 	 * <b>Pos-condicao</b>: A unidade logica que gerou a chave e retornada.
 	 *
 	 * @param key
@@ -185,15 +185,15 @@ public class GerenciadorDispositivos{
 	/**
 	 * Adiciona um dispositivo no gerenciador.<br/>
 	 * <br/>
-	 * <b>Pre-condicao</b>: Os paraÂ¢metros devem ser consistentes.<br/>
-	 * <b>Pos-condicao</b>: o dispositivo seraÂ¡ inserido na posicao
+	 * <b>Pre-condicao</b>: Os para¢metros devem ser consistentes.<br/>
+	 * <b>Pos-condicao</b>: o dispositivo sera¡ inserido na posicao
 	 * especificada substituindo o dispositivo que estiver na posicao, se
 	 * houver.
 	 *
 	 * @param deviceType
-	 *          Tipo do dispositivo que seraÂ¡ adicionado.
+	 *          Tipo do dispositivo que sera¡ adicionado.
 	 * @param logicalUnit
-	 *          Unidade logica do dispositivo que seraÂ¡ adicionado.
+	 *          Unidade logica do dispositivo que sera¡ adicionado.
 	 * @param newDevice
 	 *          Dispositivo a ser adicionado.
 	 * @throws MVNException
@@ -219,7 +219,7 @@ public class GerenciadorDispositivos{
 	/**
 	 * Adiciona um dispositivo no gerenciador.<br/>
 	 * <br/>
-	 * <b>Pre-condicao</b>: Os paraÂ¢metros devem ser consistentes.<br/>
+	 * <b>Pre-condicao</b>: Os para¢metros devem ser consistentes.<br/>
 	 * <b>Pos-condicao</b>: O dispositivo especificado e gerado.
 	 *
 	 * @param deviceType
@@ -229,7 +229,7 @@ public class GerenciadorDispositivos{
 	 * @param deviceClass
 	 *          Classe do dispotivo a ser instanciado
 	 * @param params
-	 *          ParaÂ¢metros a serem passados ao dispotivo que seraÂ¡
+	 *          Para¢metros a serem passados ao dispotivo que sera¡
 	 *          instanciado
 	 * @throws MVNException
 	 *           Caso ocorra algum erro na instanciacao do dispositivo.
@@ -297,20 +297,20 @@ public class GerenciadorDispositivos{
 	 * Retorna uma referencia para a classe especificada caso ela seja
 	 * descendente da interface Dispositivo.<br/>
 	 * <br/>
-	 * <b>Pre-condicao</b>: <i>deviceClassName</i> e uma classe vaÂ¡lida
-	 * descendente de Dispositivo vaÂ¡lida.<br/>
-	 * <b>Pos-condicao</b>: Uma referencia aÂ  classe especificada e
+	 * <b>Pre-condicao</b>: <i>deviceClassName</i> e uma classe va¡lida
+	 * descendente de Dispositivo va¡lida.<br/>
+	 * <b>Pos-condicao</b>: Uma referencia a  classe especificada e
 	 * retornada.
 	 *
 	 * @param deviceClassName
 	 *          Nome da classe a ser retornada.
 	 * @return Uma referencia para a classe especificada caso ela seja
-	 *         descendente da interface Dispositivo, caso contraÂ¡rio retorna
+	 *         descendente da interface Dispositivo, caso contra¡rio retorna
 	 *         null.
 	 */
 	@SuppressWarnings("unchecked")
 	private Class<Dispositivo> getDeviceClass(String deviceClassName){
-		// aqui pega a classe do device que o usuaÂ¡rio especificou
+		// aqui pega a classe do device que o usua¡rio especificou
 		try{
 			Class deviceClass = Class.forName(deviceClassName);
 			if(!Dispositivo.class.isAssignableFrom(deviceClass)){
@@ -327,8 +327,8 @@ public class GerenciadorDispositivos{
 	/**
 	 * Converte <i>param</i> mo tipo de dado identificado por <i>paramType</i>.<br/>
 	 * <br/>
-	 * <b>Pre-condicao</b>: <i>paramType</i> contem um tipo de paraÂ¢metro
-	 * vaÂ¡lido.<br/>
+	 * <b>Pre-condicao</b>: <i>paramType</i> contem um tipo de para¢metro
+	 * va¡lido.<br/>
 	 * <b>Pos-condicao</b>: Um objeto do tipo especificado contendo o valor
 	 * passado e retornado.
 	 *
@@ -336,7 +336,7 @@ public class GerenciadorDispositivos{
 	 *          Valor a ser convertido.
 	 * @param paramType
 	 *          Tipo de dado.
-	 * @return O valor passado como paraÂ¢metro no tipo de dado informado.
+	 * @return O valor passado como para¢metro no tipo de dado informado.
 	 */
 	private Object setValueByType(String param, Class paramType){
 		if(paramType == String.class){
@@ -361,12 +361,12 @@ public class GerenciadorDispositivos{
 
 	/**
 	 * Remove todos os dispositivos adicionados e adiciona alguns dispositivos
-	 * padraÂµes, caso exista um arquivo de configuracao
-	 * <i>DEFAULT_DEVICE_FILE</i>, esta lista seraÂ¡ carregada.<br/>
+	 * padraµes, caso exista um arquivo de configuracao
+	 * <i>DEFAULT_DEVICE_FILE</i>, esta lista sera¡ carregada.<br/>
 	 * <br/>
 	 * <b>Pre-condicao</b>: Nenhuma.<br/>
-	 * <b>Pos-condicao</b>: a lista de dispositivos estaÂ¡ inicializada com os
-	 * dispositivos padraÂµes.
+	 * <b>Pos-condicao</b>: a lista de dispositivos esta¡ inicializada com os
+	 * dispositivos padraµes.
 	 *
 	 * @param output
 	 *          Objeto onde as mensagens de saida devem ser escritas.
@@ -529,8 +529,8 @@ public class GerenciadorDispositivos{
 
 
 	/**
-	 * Retorna uma referencia para a instaÂ¢ncia do dispositivo indicado de
-	 * acordo com o tipo e unidade logica passada como paraÂ¢metro.<br/>
+	 * Retorna uma referencia para a insta¢ncia do dispositivo indicado de
+	 * acordo com o tipo e unidade logica passada como para¢metro.<br/>
 	 * <br/>
 	 * <b>Pre-condicao</b>: O tipo de dispositivo e unidade logica devem
 	 * existir.<br/>
@@ -586,7 +586,7 @@ public class GerenciadorDispositivos{
 						.toString() : "";
 
 				out.append(System.getProperty("line.separator"));
-				out.append(String.format(" %2d    %2d   %s %s", tipo, uc, name, detail));
+				out.append(String.format(" %2d    %2d   %s%s", tipo, uc, name, detail));
 			}
 		}else{
 			out.append(MSG_NO_DEVICES);
@@ -630,19 +630,19 @@ public class GerenciadorDispositivos{
 
 
 	/**
-	 * Retorna o construtor da classe com a mema quantidade de paraÂ¢metros
-	 * passado como paraÂ¢metro.<br/>
+	 * Retorna o construtor da classe com a mema quantidade de para¢metros
+	 * passado como para¢metro.<br/>
 	 * <br/>
-	 * <b>Pre-condicao</b>: <i>className</i> deve ser uma classe vaÂ¡lida
+	 * <b>Pre-condicao</b>: <i>className</i> deve ser uma classe va¡lida
 	 * descendente de Dispositivo.<br/>
 	 * <b>Pos-condicao</b>: O construtor e retornado.
 	 *
 	 * @param className
 	 *          O nome da classe
 	 * @param numParams
-	 *          A quantidade de paraÂ¢metros que o construtor deve ter.
+	 *          A quantidade de para¢metros que o construtor deve ter.
 	 * @return O construtor da classe caso ele exista ou "null", caso
-	 *         contraÂ¡rio.
+	 *         contra¡rio.
 	 */
 	@SuppressWarnings("unchecked")
 	private Constructor<Dispositivo> getDeviceConstrutor(String className,
@@ -657,8 +657,8 @@ public class GerenciadorDispositivos{
 					break;
 					// pode haver um bug aqui caso exista mais do que um
 					// construtor
-					// com a mesma quantidade de paraÂ¢metros
-					// Nao haÂ¡ como saber qual dos construtores seraÂ¡ utilizado
+					// com a mesma quantidade de para¢metros
+					// Nao ha¡ como saber qual dos construtores sera¡ utilizado
 				}
 			}
 		}
@@ -690,13 +690,13 @@ public class GerenciadorDispositivos{
 	 * Sintaxe:<br/>
 	 * <tipo> <unidade_logica> <classe> [<param_1> <param_2> ... <param_n>]<br/>
 	 * <br/>
-	 * <b>Pre-condicao</b>: A sintaxe da linha estaÂ¡ correta.<br/>
+	 * <b>Pre-condicao</b>: A sintaxe da linha esta¡ correta.<br/>
 	 * <b>Pos-condicao</b>: O dispositivo e registrado no gerenciador.
 	 *
 	 * @param line
 	 *          Linha com os dados a serem lidos
 	 * @param lineNumber
-	 *          NaÂºmero da linha do arquivo (para mensagem de erro)
+	 *          Naºmero da linha do arquivo (para mensagem de erro)
 	 * @throws MVNException
 	 *           Caso a linha contenha algum erro de sintaxe ou nao seja
 	 *           possivel instanciar o dispositivo.
@@ -735,34 +735,34 @@ public class GerenciadorDispositivos{
 
 
 	/**
-	 * Cria um dispositivo com da classe especificada e com os paraÂ¢metros
+	 * Cria um dispositivo com da classe especificada e com os para¢metros
 	 * informados.<br/>
 	 * <br/>
-	 * <b>Pre-condicao</b>: <i>className</i> deve ser uma classe vaÂ¡lida que
-	 * contem um construtor que aceite os paraÂ¢metros informados.<br/>
-	 * <b>Pos-condicao</b>: Uma instaÂ¢ncia da classe especificada e
+	 * <b>Pre-condicao</b>: <i>className</i> deve ser uma classe va¡lida que
+	 * contem um construtor que aceite os para¢metros informados.<br/>
+	 * <b>Pos-condicao</b>: Uma insta¢ncia da classe especificada e
 	 * retornada.
 	 *
 	 * @param className
 	 *          Nome da classe a ser instanciada.
 	 * @param params
-	 *          ParaÂ¢metros do construtor da classe indicada.
+	 *          Para¢metros do construtor da classe indicada.
 	 * @return Uma referencia para a classe indicada.
 	 * @throws MVNException
 	 *           Caso a classe nao exista, nao haja construtor que possa
-	 *           receber os paraÂ¢metros ou caso ocorra algum erro durante a
+	 *           receber os para¢metros ou caso ocorra algum erro durante a
 	 *           instancializacao.
 	 */
 	private Dispositivo CreateDeviceByClass(String className, String[] params)
 			throws MVNException{
-		// encontra o construtor com base na quantidade de paraÂ¢metros passados
+		// encontra o construtor com base na quantidade de para¢metros passados
 		Constructor<Dispositivo> constructor = getDeviceConstrutor(className,
 				params.length);
 		if(constructor == null){
 			throw new MVNException(ERR_DEVICE_INVALIDCLASS, className);
 		}
 
-		// cria a estrutura com os paraÂ¢metros, caso houver
+		// cria a estrutura com os para¢metros, caso houver
 		Object[] typedParams = new Object[params.length];
 		for(int i = 0; i < params.length; i++){
 			try{
