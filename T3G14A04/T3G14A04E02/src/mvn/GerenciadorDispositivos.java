@@ -586,7 +586,7 @@ public class GerenciadorDispositivos{
 						.toString() : "";
 
 				out.append(System.getProperty("line.separator"));
-				out.append(String.format(" %2d    %2d   %s%s", tipo, uc, name, detail));
+				out.append(String.format(" %2d    %2d   %s %s", tipo, uc, name, detail));
 			}
 		}else{
 			out.append(MSG_NO_DEVICES);
