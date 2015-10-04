@@ -4,4 +4,5 @@
 <fullyQualifiedTypeName name="mvn.dispositivo.Counter"/>
 <fullyQualifiedTypeName name="com.sun.org.apache.bcel.internal.generic.LNEG"/>
 <fullyQualifiedTypeName name="mvn.Bits8"/>
+<fullyQualifiedTypeName name="com.sun.org.apache.bcel.internal.generic.SWITCH"/>
 </qualifiedTypeNameHistroy>

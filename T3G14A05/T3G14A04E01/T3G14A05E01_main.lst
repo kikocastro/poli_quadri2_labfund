@@ -1,0 +1,75 @@
+; Main
+;
+; Importa/ Exporta
+;
+4000 0000 ; "INPUT_1_PTR<"		;	INPUT_1_PTR <
+4001 0000 ; "INPUT_2_PTR<"		;	INPUT_2_PTR <
+4002 0000 ; "INPUT_3_PTR<"		;	INPUT_3_PTR <
+
+2038 0000 ; "OUTPUT_1>"		;	OUTPUT_1    >
+203a 0000 ; "OUTPUT_2>"		;	OUTPUT_2    >
+203c 0000 ; "OUTPUT_3>"		;	OUTPUT_3    >
+;
+; Rotinas
+;
+4003 0000 ; "PACK<"		;	PACK        <
+4004 0000 ; "UNPACK<"		;	UNPACK      <
+4005 0000 ; "MEMCPY<"		;	MEMCPY      <
+4006 0000 ; "CHTOI<"		;	CHTOI       <
+4007 0000 ; "UITOCH<"		;	UITOCH      <
+4008 0000 ; "HALF_PACK<"		;	HALF_PACK   <
+4009 0000 ; "GETLINEF<"		;	GETLINEF    <
+;
+				;	&   /0000
+a000 0028		;	MAIN                JP  INI
+; Entradas / Saidas
+;
+;
+; GETLINEF
+;
+; Unidade logica
+8002 0002		;	GL_UL                    K   /0002
+; tamanho do buffer
+8004 0004		;	GL_BUF                   K   /0004
+; endereco do buffer
+8006 0006		;	GL_END                   K   /0006
+; Reserva enderecos do buffer
+8008 0000		;	                         $   /0010   0
+800a 0000		;	                         $   /0010   2
+800c 0000		;	                         $   /0010   4
+800e 0000		;	                         $   /0010   6
+8010 0000		;	                         $   /0010   8
+8012 0000		;	                         $   /0010   a
+8014 0000		;	                         $   /0010   c
+8016 0000		;	                         $   /0010   e
+8018 0000		;	                         $   /0010   10
+801a 0000		;	                         $   /0010   12
+801c 0000		;	                         $   /0010   14
+801e 0000		;	                         $   /0010   16
+8020 0000		;	                         $   /0010   18
+8022 0000		;	                         $   /0010   1a
+8024 0000		;	                         $   /0010   1c
+8026 0000		;	                         $   /0010   1e
+				;	                         $   /0010
+;
+;
+; Programa
+;
+;
+a028 3002		;	INI                 LV GL_UL ; Carrega o endereço de GL_UL
+d02a 9000		;	    	              MM INPUT_1_PTR ; Armazena esse valor em INPUT_1_PTR
+a02c 3004		;	                    LV GL_BUF ; Carrega o endereço de GL_BUF
+d02e 9001		;	                    MM INPUT_2_PTR ; Armazena esse valor em INPUT_2_PTR
+a030 3006		;	                    LV GL_END ; Carrega o endereço de GL_END
+d032 9002		;	                    MM INPUT_3_PTR ; Armazena esse valor em INPUT_3_PTR
+
+d034 a009		;	                    SC GETLINEF ; Chama sub rotina GETLINEF
+
+a036 c036		;	END                 HM END
+;
+; Saidas
+;
+8038 0000		;	OUTPUT_1    K /0000 ; Endereco da entrada 1
+803a 0000		;	OUTPUT_2    K /0000 ; Endereco da entrada 2
+803c 0000		;	OUTPUT_3    K /0000 ; Endereco da entrada 3
+;

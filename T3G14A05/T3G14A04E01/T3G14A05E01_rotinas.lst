@@ -1,0 +1,696 @@
+; Importa constantes
+;
+4000 0000 ; "LOAD<"		;	LOAD        <
+4001 0000 ; "WRITE<"		;	WRITE       <
+4002 0000 ; "SUBTRACT<"		;	SUBTRACT    <
+4003 0000 ; "GETDATA<"		;	GETDATA     <
+
+4004 0000 ; "CONST_0<"		;	CONST_0                 <
+4005 0000 ; "CONST_1<"		;	CONST_1                 <
+4006 0000 ; "CONST_2<"		;	CONST_2                 <
+4007 0000 ; "CONST_7<"		;	CONST_7                 <
+4008 0000 ; "CONST_9<"		;	CONST_9                 <
+4009 0000 ; "CONST_A<"		;	CONST_A                 <
+4010 0000 ; "CONST_10<"		;	CONST_10                <
+4011 0000 ; "CONST_F<"		;	CONST_F                 <
+4012 0000 ; "CONST_30<"		;	CONST_30                <
+4013 0000 ; "CONST_3A<"		;	CONST_3A                <
+4014 0000 ; "CONST_40<"		;	CONST_40                <
+4015 0000 ; "CONST_47<"		;	CONST_47                <
+4016 0000 ; "CONST_80<"		;	CONST_80                <
+4017 0000 ; "CONST_FF<"		;	CONST_FF                <
+4018 0000 ; "CONST_100<"		;	CONST_100               <
+4019 0000 ; "CONST_300<"		;	CONST_300               <
+4020 0000 ; "CONST_1000<"		;	CONST_1000              <
+4021 0000 ; "CONST_8000<"		;	CONST_8000              <
+4022 0000 ; "CONST_FFFF<"		;	CONST_FFFF              <
+
+4023 0000 ; "MEM_START<"		;	MEM_START   <
+4024 0000 ; "MEM_END<"		;	MEM_END     <
+;
+; Entradas e saidas
+;
+2000 0000 ; "INPUT_1_PTR>"		;	INPUT_1_PTR >
+2002 0000 ; "INPUT_2_PTR>"		;	INPUT_2_PTR >
+2004 0000 ; "INPUT_3_PTR>"		;	INPUT_3_PTR >
+
+4025 0000 ; "OUTPUT_1<"		;	OUTPUT_1    <
+4026 0000 ; "OUTPUT_2<"		;	OUTPUT_2    <
+4027 0000 ; "OUTPUT_3<"		;	OUTPUT_3    <
+;
+; Rotinas
+;
+2008 0000 ; "PACK>"		;	PACK        >
+2024 0000 ; "UNPACK>"		;	UNPACK      >
+2064 0000 ; "MEMCPY>"		;	MEMCPY      >
+2170 0000 ; "CHTOI>"		;	CHTOI       >
+20e8 0000 ; "UITOCH>"		;	UITOCH      >
+2218 0000 ; "HALF_PACK>"		;	HALF_PACK   >
+225c 0000 ; "GETLINEF>"		;	GETLINEF    >
+;
+				;	& /0000 ; Origem relocavel
+;
+8000 0000		;	INPUT_1_PTR    K /0000 ; Endereco da entrada 1
+8002 0000		;	INPUT_2_PTR    K /0000 ; Endereco da entrada 2
+8004 0000		;	INPUT_3_PTR    K /0000 ; Endereco da entrada 3
+;
+;
+; Rotinas
+;
+; ###################################
+; PACK
+; ###################################
+;
+; Variaveis
+;
+8006 0000		;	SUM                 K /0000
+;
+; Rotina
+;
+8008 0000		;	PACK                K  /0000
+a00a 8000		;	                    LD INPUT_1_PTR ; carrega valor do endereco contido em INPUT_1_PTR
+a00c 90d4		;	                    MM TARGET_ADDRESS
+a00e a0d6		;	                    SC LOAD_VALUE ; Carrega valor de PACK_INPUT_1
+d010 6018		;	                    *  CONST_100 ; Realiza shift de duas casa para esquerda
+a012 9006		;	                    MM SUM ; armazena valor em SUM
+a014 8002		;	                    LD INPUT_2_PTR ; carrega valor do endereco contido em PACK_INPUT_2
+a016 90d4		;	                    MM TARGET_ADDRESS
+a018 a0d6		;	                    SC LOAD_VALUE ; Carrega valor de PACK_INPUT_2
+a01a 4006		;	                    +  SUM ; soma PACK_INPUT_1 + PACK_INPUT_2
+d01c 9025		;	                    MM OUTPUT_1 ; armazena na saida
+a01e b008		;	                    RS PACK ; Fim da sub rotina
+;
+;
+; ###################################
+; UNPACK
+; ###################################
+;
+; Variaveis
+;
+8020 0000		;	TEMP                K  /0000
+8022 0000		;	UNPACK_INPUT_LOCAL  K  /0000
+;
+; Rotina
+;
+8024 0000		;	UNPACK              K  /0000
+                    ; Carrega valor do endereco apontado por INPUT_1_PTR
+a026 8000		;	                    LD INPUT_1_PTR ; Carrega endereco contido em INPUT_1_PTR
+a028 90d4		;	                    MM TARGET_ADDRESS
+a02a a0d6		;	                    SC LOAD_VALUE ; Carrega conteudo de entrada de UNPACK
+a02c 9022		;	                    MM UNPACK_INPUT_LOCAL ; Salva na variavel local
+d02e 4021		;	                    + CONST_8000 ; soma 8000
+a030 204a		;	                    JN POSITIVE_CASE ; Caso < 0, o numero é positivo
+                    ; caso negativo [ex: F123. Atualmente: F123 + 8000 = 7123]
+d032 7018		;	NEGATIVE_CASE       / CONST_100 ; sem o sinal negativo com shift a direita [71]
+a034 9020		;	                    MM TEMP ; Armazena na variavel temp
+                    ; Parte XY
+d036 4016		;	                    + CONST_80 ; soma 80 para devolver o bit de sinal negativo [F1]
+d038 9025		;	                    MM OUTPUT_1 ; Armazena valor 00XY
+                    ; Parte ZT
+a03a 8020		;	                    LD TEMP ; Carrega valor em temp [71]
+d03c 6018		;	                    * CONST_100 ; Shift para esquerda [7100]
+a03e 9020		;	                    MM TEMP ; Salva em temp
+a040 8022		;	                    LD UNPACK_INPUT_LOCAL ; Carrega valor inicial
+d042 4021		;	                    + CONST_8000 ; [F123 + 8000 = 7123]
+a044 5020		;	                    - TEMP ; Obtem 00ZT [7123 - 7100 = 23]
+d046 9026		;	                    MM OUTPUT_2 ; Armazena 00 ZT em OUTPUT_2
+a048 b024		;	                    RS UNPACK ; END da sub rotina
+                    ; Caso positivo
+                    ; Parte XY
+a04a 8022		;	POSITIVE_CASE       LD UNPACK_INPUT_LOCAL ; Carrega valor inicial
+d04c 7018		;	                    / CONST_100 ; Realiza shift de duas casas para direita
+d04e 9025		;	                    MM OUTPUT_1 ; Salva em OUTPUT_1 00XY
+                    ; Parte ZT
+d050 6018		;	                    * CONST_100 ; Realiza shift de duas casa para esquerda, obtendo XY00
+a052 9020		;	                    MM TEMP ; Salva valor temporario
+a054 8022		;	                    LD UNPACK_INPUT_LOCAL ; Carrega valor inicial
+a056 5020		;	                    - TEMP ; Realiza XYZT - XY00 obtendo ZT
+d058 9026		;	                    MM OUTPUT_2 ; Salva resultado
+a05a b024		;	                    RS UNPACK ; END da sub rotina
+;
+;
+; ###################################
+; MEMCPY
+; ###################################
+;
+; Variaveis
+;
+805c 0000		;	COUNT                   K       /0000
+805e 0000		;	SIZE                    K       /0000
+8060 0000		;	ORIGIN                  K       /0000
+8062 0000		;	DESTINATION             K       /0000
+;
+; Rotina
+;
+8064 0000		;	MEMCPY                  K       /0000
+                        ; Carrega valores de entrada
+a066 8000		;	                        LD      INPUT_1_PTR ; carrega o endereço
+d068 4000		;	                        +       LOAD ; Soma load
+a06a 906c		;	                        MM      UNPACK_EXEC1 ; Armazena em UNPACK_EXEC1
+806c 0000		;	UNPACK_EXEC1            K       /0000 ; Carrega valor do endereço
+a06e 905e		;	                        MM      SIZE ; Armazena
+a070 8002		;	                        LD      INPUT_2_PTR ; carrega o endereço
+d072 4000		;	                        +       LOAD ; Soma load
+a074 9076		;	                        MM      UNPACK_EXEC2 ; Armazena em UNPACK_EXEC2
+8076 0000		;	UNPACK_EXEC2            K       /0000 ; Carrega valor do endereço
+a078 9060		;	                        MM      ORIGIN ; Armazena
+a07a 8004		;	                        LD      INPUT_3_PTR ; carrega o endereço
+d07c 4000		;	                        +       LOAD ; Soma load
+a07e 9080		;	                        MM      UNPACK_EXEC3 ; Armazena em UNPACK_EXEC3
+8080 0000		;	UNPACK_EXEC3            K       /0000 ; Carrega valor do endereço
+a082 9062		;	                        MM      DESTINATION ; Armazena
+                        ; Tratamento de erros de Input
+                        ; 1) Endereço inicial + o numero de palavras > endereço maximo
+d084 8024		;	                        LD      MEM_END   ; Carrega o endereço maximo de destino
+a086 505e		;	                        -       SIZE
+a088 505e		;	                        -       SIZE ; Subtrai numero de enderecos de words que serao copiadas (Duas vezes pois cada palavra ocupa 2 Bytes)
+a08a 5062		;	                        -       DESTINATION  ; Subtrai o endereço inicial do destino
+a08c 20d0		;	                        JN      END_FAIL  ; Caso o endereço inicial + o numero de palavras > endereço maximo, ERRO
+                        ; 2) Endereço de destino esta antes do intervalo
+a08e 8062		;	                        LD      DESTINATION
+d090 5023		;	                        -       MEM_START
+a092 20d0		;	                        JN      END_FAIL
+                        ; 3) Origem esta antes do intervalo
+a094 8060		;	                        LD      ORIGIN
+d096 5023		;	                        -       MEM_START
+a098 20d0		;	                        JN      END_FAIL
+                        ; 4) Origem esta a frente do intervalo
+d09a 8024		;	                        LD      MEM_END
+a09c 5060		;	                        -       ORIGIN
+a09e 505e		;	                        -       SIZE
+a0a0 505e		;	                        -       SIZE
+a0a2 20d0		;	                        JN      END_FAIL
+                        ; Comeco de MEMCPY
+a0a4 805e		;	LOOP                    LD      SIZE ; Carrega o numero de words no acumulador
+a0a6 505c		;	                        -       COUNT     ; Subtrai o contador do acumulador
+a0a8 10cc		;	                        JZ      END_SUCCESS ; Caso o contador seja igual ao numero de words, encerra
+
+a0aa 8062		;	                        LD      DESTINATION ; Carrega endereco de destino
+d0ac 4001		;	                        +       WRITE   ; Adiciona comando MM
+a0ae 90b6		;	                        MM      MEMCPY_EXEC   ; Armazena em MEMCPY_EXEC
+
+a0b0 8060		;	                        LD      ORIGIN ; Carrega endereço de origem
+a0b2 90d4		;	                        MM      TARGET_ADDRESS
+a0b4 a0d6		;	                        SC      LOAD_VALUE ; Carrega valor no endereco de origem
+
+80b6 0000		;	MEMCPY_EXEC             K       /0000 ; Armazena o valor no endereco de destino
+a0b8 8062		;	                        LD      DESTINATION  ; Carrega o endereço de destino
+d0ba 4006		;	                        +       CONST_2   ; Avança 2 posições na memoria
+a0bc 9062		;	                        MM      DESTINATION  ; Atualiza DESTINATION
+
+a0be 8060		;	                        LD      ORIGIN ; Carrega o endereço de origem
+d0c0 4006		;	                        +       CONST_2   ; Avança 2 posições na memoria
+a0c2 9060		;	                        MM      ORIGIN ; Atualiza ORIGIN
+
+a0c4 805c		;	                        LD      COUNT     ; Carrega o contador no acumulador
+d0c6 4005		;	                        +       CONST_1     ; Soma 1
+a0c8 905c		;	                        MM      COUNT     ; Atualiza CONT
+
+a0ca 00a4		;	                        JP      LOOP
+
+d0cc 8004		;	END_SUCCESS             LD      CONST_0   ; Se o programa finalizar com sucesso, coloca 0x0000 no acumulador
+a0ce 00d2		;	                        JP      RETURN_MEMCPY
+d0d0 8022		;	END_FAIL                LD      CONST_FFFF ; Se o programa finalizar com falhas, coloca 0xFFFF no acumulador
+
+a0d2 b064		;	RETURN_MEMCPY           RS      MEMCPY
+;
+;
+; ###################################
+; LOAD_VALUE
+; ###################################
+;
+; Subrotina para carregar um valor que esta no endereço TARGET_ADDRESS
+;
+; Variaveis
+;
+80d4 0000		;	TARGET_ADDRESS  K /0000 ; Endereço em que esta o valor desejado
+;
+; Rotina
+;
+80d6 0000		;	LOAD_VALUE      K /0000
+a0d8 80d4		;	                LD TARGET_ADDRESS ; carrega o endereço
+d0da 4000		;	                + LOAD ; Soma load
+a0dc 90de		;	                MM EXEC_LOAD ; Armazena em EXEC_LOAD
+80de 0000		;	EXEC_LOAD       K /0000 ; Carrega valor do endereço
+a0e0 b0d6		;	                RS LOAD_VALUE ; END da sub rotina
+;
+;
+; ###################################
+; UITOCH
+; ###################################
+;
+; Converte um numero intero para duas words contendo caracteres ASCII
+; correspondentes. [exemplo: entra 79AB e saem 3739 e 4142]
+;
+; Variaveis
+;
+80e2 0000		;	UITOCH_INPUT_PTR        K /0000
+80e4 0000		;	UITOCH_TEMP_1           K /0000
+80e6 0000		;	UITOCH_TEMP_2           K /0000
+;
+; Rotina
+;
+80e8 0000		;	UITOCH                  K       /0000
+
+                        ; nesse ponto o endereço da entrada ja esta em INPUT_1_PTR,
+                        ; entao, chama-se UNPACK diretamente.
+a0ea a024		;	                        SC      UNPACK ; Chama a rotina
+
+d0ec 8026		;	                        LD      OUTPUT_2 ; Carrega a segunda metade [Ex: Se int = 79AB, carrega 00AB]
+a0ee 90e6		;	                        MM      UITOCH_TEMP_2 ; Armazena temporariamente
+
+                        ; Primeira palavra
+d0f0 3025		;	                        LV      OUTPUT_1 ; Carrega endereco que contem [0079]
+a0f2 9000		;	                        MM      INPUT_1_PTR ; Armazena
+a0f4 a234		;	                        SC      HALF_UNPACK ; Chama rotina
+d0f6 8025		;	                        LD      OUTPUT_1 ; [0007]
+a0f8 9128		;	                        MM      UITOCH_WORD_1
+d0fa 8026		;	                        LD      OUTPUT_2 ; [0009]
+a0fc 912a		;	                        MM      UITOCH_WORD_2
+a0fe a12c		;	                        SC      UITOCH_PROCESS_WORD ; Chama sub-rotina
+a100 90e4		;	                        MM      UITOCH_TEMP_1 ; [3739]
+
+                        ; Verifica se houve erro
+d102 5022		;	                        -       CONST_FFFF
+a104 1124		;	                        JZ      UITOCH_ERROR
+
+                        ; Segunda palavra
+a106 30e6		;	                        LV      UITOCH_TEMP_2 ; Carrega endereco que tem [00AB]
+a108 9000		;	                        MM      INPUT_1_PTR ; Armazena
+a10a a234		;	                        SC      HALF_UNPACK ; Chama rotina
+d10c 8025		;	                        LD      OUTPUT_1
+a10e 9128		;	                        MM      UITOCH_WORD_1 ; [000A]
+d110 8026		;	                        LD      OUTPUT_2
+a112 912a		;	                        MM      UITOCH_WORD_2 ; [000B]
+a114 a12c		;	                        SC      UITOCH_PROCESS_WORD ; Chama sub-rotina
+a116 90e6		;	                        MM      UITOCH_TEMP_2 ; [4142]
+
+                        ; Verifica se houve erro
+d118 5022		;	                        -       CONST_FFFF
+a11a 1124		;	                        JZ      UITOCH_ERROR
+
+                        ; Se nao houve, armazena na saida
+a11c 80e4		;	                        LD      UITOCH_TEMP_1
+d11e 9025		;	                        MM      OUTPUT_1
+a120 80e6		;	                        LD      UITOCH_TEMP_2
+d122 9026		;	                        MM      OUTPUT_2
+
+d124 8022		;	UITOCH_ERROR            LD      CONST_FFFF ; Carrega valor de erro
+
+a126 b0e8		;	END_UITOCH              RS      UITOCH ; END da sub rotina
+;
+;
+; ###################################
+; UITOCH_PROCESS_WORD
+; ###################################
+;
+; Sub rotina de UITOCH que carrega os inteiros [ex 0007 e 0009]
+; e devolve o caracter ASCII correspondente [ex 3739]
+;
+8128 0000		;	UITOCH_WORD_1               K       /0000
+812a 0000		;	UITOCH_WORD_2               K       /0000
+;
+812c 0000		;	UITOCH_PROCESS_WORD         K       /0000
+
+a12e 8128		;	                            LD      UITOCH_WORD_1 ; Carrega valor  [exemplo: 0007]
+a130 914a		;	                            MM      UITOCH_TEMP_CHAR ; Armazena
+a132 a14e		;	                            SC      UITOCH_PROCESS_CHAR ; Chama sub-rotina
+a134 9128		;	                            MM      UITOCH_WORD_1 ; Armazena [0037]
+
+a136 812a		;	                            LD      UITOCH_WORD_2 ; Carrega valor  [exemplo: 0009]
+a138 914a		;	                            MM      UITOCH_TEMP_CHAR ; Armazena
+a13a a14e		;	                            SC      UITOCH_PROCESS_CHAR ; Cahama sub-rotina
+a13c 912a		;	                            MM      UITOCH_WORD_2 ; Armazena [0039]
+
+a13e 3128		;	                            LV      UITOCH_WORD_1 ; Carrega endereco [0037]
+a140 9000		;	                            MM      INPUT_1_PTR ; Armazena na entrada
+a142 312a		;	                            LV      UITOCH_WORD_2 ; Carrega endereco [0039]
+a144 9002		;	                            MM      INPUT_2_PTR ; Armazena na entrada
+
+a146 a008		;	                            SC      PACK ; Chama rotina [recebe 3739]
+
+a148 b12c		;	END_UITOCH_PROCESS_WORD     RS      UITOCH_PROCESS_WORD
+;
+;
+; ###################################
+; UITOCH_PROCESS_CHAR
+; ###################################
+;
+; Sub rotina de UITOCH_CHTOI que recebe uma metade de palavra ASCII [ se palavra original XYZT, recebe 00XY]
+; e devolve o inteiro correspondente
+;
+;
+814a 0000		;	UITOCH_TEMP_CHAR            K       /0000
+814c 0000		;	UITOCH_CHAR_TEMP            K       /0000
+
+814e 0000		;	UITOCH_PROCESS_CHAR         K       /0000
+a150 814a		;	                            LD      UITOCH_TEMP_CHAR ; Carrega valor  [exemplo: 0007]
+d152 4012		;	                            +       CONST_30 ; [0037]
+a154 914a		;	                            MM      UITOCH_TEMP_CHAR ; Armazena em variavel temporaria
+d156 5013		;	                            -       CONST_3A ; UITOCH_TEMP_CHAR - 3A
+a158 2160		;	                            JN      UITOCH_IS_NUMBER ; Se negativo, trata-se de um numero, caso contrario char de A a F
+                            ; Caso char
+a15a 814a		;	                            LD      UITOCH_TEMP_CHAR ; Carrega o valor de char [0037]
+d15c 4007		;	                            +       CONST_7 ; soma 7 para encontrar o valor inteiro [0041]
+a15e 0166		;	                            JP      END_UITOCH_PROCESS_CHAR ; Encerra
+
+a160 814a		;	UITOCH_IS_NUMBER            LD      UITOCH_TEMP_CHAR ; carrega o numero
+a162 0166		;	                            JP      END_UITOCH_PROCESS_CHAR
+
+d164 8022		;	UITOCH_PROCESS_CHAR_ERROR   LD      CONST_FFFF ; Carrega erro
+
+a166 b14e		;	END_UITOCH_PROCESS_CHAR     RS      UITOCH_PROCESS_CHAR
+;
+;
+; ###################################
+; CHTOI
+; ###################################
+;
+; Converte duas words contendo caracteres ASCII hexadecimais para o numero
+; inteiro correspondente. [exemplo: entram 3739 e 4142 e sai 79AB]
+;
+; Variaveis
+;
+8168 0000		;	CHTOI_INPUT_1_PTR       K /0000
+816a 0000		;	CHTOI_INPUT_2_PTR       K /0000
+816c 0000		;	UNPACKED_TEMP_1         K /0000
+816e 0000		;	UNPACKED_TEMP_2         K /0000
+;
+; Rotina
+;
+8170 0000		;	CHTOI                   K       /0000
+
+a172 8000		;	                        LD      INPUT_1_PTR ; Carrega endereco da primeira word
+a174 9168		;	                        MM      CHTOI_INPUT_1_PTR ; Armazena localmente
+a176 8002		;	                        LD      INPUT_2_PTR ; Carrega endereco da segunda word
+a178 916a		;	                        MM      CHTOI_INPUT_2_PTR ; Armazena localmente
+
+                        ; Primeira word
+a17a 8168		;	                        LD      CHTOI_INPUT_1_PTR
+a17c 91a4		;	                        MM      CHTOI_TEMP_WORD ; Salva endereco na variavel
+a17e a1aa		;	                        SC      CHTOI_PROCESS_WORD ; Chama sub rotina que processa a palavra
+a180 916c		;	                        MM      UNPACKED_TEMP_1 ; Armazena na variavel local
+
+                        ; Verifica se houve erro
+d182 5022		;	                        -       CONST_FFFF
+a184 11a0		;	                        JZ      CHTOI_ERROR
+
+                        ; Segunda word
+a186 816a		;	                        LD      CHTOI_INPUT_2_PTR ; Carrega endereco da segunda word
+a188 91a4		;	                        MM      CHTOI_TEMP_WORD ; Salva endereco na variavel
+a18a a1aa		;	                        SC      CHTOI_PROCESS_WORD ; Chama sub rotina que processa a palavra
+a18c 916e		;	                        MM      UNPACKED_TEMP_2 ; Armazena na variavel local
+
+                        ; Verifica se houve erro
+d18e 5022		;	                        -       CONST_FFFF
+a190 11a0		;	                        JZ      CHTOI_ERROR
+
+                        ; PACK
+a192 316c		;	                        LV      UNPACKED_TEMP_1 ; Carrega endereco da primeira word
+a194 9000		;	                        MM      INPUT_1_PTR ; Armazena na variavel de PACK
+a196 316e		;	                        LV      UNPACKED_TEMP_2 ; Carrega endereco da segunda word
+a198 9002		;	                        MM      INPUT_2_PTR ; Armazena na variavel de PACK
+a19a a008		;	                        SC      PACK ; Chama rotina
+d19c 8025		;	                        LD      OUTPUT_1 ; Carrega resultado
+a19e 01a2		;	                        JP      END_CHTOI ; Encerra rotina
+
+d1a0 8022		;	CHTOI_ERROR             LD      CONST_FFFF ; Carrega valor de erro
+
+a1a2 b170		;	END_CHTOI               RS      CHTOI ; END da sub rotina
+;
+;
+;
+; ###################################
+; CHTOI_PROCESS_WORD
+; ###################################
+;
+; Sub rotina de CHTOI que recebe uma palavra em ASCII, chama UNPACK, processa e devolve o numero interio de cada
+;
+;
+81a4 0000		;	CHTOI_TEMP_WORD             K       /0000
+81a6 0000		;	CHTOI_TEMP_1                K       /0000
+81a8 0000		;	CHTOI_TEMP_2                K       /0000
+
+81aa 0000		;	CHTOI_PROCESS_WORD          K       /0000
+a1ac 81a4		;	                            LD      CHTOI_TEMP_WORD ; Carrega endereco da palavra
+a1ae 9000		;	                            MM      INPUT_1_PTR ; Armazena na entrada de UNPACK
+a1b0 a024		;	                            SC      UNPACK ; Chama rotina UNPACK [exemplo: 4132]
+
+d1b2 8025		;	                            LD      OUTPUT_1 ; Carrega primeira metade [0041]
+a1b4 91a6		;	                            MM      CHTOI_TEMP_1 ; Armazena na variavel
+d1b6 8026		;	                            LD      OUTPUT_2 ; Carrega segunda metade [0041]
+a1b8 91a8		;	                            MM      CHTOI_TEMP_2 ; Armazena na variavel
+
+                            ; inicio do processamento mas duas metades obtidas com UNPACK
+
+                            ; primeira metade
+a1ba 81a6		;	                            LD      CHTOI_TEMP_1 ; Carrega primeira metade [0041]
+a1bc 91e4		;	                            MM      CHTOI_TEMP_CHAR ; Armazena na variavel da sub rotina CHTOI_PROCESS_CHAR
+a1be a1e6		;	                            SC      CHTOI_PROCESS_CHAR ; Chama sub rotina CHTOI_PROCESS_CHAR e recebe de volta a letra [000A]
+a1c0 91a6		;	                            MM      CHTOI_TEMP_1 ; Armazena na variavel
+
+                            ; Verifica se houve erro
+d1c2 5022		;	                            -       CONST_FFFF
+a1c4 11e0		;	                            JZ      CHTOI_PROCESS_WORD_ERROR
+
+                            ;segunda metade
+a1c6 81a8		;	                            LD      CHTOI_TEMP_2 ; Carrega segunda metade [0032]
+a1c8 91e4		;	                            MM      CHTOI_TEMP_CHAR ; Armazena na variavel
+a1ca a1e6		;	                            SC      CHTOI_PROCESS_CHAR ; Chama sub rotina e recebe o numero [0002]
+a1cc 91a8		;	                            MM      CHTOI_TEMP_2 ; Armazena na variavel
+
+                            ; Verifica se houve erro
+d1ce 5022		;	                            -       CONST_FFFF
+a1d0 11e0		;	                            JZ      CHTOI_PROCESS_WORD_ERROR
+
+                            ; Inicio da juncao das duas metades [000A e 0002 viram 00A2]
+a1d2 31a6		;	                            LV      CHTOI_TEMP_1 ; Carrega endereco da primeira metade
+a1d4 9000		;	                            MM      INPUT_1_PTR ; Armazena na variavel de HALF_PACK [000A]
+a1d6 31a8		;	                            LV      CHTOI_TEMP_2 ; Carrega endereco da segunda metade
+a1d8 9002		;	                            MM      INPUT_2_PTR ; Armazena na variavel de HALF_PACK [0002]
+a1da a218		;	                            SC      HALF_PACK ; Chama sub rotina [obtem 00A2]
+d1dc 8025		;	                            LD      OUTPUT_1 ; Carrega resultado
+a1de 01e2		;	                            JP      END_CHTOI_PROCESS_WORD
+
+d1e0 8022		;	CHTOI_PROCESS_WORD_ERROR    LD      CONST_FFFF ; Carrega valor de erro
+
+a1e2 b1aa		;	END_CHTOI_PROCESS_WORD      RS      CHTOI_PROCESS_WORD
+;
+;
+; ###################################
+; CHTOI_PROCESS_CHAR
+; ###################################
+;
+; Sub rotina de CHTOI que recebe uma metade de palavra ASCII [ se palavra original XYZT, recebe 00XY]
+; e devolve o inteiro correspondente
+;
+;
+81e4 0000		;	CHTOI_TEMP_CHAR             K       /0000
+
+81e6 0000		;	CHTOI_PROCESS_CHAR          K       /0000
+a1e8 81e4		;	                            LD      CHTOI_TEMP_CHAR ; Carrega valor  [exemplo: 0041]
+                            ; Verificacao de char fora dos intervalos [30,39] ou [41,46]
+                            ; < 30
+d1ea 5012		;	                            -       CONST_30
+a1ec 2212		;	                            JN      CHTOI_PROCESS_CHAR_ERROR
+                            ; x == 40
+a1ee 81e4		;	                            LD      CHTOI_TEMP_CHAR ; Carrega valor
+d1f0 5014		;	                            -       CONST_40
+a1f2 1212		;	                            JZ      CHTOI_PROCESS_CHAR_ERROR
+                            ; x > 46
+a1f4 81e4		;	                            LD      CHTOI_TEMP_CHAR ; Carrega valor
+d1f6 5015		;	                            -       CONST_47
+a1f8 21fc		;	                            JN      VALID_INPUT ; Se negativo, é valido
+a1fa 0212		;	                            JP      CHTOI_PROCESS_CHAR_ERROR  ; Caso contrario da erro
+
+                            ; Caso positivo, continua
+a1fc 81e4		;	VALID_INPUT                 LD      CHTOI_TEMP_CHAR ; Carrega valor  [exemplo: 0041]
+d1fe 5012		;	                            -       CONST_30 ; Subtrai 30 para encontrar o valor inteiro [0011]
+a200 91e4		;	                            MM      CHTOI_TEMP_CHAR ; Armazena em variavel temporaria
+d202 5010		;	                            -       CONST_10 ; CHTOI_TEMP_CHAR - 10
+a204 220e		;	                            JN      IS_NUMBER ; Se negativo, trata-se de um numero, caso contrario letra de A a F
+
+a206 81e4		;	IS_CHAR                     LD      CHTOI_TEMP_CHAR ; Carrega o valor de char [0011]
+a208 81e4		;	                            LD      CHTOI_TEMP_CHAR ; [0011]
+d20a 5007		;	                            -       CONST_7 ; subtrai 7 para encontrar a letra hexadecimal [000A]
+a20c 0214		;	                            JP      END_CHTOI_PROCESS_CHAR ; Encerra
+
+a20e 81e4		;	IS_NUMBER                   LD      CHTOI_TEMP_CHAR ; carrega o numero
+a210 0214		;	                            JP      END_CHTOI_PROCESS_CHAR
+
+d212 8022		;	CHTOI_PROCESS_CHAR_ERROR    LD      CONST_FFFF ; Carrega erro
+
+a214 b1e6		;	END_CHTOI_PROCESS_CHAR      RS      CHTOI_PROCESS_CHAR
+
+; ###################################
+; HALF_PACK
+; ###################################
+;
+; Recebe as entradas 000X e 000Y e retorna 00XY
+;
+; Variaveis
+;
+8216 0000		;	HALF_PACK_PARTIAL_SUM   K /0000
+;
+; Rotina
+;
+8218 0000		;	HALF_PACK               K  /0000
+a21a 8000		;	                        LD INPUT_1_PTR ; carrega valor do endereco contido em INPUT_1_PTR
+a21c 90d4		;	                        MM TARGET_ADDRESS
+a21e a0d6		;	                        SC LOAD_VALUE ; Carrega valor de HALF_PACK_INPUT_1
+d220 6010		;	                        *  CONST_10 ; Realiza shift de uma casa para esquerda
+a222 9216		;	                        MM HALF_PACK_PARTIAL_SUM ; armazena valor em HALF_PACK_PARTIAL_SUM
+
+a224 8002		;	                        LD INPUT_2_PTR ; carrega valor do endereco contido em HALF_PACK_INPUT_2
+a226 90d4		;	                        MM TARGET_ADDRESS
+a228 a0d6		;	                        SC LOAD_VALUE ; Carrega valor de HALF_PACK_INPUT_2
+a22a 4216		;	                        +  HALF_PACK_PARTIAL_SUM ; soma HALF_PACK_INPUT_1 + HALF_PACK_INPUT_2
+d22c 9025		;	                        MM OUTPUT_1 ; armazena na saida
+
+a22e b218		;	                        RS HALF_PACK ; Fim da sub rotina
+;
+;
+; ###################################
+; HALF_UNPACK
+; ###################################
+;
+; Recebe numero no format [00XY] e retorna [000X] e [000Y]
+;
+; Variaveis
+;
+8230 0000		;	HALF_UNPACK_TEMP1           K       /0000
+8232 0000		;	HALF_UNPACK_TEMP2           K       /0000
+;
+; Rotina
+;
+8234 0000		;	HALF_UNPACK                 K       /0000
+                            ; Carrega valor do endereco apontado por INPUT_1_PTR
+a236 8000		;	                            LD      INPUT_1_PTR ; Carrega endereco contido em INPUT_1_PTR
+a238 90d4		;	                            MM      TARGET_ADDRESS
+a23a a0d6		;	                            SC      LOAD_VALUE ; Carrega conteudo de entrada de HALF_UNPACK
+a23c 9230		;	                            MM      HALF_UNPACK_TEMP1 ; Salva na variavel local [00XY]
+                            ; Parte 000X
+d23e 7010		;	                            /       CONST_10 ; Realiza shift de uma casa para direita [000X]
+d240 9025		;	                            MM      OUTPUT_1 ; Salva em OUTPUT_1 [000X]
+                            ; Parte 000Y
+d242 6010		;	                            *       CONST_10 ; Shif para esquerda [00X0]
+a244 9232		;	                            MM      HALF_UNPACK_TEMP2
+a246 3232		;	                            LV      HALF_UNPACK_TEMP2
+d248 4002		;	                            +       SUBTRACT
+a24a 924e		;	                            MM      HALF_PACK_EXEC
+a24c 8230		;	                            LD      HALF_UNPACK_TEMP1 ; [00XY]
+824e 0000		;	HALF_PACK_EXEC              K       /0000 ; [00XY - 000Y = 00X0]
+
+d250 9026		;	                            MM OUTPUT_2 ; Salva resultado
+a252 b234		;	                            RS HALF_UNPACK ; END da sub rotina
+
+;
+;
+; ###################################
+; GETLINEF
+; ###################################
+;
+; Recebe Unidade logica, Tamanho do buffer, endereço do buffer
+; Le uma linha de um arquivo texto, que contem numero par de caracteres, visto como disco pela mvn.
+; Termina quando encontra final da linha (0A) ou final de arquivo (FF)
+; Retorna 1 (true) se não chegar ao final do arquivo (EOF)
+; Retorna 0 (false) se chegar ao final do arquivo.
+;
+; Variaveis
+8254 0000		;	GL_BUFFER_SIZE              K       /0000 ; tamanho do buffer
+8256 0000		;	GL_BUFFER_ADDRESS           K       /0000 ; endereco do buffer
+8258 9999		;	EOS                         K       /9999 ; Palavra de finalizacao
+825a 0000		;	GL_TEMP                     K       /0000
+;
+; Rotina
+;
+825c 0000		;	GETLINEF                    K       /0000
+                            ; Prepara instrucao de GD no disco para unidade logica do parametro
+a25e 8000		;	                            LD      INPUT_1_PTR ; Carrega endereco contido em INPUT_1_PTR
+a260 90d4		;	                            MM      TARGET_ADDRESS
+a262 a0d6		;	                            SC      LOAD_VALUE ; Carrega a Unidade Logica
+d264 4019		;	                            +       CONST_300 ; soma dispositivo tipo disco
+d266 4003		;	                            +       GETDATA ; soma instrucao GD
+a268 9280		;	                            MM      READ_WORD ; Armazena instrucao completa
+
+                            ; Carrega valor do tamanho do buffer
+a26a 8002		;	                            LD      INPUT_2_PTR ; Carrega endereco contido em INPUT_2_PTR
+a26c 90d4		;	                            MM      TARGET_ADDRESS
+a26e a0d6		;	                            SC      LOAD_VALUE ; Carrega o tamanho do buffer
+a270 9254		;	                            MM      GL_BUFFER_SIZE ; Salva na variavel local
+
+                            ; Carrega endereço do buffer
+a272 8004		;	                            LD      INPUT_3_PTR ; Carrega endereco contido em INPUT_3_PTR
+a274 90d4		;	                            MM      TARGET_ADDRESS
+a276 a0d6		;	                            SC      LOAD_VALUE ; Carrega o endereço do buffer
+a278 9256		;	                            MM      GL_BUFFER_ADDRESS ; Salva na variavel local
+
+a27a 8256		;	GL_LOOP                     LD      GL_BUFFER_ADDRESS ; carrega endereco atual do buffer
+d27c 4001		;	                            +       WRITE ; adiciona comando de escrita
+a27e 9282		;	                            MM      GL_STORE_VALUE ; armazena instrucao
+8280 0000		;	READ_WORD                   K       /0000 ; executa leitura do proximo valor
+8282 0000		;	GL_STORE_VALUE              K       /0000 ; Salva valor lido no endereco atual do buffer
+
+                            ; Chama UNPACK para separar as duas palavras
+a284 8256		;	                            LD      GL_BUFFER_ADDRESS ; carrega endereco GL_BUFFER_ADDRESS
+a286 9000		;	                            MM      INPUT_1_PTR ; armazena em INPUT_1_PTR
+a288 a024		;	                            SC      UNPACK ; chama rotina
+d28a 8025		;	                            LD      OUTPUT_1 ; carrega primeira palavra
+a28c 925a		;	                            MM      GL_TEMP
+
+                            ; verifica se é EOL
+d28e 5009		;	                            -       CONST_A ; subtrai A
+a290 12b6		;	                            JZ      GT_EOL
+                            ; verifica se é EOF
+a292 825a		;	                            LD      GL_TEMP ; recarrega palavra
+d294 5017		;	                            -       CONST_FF
+a296 12ba		;	                            JZ      GT_EOF
+
+d298 8026		;	                            LD      OUTPUT_2 ; Carrega segunda palavra
+a29a 925a		;	                            MM      GL_TEMP
+
+                            ; verifica se é EOL
+d29c 5009		;	                            -       CONST_A ; subtrai A
+a29e 12b6		;	                            JZ      GT_EOL
+                            ; verifica se é EOF
+a2a0 825a		;	                            LD      GL_TEMP ; recarrega palavra
+d2a2 5017		;	                            -       CONST_FF
+a2a4 12ba		;	                            JZ      GT_EOF
+
+                            ; se nao for EOL nem EOF, continua
+a2a6 8254		;	                            LD      GL_BUFFER_SIZE ; carrega tamanho atual do buffer
+d2a8 5005		;	                            -       CONST_1 ; Atualiza tamanho do buffer subtraindo 1
+a2aa 12c0		;	                            JZ      GT_END_NOT_EOF ; Se tamanho é zero, vai para final
+a2ac 9254		;	                            MM      GL_BUFFER_SIZE ; se nao, armazena novo tamanho do buffer
+a2ae 8256		;	                            LD      GL_BUFFER_ADDRESS ; atualiza endereco do buffer
+d2b0 4006		;	                            +       CONST_2 ; soma 2 ao endereco atual
+a2b2 9256		;	                            MM      GL_BUFFER_ADDRESS ; armazena endereco atualizado
+a2b4 027a		;	                            JP      GL_LOOP ; vai para proxima leitura
+
+a2b6 a2c4		;	GT_EOL                      SC      GT_PUT_EOS
+a2b8 02c0		;	                            JP      GT_END_NOT_EOF
+
+a2ba a2c4		;	GT_EOF                      SC      GT_PUT_EOS
+d2bc 8004		;	                            LD      CONST_0 ; Retorna 0 se chegou no final do arquivo
+a2be 02c2		;	                            JP      GT_END
+
+d2c0 8005		;	GT_END_NOT_EOF              LD      CONST_1 ; Retorna 1 se nao chegou no final do arquivo
+
+a2c2 b25c		;	GT_END                      RS GETLINEF ; END da sub rotina
+
+;
+;
+; ###################################
+; GT_PUT_EOS
+; ###################################
+;
+; Sub rotina de GETLINEF
+; Coloca EOS - End of string no ultimo endereco do buffer
+;
+82c4 0000		;	GT_PUT_EOS                  K       /0000
+a2c6 8256		;	                            LD      GL_BUFFER_ADDRESS ; carrega endereco atual do buffer
+d2c8 4001		;	                            +       WRITE ; adiciona comando de escrita
+a2ca 92ce		;	                            MM      GL_FIX_EOL ; armazena instrucao
+a2cc 8258		;	                            LD      EOS ; carrega end of string
+82ce 0000		;	GL_FIX_EOL                  K       /0000 ; Salva valor lido no endereco atual do buffer
+a2d0 b2c4		;	                            RS      GT_PUT_EOS ; retorna

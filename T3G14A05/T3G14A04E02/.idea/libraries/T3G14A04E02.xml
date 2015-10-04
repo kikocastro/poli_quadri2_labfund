@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="T3G14A04E02">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/MLR.jar!/" />
+      <root url="jar://$PROJECT_DIR$/junit-4.7.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
