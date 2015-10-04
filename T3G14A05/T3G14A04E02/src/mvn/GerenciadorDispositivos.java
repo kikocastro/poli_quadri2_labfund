@@ -544,7 +544,7 @@ public class GerenciadorDispositivos{
 	 * @throws MVNException
 	 *           Caso o dispositivo nao esteja na tabela de dispositivos.
 	 */
-	private Dispositivo getDevice(int deviceType, int logicalUnit)
+	public Dispositivo getDevice(int deviceType, int logicalUnit)
 			throws MVNException{
 		String key = MakeHashKey(deviceType, logicalUnit);
 		if(dispositivos.containsKey(key)){

@@ -722,18 +722,50 @@ public class UnidadeControle {
        * lu – o número da unidade lógica do dispositivo (0 a 255)
        */
       switch (opId) {
+      /**
+      * Se o numero de parametros é 2 e
+      * a unidade logica (OSParams[0]) é valida e
+      * o tipo de dispositivo (OSParams[1]) é valido
+      * Adiciona o dispositivo e retorna 0 para sucesso ou -1 para erro
+      **/
       case 0xAD:
-    	  // Se o numero de parametros é 2 e
-    	  // a unidade logica (OSParams[0]) é valida e 
-    	  // o tipo de dispositivo (OSParams[1]) é valido 
-    	  // Adiciona o dispositivo e retorna 0 para sucesso ou -1 para erro
-	      if (numeroDeParametros == 2 && OSValidLU(OSParams[0]) && OSValidType(OSParams[1])) {
+	      if (numeroDeParametros == 2 && luInValidRange(OSParams[0]) && validType(OSParams[1])) {
 	          io.addDispSimples(OSParams[1], OSParams[0]);
 	          retorno = 0;
 	      } else {
 	          retorno = -1;
 	      }
 	      break;
+      /**
+       *  Posiciona cursor de leitura da unidade logica no inicio
+       *  chamando o metodo reset()
+       *  @param lu: numero da unidade logica
+       *  @return 0 em caso de sucesso, -1 em caso de erro (numero
+       *           da ul invalido, inexistente ou somente escrita)
+       */
+      case 0xFF:
+          int lu = OSParams[0];
+
+          if ((numeroDeParametros == 1) && validLu(3, lu)) {
+              retorno = 0;
+
+              try {
+                  Dispositivo disco = io.getDevice(3, lu);
+
+                  if (!disco.podeLer()) {
+                      retorno = -1;
+                  } else {
+                      disco.reset();
+                  }
+              } catch (MVNException e) {
+                  e.printStackTrace();
+                  retorno = -1;
+              }
+
+          } else {
+              retorno = -1;
+          }
+          break;
 
 	default:
 		break;
@@ -742,6 +774,7 @@ public class UnidadeControle {
       // Armazena o valor de retorno no acumulador
       Word saida = new Word(new Bits8(retorno), new Bits8(retorno));
       regs.getRegister(AC).setValue(saida);
+
       IncrementaIC();
     }
     
@@ -780,13 +813,9 @@ public class UnidadeControle {
      * 			Tipo do dispositivo na entrada de instrucaoOS
      * @return true se type Ã© 0, 1 ou 4, false caso contrario
      */
-    private boolean OSValidType(int type) {
+    private boolean validType(int type) {
     	
-		if ( type == 0 || type == 1 || type == 4) {
-			return true;
-		} else {
-			return false;
-		}
+		return type == 0 || type == 1 || type == 4;
 	}
     
     /**
@@ -795,14 +824,40 @@ public class UnidadeControle {
      * 			Unidade Logica na entrada de instrucaoOS
      * @return true se lu esta no intervalo [0, 255], false caso contrario
      */
-    private boolean OSValidLU(int lu) {
+    private boolean luInValidRange(int lu) {
     	
-		if (lu >= 0 && lu <= 255 ) {
-			return true;
-		} else {
-			return false;
-		}
+		return lu >= 0 && lu <= 255;
 	}
+
+    /**
+     *
+     * @param lu (unidade logica)
+     * 			Unidade Logica na entrada de instrucaoOS
+     * @return true se lu esta no intervalo [0, 255], se dispositivo existe e se pode ler, false caso contrario
+     */
+    private boolean validLu(int type, int lu) {
+
+        // verifica se lu esta entre [0,255] e retorna falso caso nao esteja
+        if (!luInValidRange(lu))
+            return false;
+
+        boolean validLu = true;
+
+        try {
+            Dispositivo disco = io.getDevice(type, lu);
+
+            if (!disco.podeLer()) {
+                validLu = false;
+            }
+
+        } catch (MVNException e) {
+            e.printStackTrace();
+            validLu = false;
+        }
+
+        return validLu;
+
+    }
     
     /**
      * Retorna uma String contendo um cabecalho para os registradores da MVN,

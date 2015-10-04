@@ -307,10 +307,20 @@ public class Disco implements Dispositivo{
 	public Bits8 position() throws MVNException{
 		return null;
 	}
-	
-	
+
+    /**
+     * Fecha e abre o arquivo, permitindo que o cursor de leitura
+     * seja movido para o inicio do arquivo.
+     * @throws MVNException
+     */
 	@Override
 	public void reset() throws MVNException{
+        try {
+            inFile.close();
+            inFile.read();
+        } catch(Exception e) {
+
+        }
 	}
 	
 	
