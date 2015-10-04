@@ -599,7 +599,7 @@ HALF_PACK_EXEC              K       /0000 ; [00XY - 000Y = 00X0]
 ; Variaveis
 GL_BUFFER_SIZE              K       /0000 ; tamanho do buffer
 GL_BUFFER_ADDRESS           K       /0000 ; endereco do buffer
-EOS                         K       /9999 ; Palavra de finalizacao
+EOS                         K       /0000 ; Palavra de finalizacao
 GL_TEMP                     K       /0000
 ;
 ; Rotina
