@@ -30,7 +30,7 @@ MAIN                JP  INI
 ; Unidade logica
 GL_UL                    K   /0002
 ; tamanho do buffer
-GL_BUF                   K   /0004
+GL_BUF                   K   /0003
 ; endereco do buffer
 GL_END                   K   /0006
 ; Reserva enderecos do buffer

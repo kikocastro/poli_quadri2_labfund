@@ -21,6 +21,7 @@ CONST_80                <
 CONST_FF                <
 CONST_100               <
 CONST_300               <
+CONST_0D0A              <
 CONST_1000              <
 CONST_8000              <
 CONST_FFFF              <
@@ -593,14 +594,15 @@ HALF_PACK_EXEC              K       /0000 ; [00XY - 000Y = 00X0]
 ; Recebe Unidade logica, Tamanho do buffer, endereço do buffer
 ; Le uma linha de um arquivo texto, que contem numero par de caracteres, visto como disco pela mvn.
 ; Termina quando encontra final da linha (0A) ou final de arquivo (FF)
+; Insere EOS no final da string
 ; Retorna 1 (true) se não chegar ao final do arquivo (EOF)
 ; Retorna 0 (false) se chegar ao final do arquivo.
 ;
 ; Variaveis
 GL_BUFFER_SIZE              K       /0000 ; tamanho do buffer
 GL_BUFFER_ADDRESS           K       /0000 ; endereco do buffer
-EOS                         K       /0000 ; Palavra de finalizacao
-GL_TEMP                     K       /0000
+GL_CURRENT_WORD             K       /0000 ; variavel temporaria para palavra atual
+EOS                         K       /EDED ; Palavra de finalizacao
 ;
 ; Rotina
 ;
@@ -625,58 +627,84 @@ GETLINEF                    K       /0000
                             SC      LOAD_VALUE ; Carrega o endereço do buffer
                             MM      GL_BUFFER_ADDRESS ; Salva na variavel local
 
+                            ; Verifica se tamanho do buffer é > 1
+                            LD      GL_BUFFER_SIZE
+                            -       CONST_1
+                            JN      GT_END ; se for 0 vai para fim
+                            LD      GL_BUFFER_SIZE
+                            -       CONST_1
+                            JZ      GT_END_NOT_EOF ; se for 1, coloca EOS e finaliza
+
+                            ; ----------------- LOOP -----------------
+
 GL_LOOP                     LD      GL_BUFFER_ADDRESS ; carrega endereco atual do buffer
                             +       WRITE ; adiciona comando de escrita
-                            MM      GL_STORE_VALUE ; armazena instrucao
+                            MM      GL_STORE_VALUE ; armazena instrucao em GL_STORE_VALUE
+
 READ_WORD                   K       /0000 ; executa leitura do proximo valor
-GL_STORE_VALUE              K       /0000 ; Salva valor lido no endereco atual do buffer
+                            MM      GL_CURRENT_WORD ; Salva palavra lida em variavel temporaria
+
+                            ; Verificacoes windows
+                            ; verifica se é EOL (0x0d0a)
+                            -       CONST_0D0A ; subtrai 0x0d0a
+                            JZ      GT_END_NOT_EOF
+                            ; verifica se é EOF (0xffff)
+                            LD      GL_CURRENT_WORD ; recarrega palavra
+                            -       CONST_FFFF
+                            JZ      GT_EOF
 
                             ; Chama UNPACK para separar as duas palavras
-                            LD      GL_BUFFER_ADDRESS ; carrega endereco GL_BUFFER_ADDRESS
+                            LV      GL_CURRENT_WORD ; carrega endereco GL_CURRENT_WORD
                             MM      INPUT_1_PTR ; armazena em INPUT_1_PTR
                             SC      UNPACK ; chama rotina
-                            LD      OUTPUT_1 ; carrega primeira palavra
-                            MM      GL_TEMP
 
-                            ; verifica se é EOL
+                            ; Verificacoes unix
+                            ; verifica se é EOL (0x0A)
+                            LD      OUTPUT_1 ; carrega primeira palavra
                             -       CONST_A ; subtrai A
-                            JZ      GT_EOL
+                            JZ      GT_END_NOT_EOF
                             ; verifica se é EOF
-                            LD      GL_TEMP ; recarrega palavra
+                            LD      OUTPUT_1 ; carrega primeira palavra
                             -       CONST_FF
                             JZ      GT_EOF
 
                             LD      OUTPUT_2 ; Carrega segunda palavra
-                            MM      GL_TEMP
-
                             ; verifica se é EOL
                             -       CONST_A ; subtrai A
-                            JZ      GT_EOL
+                            JZ      GT_END_NOT_EOF
                             ; verifica se é EOF
-                            LD      GL_TEMP ; recarrega palavra
+                            LD      OUTPUT_2 ; Carrega segunda palavra
                             -       CONST_FF
                             JZ      GT_EOF
 
                             ; se nao for EOL nem EOF, continua
+                            LD      GL_CURRENT_WORD
+GL_STORE_VALUE              K       /0000 ; Salva valor lido no endereco atual do buffer
+                            ; Atualiza loop
                             LD      GL_BUFFER_SIZE ; carrega tamanho atual do buffer
                             -       CONST_1 ; Atualiza tamanho do buffer subtraindo 1
                             JZ      GT_END_NOT_EOF ; Se tamanho é zero, vai para final
                             MM      GL_BUFFER_SIZE ; se nao, armazena novo tamanho do buffer
+
+                            ; atualiza endereco do buffer
                             LD      GL_BUFFER_ADDRESS ; atualiza endereco do buffer
                             +       CONST_2 ; soma 2 ao endereco atual
                             MM      GL_BUFFER_ADDRESS ; armazena endereco atualizado
-                            JP      GL_LOOP ; vai para proxima leitura
 
-GT_EOL                      SC      GT_PUT_EOS
+                            JP      GL_LOOP ; vai para proxima leitura do loop
+
+                            ; ----------------- END LOOP -----------------
+
                             JP      GT_END_NOT_EOF
 
 GT_EOF                      SC      GT_PUT_EOS
                             LD      CONST_0 ; Retorna 0 se chegou no final do arquivo
                             JP      GT_END
 
-GT_END_NOT_EOF              LD      CONST_1 ; Retorna 1 se nao chegou no final do arquivo
+GT_END_NOT_EOF              SC      GT_PUT_EOS
+                            LD      CONST_1 ; Retorna 1 se nao chegou no final do arquivo
 
-GT_END                      RS GETLINEF ; END da sub rotina
+GT_END                      RS      GETLINEF ; END da sub rotina
 
 ;
 ;

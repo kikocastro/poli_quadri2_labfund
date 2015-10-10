@@ -21,12 +21,13 @@
 2022 0000 ; "CONST_FF>"		;	CONST_FF                >
 2024 0000 ; "CONST_100>"		;	CONST_100               >
 2026 0000 ; "CONST_300>"		;	CONST_300               >
-2028 0000 ; "CONST_1000>"		;	CONST_1000              >
-202a 0000 ; "CONST_8000>"		;	CONST_8000              >
-202c 0000 ; "CONST_FFFF>"		;	CONST_FFFF              >
+2028 0000 ; "CONST_0D0A>"		;	CONST_0D0A              >
+202a 0000 ; "CONST_1000>"		;	CONST_1000              >
+202c 0000 ; "CONST_8000>"		;	CONST_8000              >
+202e 0000 ; "CONST_FFFF>"		;	CONST_FFFF              >
 
-202e 0000 ; "MEM_START>"		;	MEM_START   >
-2030 0000 ; "MEM_END>"		;	MEM_END     >
+2030 0000 ; "MEM_START>"		;	MEM_START   >
+2032 0000 ; "MEM_END>"		;	MEM_END     >
 ;
 ;
 				;	& /0000 ; Origem relocavel
@@ -63,9 +64,10 @@
 8022 00ff		;	CONST_FF                K   /00FF
 8024 0100		;	CONST_100               K   /0100
 8026 0300		;	CONST_300               K   /0300
-8028 1000		;	CONST_1000              K   /1000
-802a 8000		;	CONST_8000              K   /8000
-802c ffff		;	CONST_FFFF  			K   /FFFF
+8028 0d0a		;	CONST_0D0A              K   /0D0A
+802a 1000		;	CONST_1000              K   /1000
+802c 8000		;	CONST_8000              K   /8000
+802e ffff		;	CONST_FFFF  			K   /FFFF
 ;
 ;
 ; ###################################
@@ -73,6 +75,6 @@
 ; ###################################
 ;
 ; Limite de memoria para aa sequencia de UNPACK
-802e 0014		;	MEM_START               K       /0014 ; Inicio do intervalo determinado
-8030 0024		;	MEM_END                 K       /0024 ; Fim do intervalo determinado
+8030 0014		;	MEM_START               K       /0014 ; Inicio do intervalo determinado
+8032 0024		;	MEM_END                 K       /0024 ; Fim do intervalo determinado
 

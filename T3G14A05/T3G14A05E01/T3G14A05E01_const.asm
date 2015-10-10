@@ -21,6 +21,7 @@ CONST_80                >
 CONST_FF                >
 CONST_100               >
 CONST_300               >
+CONST_0D0A              >
 CONST_1000              >
 CONST_8000              >
 CONST_FFFF              >
@@ -63,6 +64,7 @@ CONST_80                K   /0080
 CONST_FF                K   /00FF
 CONST_100               K   /0100
 CONST_300               K   /0300
+CONST_0D0A              K   /0D0A
 CONST_1000              K   /1000
 CONST_8000              K   /8000
 CONST_FFFF  			K   /FFFF
