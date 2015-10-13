@@ -31,13 +31,17 @@ MEM_END     <
 ;
 ; Entradas e saidas
 ;
-INPUT_1_PTR >
-INPUT_2_PTR >
-INPUT_3_PTR >
+; INPUT_1_PTR >
+; INPUT_2_PTR >
+; INPUT_3_PTR >
 
-OUTPUT_1    <
-OUTPUT_2    <
-OUTPUT_3    <
+GL_UL       >
+GL_BUF      >
+GL_END      >
+
+; OUTPUT_1    <
+; OUTPUT_2    <
+; OUTPUT_3    <
 ;
 ; Rotinas
 ;
@@ -55,6 +59,13 @@ INPUT_1_PTR    K /0000 ; Endereco da entrada 1
 INPUT_2_PTR    K /0000 ; Endereco da entrada 2
 INPUT_3_PTR    K /0000 ; Endereco da entrada 3
 ;
+GL_UL       K /0000 ; Unidade Logica
+GL_BUF      K /0000 ; Tamanho do buffer
+GL_END      K /0000 ; Endereco do buffer
+
+OUTPUT_1    K /0000 ; Endereco da entrada 1
+OUTPUT_2    K /0000 ; Endereco da entrada 2
+OUTPUT_3    K /0000 ; Endereco da entrada 3
 ;
 ; Rotinas
 ;
@@ -602,37 +613,29 @@ HALF_PACK_EXEC              K       /0000 ; [00XY - 000Y = 00X0]
 GL_BUFFER_SIZE              K       /0000 ; tamanho do buffer
 GL_BUFFER_ADDRESS           K       /0000 ; endereco do buffer
 GL_CURRENT_WORD             K       /0000 ; variavel temporaria para palavra atual
-EOS                         K       /EDED ; Palavra de finalizacao
+EOS                         K       /0000 ; Palavra de finalizacao
 ;
 ; Rotina
 ;
 GETLINEF                    K       /0000
                             ; Prepara instrucao de GD no disco para unidade logica do parametro
-                            LD      INPUT_1_PTR ; Carrega endereco contido em INPUT_1_PTR
-                            MM      TARGET_ADDRESS
-                            SC      LOAD_VALUE ; Carrega a Unidade Logica
+                            LD      GL_UL ; Carrega a Unidade Logica
                             +       CONST_300 ; soma dispositivo tipo disco
                             +       GETDATA ; soma instrucao GD
                             MM      READ_WORD ; Armazena instrucao completa
 
                             ; Carrega valor do tamanho do buffer
-                            LD      INPUT_2_PTR ; Carrega endereco contido em INPUT_2_PTR
-                            MM      TARGET_ADDRESS
-                            SC      LOAD_VALUE ; Carrega o tamanho do buffer
+                            LD      GL_BUF ; Carrega o tamanho do buffer
                             MM      GL_BUFFER_SIZE ; Salva na variavel local
 
                             ; Carrega endereço do buffer
-                            LD      INPUT_3_PTR ; Carrega endereco contido em INPUT_3_PTR
-                            MM      TARGET_ADDRESS
-                            SC      LOAD_VALUE ; Carrega o endereço do buffer
+                            LD      GL_END ; Carrega o endereço do buffer
                             MM      GL_BUFFER_ADDRESS ; Salva na variavel local
 
                             ; Verifica se tamanho do buffer é > 1
                             LD      GL_BUFFER_SIZE
                             -       CONST_1
                             JN      GT_END ; se for 0 vai para fim
-                            LD      GL_BUFFER_SIZE
-                            -       CONST_1
                             JZ      GT_END_NOT_EOF ; se for 1, coloca EOS e finaliza
 
                             ; ----------------- LOOP -----------------

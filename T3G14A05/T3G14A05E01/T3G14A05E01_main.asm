@@ -1,60 +1,25 @@
-; Main
-;
-; Importa/ Exporta
-;
-INPUT_1_PTR <
-INPUT_2_PTR <
-INPUT_3_PTR <
+; GETLINEF - MAIN
 
-OUTPUT_1    >
-OUTPUT_2    >
-OUTPUT_3    >
-;
-; Rotinas
-;
-PACK        <
-UNPACK      <
-MEMCPY      <
-CHTOI       <
-UITOCH      <
-HALF_PACK   <
-GETLINEF    <
-;
-&   /0000
-MAIN                JP  INI
-; Entradas / Saidas
-;
-;
-; GETLINEF
-;
-; Unidade logica
-GL_UL                    K   /0002
-; tamanho do buffer
-GL_BUF                   K   /0003
-; endereco do buffer
-GL_END                   K   /0006
-; Reserva enderecos do buffer
-                         $   /0010
-;
-;
-; Programa
-;
-;
-INI                 LV GL_UL ; Carrega o endereço de GL_UL
-    	              MM INPUT_1_PTR ; Armazena esse valor em INPUT_1_PTR
-                    LV GL_BUF ; Carrega o endereço de GL_BUF
-                    MM INPUT_2_PTR ; Armazena esse valor em INPUT_2_PTR
-                    LV GL_END ; Carrega o endereço de GL_END
-                    MM INPUT_3_PTR ; Armazena esse valor em INPUT_3_PTR
+GETLINEF <
+GL_END <
+GL_UL <
+GL_BUF <
 
-                    SC GETLINEF ; Chama sub rotina GETLINEF
+& /0000
+MAIN  JP  START
 
-END                 HM END
-;
-; Saidas
-;
-OUTPUT_1    K /0000 ; Endereco da entrada 1
-OUTPUT_2    K /0000 ; Endereco da entrada 2
-OUTPUT_3    K /0000 ; Endereco da entrada 3
-;
+VAL_UL  K /0001   ; UL do arquivo
+VAL_BUF K =10     ; Tamanho do buffer
+BUFFER  $ =10     ; Buffer: algumas posições reservadas
+
+
+START LV  BUFFER    ; Param 1: endereço do buffer
+    MM  GL_END
+    LD  VAL_UL    ; Param 2: unidade lógica
+    MM  GL_UL
+    LD  VAL_BUF   ; Param 3: tamanho do buffer
+    MM  GL_BUF
+    SC  GETLINEF  ; Chama subrotina
+END   HM  END     ; fim do programa
+
 # MAIN
