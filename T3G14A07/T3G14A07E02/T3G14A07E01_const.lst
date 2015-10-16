@@ -1,0 +1,82 @@
+; Exporta constantes
+;
+2000 0000 ; "LOAD>"		;	LOAD        >
+2002 0000 ; "WRITE>"		;	WRITE       >
+2004 0000 ; "SUBTRACT>"		;	SUBTRACT    >
+2006 0000 ; "GETDATA>"		;	GETDATA     >
+2008 0000 ; "PUTDATA>"		;	PUTDATA     >
+
+200a 0000 ; "CONST_0>"		;	CONST_0                 >
+200c 0000 ; "CONST_1>"		;	CONST_1                 >
+200e 0000 ; "CONST_2>"		;	CONST_2                 >
+2010 0000 ; "CONST_7>"		;	CONST_7                 >
+2012 0000 ; "CONST_9>"		;	CONST_9                 >
+2014 0000 ; "CONST_A>"		;	CONST_A                 >
+2016 0000 ; "CONST_10>"		;	CONST_10                >
+2018 0000 ; "CONST_F>"		;	CONST_F                 >
+201a 0000 ; "CONST_30>"		;	CONST_30                >
+201c 0000 ; "CONST_3A>"		;	CONST_3A                >
+201e 0000 ; "CONST_40>"		;	CONST_40                >
+2020 0000 ; "CONST_47>"		;	CONST_47                >
+2022 0000 ; "CONST_80>"		;	CONST_80                >
+2024 0000 ; "CONST_FF>"		;	CONST_FF                >
+2026 0000 ; "CONST_100>"		;	CONST_100               >
+2028 0000 ; "CONST_300>"		;	CONST_300               >
+202a 0000 ; "CONST_FFE>"		;	CONST_FFE               >
+202c 0000 ; "CONST_1000>"		;	CONST_1000              >
+202e 0000 ; "CONST_8000>"		;	CONST_8000              >
+2030 0000 ; "CONST_FFFF>"		;	CONST_FFFF              >
+
+2032 0000 ; "MEM_START>"		;	MEM_START   >
+2034 0000 ; "MEM_END>"		;	MEM_END     >
+;
+;
+				;	& /0000 ; Origem relocavel
+;
+;
+; CONSTANTES
+;
+; ###################################
+; Operacoes
+; ###################################
+;
+8000 8000		;	LOAD                    LD  /0000
+8002 9000		;	WRITE		            MM  /0000
+8004 5000		;	SUBTRACT	        	-   /0000
+8006 d000		;	GETDATA                 GD  /0000
+8008 e000		;	PUTDATA                 PD  /0000
+;
+; ###################################
+; Numeros
+; ###################################
+;
+800a 0000		;	CONST_0                 K   /0000
+800c 0001		;	CONST_1                 K   /0001
+800e 0002		;	CONST_2                 K   /0002
+8010 0007		;	CONST_7                 K   /0007
+8012 0009		;	CONST_9                 K   /0009
+8014 000a		;	CONST_A                 K   /000A
+8016 0010		;	CONST_10                K   /0010
+8018 000f		;	CONST_F                 K   /000F
+801a 0030		;	CONST_30                K   /0030
+801c 003a		;	CONST_3A                K   /003A
+801e 0040		;	CONST_40                K   /0040
+8020 0047		;	CONST_47                K   /0047
+8022 0080		;	CONST_80                K   /0080
+8024 00ff		;	CONST_FF                K   /00FF
+8026 0100		;	CONST_100               K   /0100
+8028 0300		;	CONST_300               K   /0300
+802a 0ffe		;	CONST_FFE               K   /0FFE
+802c 1000		;	CONST_1000              K   /1000
+802e 8000		;	CONST_8000              K   /8000
+8030 ffff		;	CONST_FFFF  			K   /FFFF
+;
+;
+; ###################################
+; Sub rotinas
+; ###################################
+;
+; Limite de memoria para aa sequencia de UNPACK
+8032 0014		;	MEM_START               K       /0014 ; Inicio do intervalo determinado
+8034 0024		;	MEM_END                 K       /0024 ; Fim do intervalo determinado
+
