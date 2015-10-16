@@ -727,39 +727,40 @@ GL_FIX_EOL                  K       /0000 ; Salva valor lido no endereco atual d
 ; Variaveis
 ;
 DUMP_CURRENT_ADDR               K       /0000
-DUMP_COUNTER                    K       /0FFC
+DUMP_COUNTER                    K       /0000
 ; Rotina
 ;
 DUMPER                          K       /0000
 
                                 LD      DUMP_INI ; Carrega endereco inicial a ser lido
                                 MM      DUMP_CURRENT_ADDR ; Salva em variavel temporaria
-                                
+                                MM      DUMP_COUNTER ; Salva inicio do contador
+
                                 ; ------------- LOOP -------------------
 DUMP_LOOP                       LD      DUMP_UL ; Carrega unidade logica
                                 +       CONST_300 ; soma dispositivo tipo disco
                                 +       PUTDATA ; Adiciona comando de escrita no arquivo
                                 MM      DUMP_PD ; Armazena comando
-                                
+
                                 LD      DUMP_CURRENT_ADDR ; carrega endereco atual
                                 MM      TARGET_ADDRESS ; armazena na variavel
                                 SC      LOAD_VALUE ; chama subrotina que carrega conteudo
-                                
+
 DUMP_PD                         K /0000 ; Escreve valor no arquivo
 
                                 LD      DUMP_COUNTER ; carrega contador
-                                -       CONST_FFE ; subtrai endereco maximo disponivel 
-                                
+                                -       CONST_FFE ; subtrai endereco maximo disponivel
+
                                 JZ      DUMPER_END ; pula para o fim se atingiu o maximo
-                                
+
                                 LD      DUMP_COUNTER ; carrega valor do contador
                                 +       CONST_2 ; soma 2
                                 MM      DUMP_COUNTER ; atualiza valor do contador
-                                
+
                                 LD      DUMP_CURRENT_ADDR ; carrega valor do endereco
                                 +       CONST_2 ; soma 2
                                 MM      DUMP_CURRENT_ADDR ; atualiza valor do endereco
-                                
+
                                 JP      DUMP_LOOP
                                 ; ------------- END LOOP -------------------
 

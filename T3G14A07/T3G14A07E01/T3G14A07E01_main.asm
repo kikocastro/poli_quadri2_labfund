@@ -1,4 +1,4 @@
-DUMPER 		< 
+DUMPER 		<
 DUMP_INI 	<
 DUMP_TAM 	<
 DUMP_UL 	<
@@ -10,11 +10,11 @@ DUMP_EXE 	<
 MAIN			JP	START	; Salta para in�cio do main
 
 ; PARAMETROS
-END_INICIAL		K	/0FFC	; Endere�o onde come�a o dump
+END_INICIAL		K	/0400	; Endere�o onde come�a o dump
 TAMANHO_TEST	K	/0032	; Numero total de palavras a serem "dumpadas"
 UL_TEST			K	/0000	; Unidade logica do disco a ser usado
 BL_TEST 		K	/0010	; Tamanho do bloco
-EXE_TEST 		K	/0FFC	; Endere�o onde come�aria a execu��o (valor dummy, apenas para manter o formato)
+EXE_TEST 		K	/0400	; Endere�o onde come�aria a execu��o (valor dummy, apenas para manter o formato)
 
 ;========================== N�O ALTERE ESTE TRECHO: FIM =====================;
 
@@ -32,4 +32,4 @@ START			LD	END_INICIAL	; Parametros, na ordem acima
 FIM_MAIN		HM	FIM_MAIN	; Fim do main
 
 # MAIN
-				
+

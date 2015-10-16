@@ -1,4 +1,4 @@
-4000 0000 ; "DUMPER<"		;	DUMPER 		< 
+4000 0000 ; "DUMPER<"		;	DUMPER 		<
 4001 0000 ; "DUMP_INI<"		;	DUMP_INI 	<
 4002 0000 ; "DUMP_TAM<"		;	DUMP_TAM 	<
 4003 0000 ; "DUMP_UL<"		;	DUMP_UL 	<
@@ -10,11 +10,11 @@
 a000 000c		;	MAIN			JP	START	; Salta para in�cio do main
 
 ; PARAMETROS
-8002 0ffc		;	END_INICIAL		K	/0FFC	; Endere�o onde come�a o dump
+8002 0400		;	END_INICIAL		K	/0400	; Endere�o onde come�a o dump
 8004 0032		;	TAMANHO_TEST	K	/0032	; Numero total de palavras a serem "dumpadas"
 8006 0000		;	UL_TEST			K	/0000	; Unidade logica do disco a ser usado
 8008 0010		;	BL_TEST 		K	/0010	; Tamanho do bloco
-800a 0ffc		;	EXE_TEST 		K	/0FFC	; Endere�o onde come�aria a execu��o (valor dummy, apenas para manter o formato)
+800a 0400		;	EXE_TEST 		K	/0400	; Endere�o onde come�aria a execu��o (valor dummy, apenas para manter o formato)
 
 ;========================== N�O ALTERE ESTE TRECHO: FIM =====================;
 
@@ -31,4 +31,4 @@ d01e 9005		;					MM	DUMP_EXE
 d020 a000		;					SC	DUMPER		; Invoca dumper
 a022 c022		;	FIM_MAIN		HM	FIM_MAIN	; Fim do main
 
-				
+
