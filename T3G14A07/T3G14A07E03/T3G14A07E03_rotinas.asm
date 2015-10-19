@@ -728,22 +728,28 @@ GL_FIX_EOL                  K       /0000 ; Salva valor lido no endereco atual d
 ;
 DUMP_CURRENT_ADDR               K       /0000
 DUMP_COUNTER                    K       /0000
-DUMP_PD_COMMAND                 K       /0000
 ; Rotina
 ;
 DUMPER                          K       /0000
-
-                                LD      DUMP_INI ; Carrega endereco inicial a ser lido
-                                MM      DUMP_CURRENT_ADDR ; Salva em variavel temporaria
-                                LD      DUMP_TAM ; Carrega tamanho do dumper
-                                MM      DUMP_COUNTER ; Salva em variavel temporaria
-
+                                ; comando PD
                                 LD      DUMP_UL ; Carrega unidade logica
                                 +       CONST_300 ; soma dispositivo tipo disco
                                 +       PUTDATA ; Adiciona comando de escrita no arquivo
                                 MM      DUMP_PD_COMMAND ; Armazena comando PD
 
-                                ; INICIO DO ARQUIVO
+                                ; Inicio do arquivo
+                                LD      DUMP_INI ; Carrega endereco inicial a ser lido
+                                MM      DUMP_CURRENT_ADDR ; Salva em variavel temporaria
+DUMP_PD_COMMAND                 K       /0000 ; Escreve no arquivo endereço inicial
+
+                                LD      DUMP_PD_COMMAND
+                                MM      DUMP_SIZE_PD
+
+                                LD      DUMP_TAM ; Carrega tamanho do dumper
+                                MM      DUMP_COUNTER ; Salva em variavel temporaria
+DUMP_SIZE_PD                    K       /0000 ; Escreve tamanho em arquivo
+
+
 
                                 ; ------------- LOOP -------------------
 DUMP_LOOP                       LD      DUMP_PD_COMMAND

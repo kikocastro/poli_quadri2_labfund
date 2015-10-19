@@ -49,7 +49,7 @@
 20f8 0000 ; "UITOCH>"		;	UITOCH      >
 2228 0000 ; "HALF_PACK>"		;	HALF_PACK   >
 226c 0000 ; "GETLINEF>"		;	GETLINEF    >
-22e6 0000 ; "DUMPER>"		;	DUMPER 		>
+22e4 0000 ; "DUMPER>"		;	DUMPER 		>
 ;
 ; DUMPER
 200c 0000 ; "DUMP_INI>"		;	DUMP_INI 	>
@@ -728,53 +728,59 @@ a2de b2d2		;	                            RS      GT_PUT_EOS ; retorna
 ;
 82e0 0000		;	DUMP_CURRENT_ADDR               K       /0000
 82e2 0000		;	DUMP_COUNTER                    K       /0000
-82e4 0000		;	DUMP_PD_COMMAND                 K       /0000
 ; Rotina
 ;
-82e6 0000		;	DUMPER                          K       /0000
+82e4 0000		;	DUMPER                          K       /0000
+                                ; comando PD
+a2e6 8010		;	                                LD      DUMP_UL ; Carrega unidade logica
+d2e8 4020		;	                                +       CONST_300 ; soma dispositivo tipo disco
+d2ea 4004		;	                                +       PUTDATA ; Adiciona comando de escrita no arquivo
+a2ec 92f2		;	                                MM      DUMP_PD_COMMAND ; Armazena comando PD
 
-a2e8 800c		;	                                LD      DUMP_INI ; Carrega endereco inicial a ser lido
-a2ea 92e0		;	                                MM      DUMP_CURRENT_ADDR ; Salva em variavel temporaria
-a2ec 800e		;	                                LD      DUMP_TAM ; Carrega tamanho do dumper
-a2ee 92e2		;	                                MM      DUMP_COUNTER ; Salva em variavel temporaria
+                                ; Inicio do arquivo
+a2ee 800c		;	                                LD      DUMP_INI ; Carrega endereco inicial a ser lido
+a2f0 92e0		;	                                MM      DUMP_CURRENT_ADDR ; Salva em variavel temporaria
+82f2 0000		;	DUMP_PD_COMMAND                 K       /0000 ; Escreve no arquivo endereço inicial
 
-a2f0 8010		;	                                LD      DUMP_UL ; Carrega unidade logica
-d2f2 4020		;	                                +       CONST_300 ; soma dispositivo tipo disco
-d2f4 4004		;	                                +       PUTDATA ; Adiciona comando de escrita no arquivo
-a2f6 92e4		;	                                MM      DUMP_PD_COMMAND ; Armazena comando PD
+a2f4 82f2		;	                                LD      DUMP_PD_COMMAND
+a2f6 92fc		;	                                MM      DUMP_SIZE_PD
 
-                                ; INICIO DO ARQUIVO
+a2f8 800e		;	                                LD      DUMP_TAM ; Carrega tamanho do dumper
+a2fa 92e2		;	                                MM      DUMP_COUNTER ; Salva em variavel temporaria
+82fc 0000		;	DUMP_SIZE_PD                    K       /0000 ; Escreve tamanho em arquivo
+
+
 
                                 ; ------------- LOOP -------------------
-a2f8 82e4		;	DUMP_LOOP                       LD      DUMP_PD_COMMAND
-a2fa 9302		;	                                MM      DUMP_PD
+a2fe 82f2		;	DUMP_LOOP                       LD      DUMP_PD_COMMAND
+a300 9308		;	                                MM      DUMP_PD
 
-a2fc 82e0		;	                                LD      DUMP_CURRENT_ADDR ; carrega endereco atual
-a2fe 90e4		;	                                MM      TARGET_ADDRESS ; armazena na variavel
-a300 a0e6		;	                                SC      LOAD_VALUE ; chama subrotina que carrega conteudo
+a302 82e0		;	                                LD      DUMP_CURRENT_ADDR ; carrega endereco atual
+a304 90e4		;	                                MM      TARGET_ADDRESS ; armazena na variavel
+a306 a0e6		;	                                SC      LOAD_VALUE ; chama subrotina que carrega conteudo
 
-8302 0000		;	DUMP_PD                         K /0000 ; Escreve valor no arquivo
+8308 0000		;	DUMP_PD                         K /0000 ; Escreve valor no arquivo
 
-a304 82e0		;	                                LD      DUMP_CURRENT_ADDR ; carrega endereco atual
-d306 5021		;	                                -       CONST_FFE ; subtrai endereco maximo disponivel
+a30a 82e0		;	                                LD      DUMP_CURRENT_ADDR ; carrega endereco atual
+d30c 5021		;	                                -       CONST_FFE ; subtrai endereco maximo disponivel
 
-a308 131a		;	                                JZ      DUMPER_END ; pula para o fim se atingiu o maximo  enderço disponivel na memoria (FFE)
+a30e 1320		;	                                JZ      DUMPER_END ; pula para o fim se atingiu o maximo  enderço disponivel na memoria (FFE)
 
-a30a 82e2		;	                                LD      DUMP_COUNTER ; carrega valor do contador
-d30c 5006		;	                                -       CONST_1 ; subtrai 1
+a310 82e2		;	                                LD      DUMP_COUNTER ; carrega valor do contador
+d312 5006		;	                                -       CONST_1 ; subtrai 1
 
-a30e 131a		;	                                JZ      DUMPER_END ; pula para o fim se atingiu o maximo numero de palavras (DUMP_TAM)
+a314 1320		;	                                JZ      DUMPER_END ; pula para o fim se atingiu o maximo numero de palavras (DUMP_TAM)
 
-a310 92e2		;	                                MM      DUMP_COUNTER ; atualiza valor do contador
+a316 92e2		;	                                MM      DUMP_COUNTER ; atualiza valor do contador
 
-a312 82e0		;	                                LD      DUMP_CURRENT_ADDR ; carrega valor do endereco
-d314 4007		;	                                +       CONST_2 ; soma 2
-a316 92e0		;	                                MM      DUMP_CURRENT_ADDR ; atualiza valor do endereco
+a318 82e0		;	                                LD      DUMP_CURRENT_ADDR ; carrega valor do endereco
+d31a 4007		;	                                +       CONST_2 ; soma 2
+a31c 92e0		;	                                MM      DUMP_CURRENT_ADDR ; atualiza valor do endereco
 
-a318 02f8		;	                                JP      DUMP_LOOP
+a31e 02fe		;	                                JP      DUMP_LOOP
                                 ; ------------- END LOOP -------------------
 
-a31a b2e6		;	DUMPER_END                      RS      DUMPER ; END da sub rotina
+a320 b2e4		;	DUMPER_END                      RS      DUMPER ; END da sub rotina
 
 ;
 ;
