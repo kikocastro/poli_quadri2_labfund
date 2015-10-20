@@ -3,6 +3,9 @@
 LOAD        >
 WRITE       >
 SUBTRACT    >
+SUM         >
+DIVIDE      >
+MULTIPLY    >
 GETDATA     >
 PUTDATA     >
 
@@ -41,8 +44,11 @@ MEM_END     >
 ; ###################################
 ;
 LOAD                    LD  /0000
-WRITE		            MM  /0000
-SUBTRACT	        	-   /0000
+WRITE		                MM  /0000
+SUBTRACT                -   /0000
+SUM                     +   /0000
+DIVIDE                  /   /0000
+MULTIPLY	        	    *   /0000
 GETDATA                 GD  /0000
 PUTDATA                 PD  /0000
 ;

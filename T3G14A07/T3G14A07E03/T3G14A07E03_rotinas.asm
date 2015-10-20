@@ -3,6 +3,9 @@
 LOAD        <
 WRITE       <
 SUBTRACT    <
+SUM         <
+DIVIDE      <
+MULTIPLY    <
 GETDATA     <
 PUTDATA     <
 
@@ -82,7 +85,7 @@ DUMP_EXE 		K	/0400	; Endere�o onde come�aria a execu��o (valor dummy, ap
 ;
 ; Variaveis
 ;
-SUM                 K /0000
+PACK_SUM            K /0000
 ;
 ; Rotina
 ;
@@ -91,11 +94,11 @@ PACK                K  /0000
                     MM TARGET_ADDRESS
                     SC LOAD_VALUE ; Carrega valor de PACK_INPUT_1
                     *  CONST_100 ; Realiza shift de duas casa para esquerda
-                    MM SUM ; armazena valor em SUM
+                    MM PACK_SUM ; armazena valor em PACK_SUM
                     LD INPUT_2_PTR ; carrega valor do endereco contido em PACK_INPUT_2
                     MM TARGET_ADDRESS
                     SC LOAD_VALUE ; Carrega valor de PACK_INPUT_2
-                    +  SUM ; soma PACK_INPUT_1 + PACK_INPUT_2
+                    +  PACK_SUM ; soma PACK_INPUT_1 + PACK_INPUT_2
                     MM OUTPUT_1 ; armazena na saida
                     RS PACK ; Fim da sub rotina
 ;
@@ -728,6 +731,12 @@ GL_FIX_EOL                  K       /0000 ; Salva valor lido no endereco atual d
 ;
 DUMP_CURRENT_ADDR               K       /0000
 DUMP_COUNTER                    K       /0000
+DUMP_LAST_BLOCK_SIZE            K       /0000
+DUMP_TEMP                       K       /0000
+DUMP_LAST_BLOCK_ADDRESS         K       /0000
+DUMP_CHECKSUM                   K       /0000
+DUMP_CURR_BLOCK_SIZE            K       /0000 ; funciona como counter de um bloco
+ABCD K /ABCD
 ; Rotina
 ;
 DUMPER                          K       /0000
@@ -749,39 +758,186 @@ DUMP_PD_COMMAND                 K       /0000 ; Escreve no arquivo endereço ini
                                 MM      DUMP_COUNTER ; Salva em variavel temporaria
 DUMP_SIZE_PD                    K       /0000 ; Escreve tamanho em arquivo
 
+                                ; LAST BLOCK SIZE
+                                ; lastBlockSize = tamanho - (tamanho/blockSize)  [ 7 - 7/3 = 1]
+                                ; se > 0
+                                ;   lastBlockInitAddress = initialAddress + ((tamanho -1 )* 2)
+                                ; Exemplo
+                                ; tamanho 7
+                                ; blockSize = 3
+                                ; 01 23 45    67 89 AB    CD
+                                ; lastBlockSize = 3 - (7/3) = 1
+                                ; lastBlockInitAddress = 0 + ((7 -1) * 2) C
+                                ; ie, qd chegar no C, escrevo lastBlockSize palavras (1)
 
+                                ; calcula resto da divisao de tamanho do buffer por tamanho do bloco
+                                LV      DUMP_BL ; carrega enderço do tamanho do bloco
+                                +       DIVIDE ; adiciona operador de divisao
+                                MM      DUMP_DIVIDE_BY_BLOCK_SIZE ; armazena comando para a divisao por counter
+                                LD      DUMP_TAM ; carrega tamanho do buffer
+DUMP_DIVIDE_BY_BLOCK_SIZE       K       /0000 ; Divide tamanho do buffer por tamanho do bloco
+                                MM      DUMP_TEMP
+                                LV      DUMP_TEMP
+                                +       MULTIPLY
+                                MM      DUMP_MULT_BY_DIVISOR
+                                LD      DUMP_BL ;
+DUMP_MULT_BY_DIVISOR            K       /0000
+                                MM      DUMP_TEMP
+                                LV      DUMP_TEMP
+                                +       SUBTRACT ; add comando de subtracao
+                                MM      DUMP_SUBTRACT ; armazena
 
-                                ; ------------- LOOP -------------------
-DUMP_LOOP                       LD      DUMP_PD_COMMAND
-                                MM      DUMP_PD
+;                                 ; tamanho do bloco
+                                LD      DUMP_TAM ; carrega tamanho do buffer
+DUMP_SUBTRACT                   K       /0000 ; resultado sera TAM % BL
+                                MM      DUMP_LAST_BLOCK_SIZE ; armazena tamanho do ultimo bloco
 
-                                LD      DUMP_CURRENT_ADDR ; carrega endereco atual
-                                MM      TARGET_ADDRESS ; armazena na variavel
-                                SC      LOAD_VALUE ; chama subrotina que carrega conteudo
+                                JZ      DUMP_LOOP ; inicia o loop se resto igual a zero (ultimo bloco é completo)
 
-DUMP_PD                         K /0000 ; Escreve valor no arquivo
+;                                 ; LAST BLOCK ADDRESS
+                                LV      DUMP_INI ; carrega endereço do endereço inicial
+                                +       SUM ; comando soma
+                                MM      DUMP_SUM1 ; armazena comando
+
+                                LV      CONST_2
+                                +       MULTIPLY
+                                MM      DUMP_MULTIPLY
+
+                                LD      DUMP_TAM ; carrega tamanho do buffer
+                                -       CONST_1
+DUMP_MULTIPLY                   K       /0000 ; multiplica (tamanho do buffer - 1) por 2
+DUMP_SUM1                       K       /0000 ; soma endereco inincial
+                                MM      DUMP_LAST_BLOCK_ADDRESS ; armazena endereço de inicio do ultimo bloco
+
+                                ; Armazena endereco de inicio do primeiro bloco
+                                LD      DUMP_INI ; Carrega endereco inicial a ser lido
+                                MM      DUMP_CURRENT_ADDR ; Salva em variavel temporaria
+
+;                                 ; ------------- MAIN LOOP -------------------
+                       ; Verifica se esta no ultimo bloco
+DUMP_LOOP                       LV      DUMP_CURRENT_ADDR
+                                +       SUBTRACT
+                                MM      DUMP_SUBTRACT1
+                                LD      DUMP_LAST_BLOCK_ADDRESS
+DUMP_SUBTRACT1                  K       /0000
+
+                                JZ      DUMP_LAST_BLOCK
+
+                                ; se nao é ultimo bloco, DUMP_CURR_BLOCK_SIZE = DUMP_BL
+                                LD      DUMP_BL
+                                MM      DUMP_CURR_BLOCK_SIZE
+                                JP      DUMP_BLOCK_CONTINUE ; continua programa
+
+                                ; se ultimo bloco, corrige DUMP_CURR_BLOCK_SIZE para DUMP_LAST_BLOCK_SIZE
+DUMP_LAST_BLOCK                 LD      DUMP_LAST_BLOCK_SIZE
+                                MM      DUMP_CURR_BLOCK_SIZE
+
+                                ; atualiza contador do loop principal
+DUMP_BLOCK_CONTINUE             LV      DUMP_CURR_BLOCK_SIZE
+                                +       SUBTRACT
+                                MM      DUMP_SUBTRACT2
+                                LD      DUMP_COUNTER
+DUMP_SUBTRACT2                  K       /0000 ; subtrai tamanho do bloco do counter
+                                JN      DUMPER_END_LOOP ; pula para o fim se atingiu o maximo numero de palavras (DUMP_TAM)
+
+                                MM      DUMP_COUNTER ; se nao, atualiza counter
+
+                                ; zera CHECKSUM
+                                LD      CONST_0
+                                MM      DUMP_CHECKSUM
+
+                                ; INICIO DO BLOCO
+                                ; ESCREVE ENDERECO INICIAL
+                                LD      DUMP_PD_COMMAND
+                                MM      DUMP_BLOCK_PD
+                                LV      DUMP_CURRENT_ADDR
+                                MM      TARGET_ADDRESS
+                                SC      LOAD_VALUE
+DUMP_BLOCK_PD                   K       /0000 ; Escreve no arquivo endereço atual
+
+                                ; atualiza CHECKSUM para endereco
+                                LD      DUMP_CURRENT_ADDR
+                                MM      DUMP_CHECKSUM_ADD ; salva valor atual
+                                SC      DUMP_UPADATE_CHECKSUM
+
+                                ; ESCREVE TAMANHO DO BLOCO
+                                LD      DUMP_PD_COMMAND
+                                MM      DUMP_BLOCK_PD1
+                                LV      DUMP_CURR_BLOCK_SIZE
+                                MM      TARGET_ADDRESS
+                                SC      LOAD_VALUE
+DUMP_BLOCK_PD1                  K       /0000 ; Escreve no arquivo tamanho do bloco atual
+
+                                ; atualiza CHECKSUM para tamanho do bloco
+                                LD      DUMP_CURR_BLOCK_SIZE
+                                MM      DUMP_CHECKSUM_ADD ; salva valor atual
+                                SC      DUMP_UPADATE_CHECKSUM
+
+                                ; ----****** BLOCK LOOP ******----
+DUMP_BLOCK_LOOP                 LD      DUMP_CURR_BLOCK_SIZE ; carrega tamanho do bloco atual
+                                -       CONST_1 ; subtrai 1
+                                JN      DUMP_LOOP_UPDATE ; sai do loop do bloco
+                                MM      DUMP_CURR_BLOCK_SIZE ; atualiza contador
 
                                 LD      DUMP_CURRENT_ADDR ; carrega endereco atual
                                 -       CONST_FFE ; subtrai endereco maximo disponivel
+                                JZ      DUMPER_END_LOOP ; pula para o fim se atingiu o maximo  endereço disponivel na memoria (FFE)
 
-                                JZ      DUMPER_END ; pula para o fim se atingiu o maximo  enderço disponivel na memoria (FFE)
+                                ; ESCRITA NO ARQUIVO
+                                LD      DUMP_PD_COMMAND
+                                MM      DUMP_PD
+                                LD      DUMP_CURRENT_ADDR ; carrega endereco atual
+                                MM      TARGET_ADDRESS ; armazena na variavel
+                                SC      LOAD_VALUE ; chama subrotina que carrega conteudo
+DUMP_PD                         K       /0000 ; Escreve valor no arquivo
 
-                                LD      DUMP_COUNTER ; carrega valor do contador
-                                -       CONST_1 ; subtrai 1
+                                ; atualiza CHECKSUM
+                                MM      DUMP_CHECKSUM_ADD ; salva valor atual
+                                SC      DUMP_UPADATE_CHECKSUM
 
-                                JZ      DUMPER_END ; pula para o fim se atingiu o maximo numero de palavras (DUMP_TAM)
-
-                                MM      DUMP_COUNTER ; atualiza valor do contador
-
+                                ; atualiza proximo endereço
                                 LD      DUMP_CURRENT_ADDR ; carrega valor do endereco
                                 +       CONST_2 ; soma 2
                                 MM      DUMP_CURRENT_ADDR ; atualiza valor do endereco
 
+                                JP      DUMP_BLOCK_LOOP
+
+                                ; ----****** END BLOCK LOOP ******----
+
+                                ; escreve CHECKSUM
+DUMP_LOOP_UPDATE                LD      DUMP_PD_COMMAND
+                                MM      DUMP_PD1
+                                LD      DUMP_CHECKSUM ; carrega checksum do bloco atual
+DUMP_PD1                        K       /0000 ; Escreve valor no arquivo
+
+
                                 JP      DUMP_LOOP
-                                ; ------------- END LOOP -------------------
+
+                                ; ------------- END MAIN LOOP -------------------
+DUMPER_END_LOOP                 LD      DUMP_PD_COMMAND
+                                MM      DUMP_PD2
+                                LD ABCD
+                                LD      DUMP_EXE
+DUMP_PD2                        K       /0000 ; Escreve valor no arquivo
 
 DUMPER_END                      RS      DUMPER ; END da sub rotina
-
 ;
+; ###################################
+; DUMP_UPADATE_CHECKSUM
+; ###################################
+;
+; Sub rotina de DUMPER que realiza a soma de DUMP_CHECKSUM_ADD a checksum
+;
+DUMP_CHECKSUM_ADD               K       /0000
+DUMP_UPADATE_CHECKSUM           K       /0000
+                                ; atualiza CHECKSUM
+                                LD      DUMP_CHECKSUM_ADD ; salva valor atual
+                                LV      DUMP_CHECKSUM
+                                +       SUM
+                                MM      DUMP_SUM2
+                                LD      DUMP_CHECKSUM_ADD
+DUMP_SUM2                       K       /0000
+                                MM      DUMP_CHECKSUM
+                                RS      DUMP_UPADATE_CHECKSUM
 ;
 # PACK

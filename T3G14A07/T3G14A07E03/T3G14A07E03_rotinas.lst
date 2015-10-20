@@ -3,32 +3,35 @@
 4000 0000 ; "LOAD<"		;	LOAD        <
 4001 0000 ; "WRITE<"		;	WRITE       <
 4002 0000 ; "SUBTRACT<"		;	SUBTRACT    <
-4003 0000 ; "GETDATA<"		;	GETDATA     <
-4004 0000 ; "PUTDATA<"		;	PUTDATA     <
+4003 0000 ; "SUM<"		;	SUM         <
+4004 0000 ; "DIVIDE<"		;	DIVIDE      <
+4005 0000 ; "MULTIPLY<"		;	MULTIPLY    <
+4006 0000 ; "GETDATA<"		;	GETDATA     <
+4007 0000 ; "PUTDATA<"		;	PUTDATA     <
 
-4005 0000 ; "CONST_0<"		;	CONST_0                 <
-4006 0000 ; "CONST_1<"		;	CONST_1                 <
-4007 0000 ; "CONST_2<"		;	CONST_2                 <
-4008 0000 ; "CONST_7<"		;	CONST_7                 <
-4009 0000 ; "CONST_9<"		;	CONST_9                 <
-4010 0000 ; "CONST_A<"		;	CONST_A                 <
-4011 0000 ; "CONST_10<"		;	CONST_10                <
-4012 0000 ; "CONST_F<"		;	CONST_F                 <
-4013 0000 ; "CONST_30<"		;	CONST_30                <
-4014 0000 ; "CONST_3A<"		;	CONST_3A                <
-4015 0000 ; "CONST_40<"		;	CONST_40                <
-4016 0000 ; "CONST_47<"		;	CONST_47                <
-4017 0000 ; "CONST_80<"		;	CONST_80                <
-4018 0000 ; "CONST_FF<"		;	CONST_FF                <
-4019 0000 ; "CONST_100<"		;	CONST_100               <
-4020 0000 ; "CONST_300<"		;	CONST_300               <
-4021 0000 ; "CONST_FFE<"		;	CONST_FFE               <
-4022 0000 ; "CONST_1000<"		;	CONST_1000              <
-4023 0000 ; "CONST_8000<"		;	CONST_8000              <
-4024 0000 ; "CONST_FFFF<"		;	CONST_FFFF              <
+4008 0000 ; "CONST_0<"		;	CONST_0                 <
+4009 0000 ; "CONST_1<"		;	CONST_1                 <
+4010 0000 ; "CONST_2<"		;	CONST_2                 <
+4011 0000 ; "CONST_7<"		;	CONST_7                 <
+4012 0000 ; "CONST_9<"		;	CONST_9                 <
+4013 0000 ; "CONST_A<"		;	CONST_A                 <
+4014 0000 ; "CONST_10<"		;	CONST_10                <
+4015 0000 ; "CONST_F<"		;	CONST_F                 <
+4016 0000 ; "CONST_30<"		;	CONST_30                <
+4017 0000 ; "CONST_3A<"		;	CONST_3A                <
+4018 0000 ; "CONST_40<"		;	CONST_40                <
+4019 0000 ; "CONST_47<"		;	CONST_47                <
+4020 0000 ; "CONST_80<"		;	CONST_80                <
+4021 0000 ; "CONST_FF<"		;	CONST_FF                <
+4022 0000 ; "CONST_100<"		;	CONST_100               <
+4023 0000 ; "CONST_300<"		;	CONST_300               <
+4024 0000 ; "CONST_FFE<"		;	CONST_FFE               <
+4025 0000 ; "CONST_1000<"		;	CONST_1000              <
+4026 0000 ; "CONST_8000<"		;	CONST_8000              <
+4027 0000 ; "CONST_FFFF<"		;	CONST_FFFF              <
 
-4025 0000 ; "MEM_START<"		;	MEM_START   <
-4026 0000 ; "MEM_END<"		;	MEM_END     <
+4028 0000 ; "MEM_START<"		;	MEM_START   <
+4029 0000 ; "MEM_END<"		;	MEM_END     <
 ;
 ; Entradas e saidas
 ;
@@ -49,7 +52,7 @@
 20f8 0000 ; "UITOCH>"		;	UITOCH      >
 2228 0000 ; "HALF_PACK>"		;	HALF_PACK   >
 226c 0000 ; "GETLINEF>"		;	GETLINEF    >
-22e4 0000 ; "DUMPER>"		;	DUMPER 		>
+22f0 0000 ; "DUMPER>"		;	DUMPER 		>
 ;
 ; DUMPER
 200c 0000 ; "DUMP_INI>"		;	DUMP_INI 	>
@@ -82,7 +85,7 @@
 ;
 ; Variaveis
 ;
-8016 0000		;	SUM                 K /0000
+8016 0000		;	PACK_SUM            K /0000
 ;
 ; Rotina
 ;
@@ -90,12 +93,12 @@
 a01a 8000		;	                    LD INPUT_1_PTR ; carrega valor do endereco contido em INPUT_1_PTR
 a01c 90e4		;	                    MM TARGET_ADDRESS
 a01e a0e6		;	                    SC LOAD_VALUE ; Carrega valor de PACK_INPUT_1
-d020 6019		;	                    *  CONST_100 ; Realiza shift de duas casa para esquerda
-a022 9016		;	                    MM SUM ; armazena valor em SUM
+d020 6022		;	                    *  CONST_100 ; Realiza shift de duas casa para esquerda
+a022 9016		;	                    MM PACK_SUM ; armazena valor em PACK_SUM
 a024 8002		;	                    LD INPUT_2_PTR ; carrega valor do endereco contido em PACK_INPUT_2
 a026 90e4		;	                    MM TARGET_ADDRESS
 a028 a0e6		;	                    SC LOAD_VALUE ; Carrega valor de PACK_INPUT_2
-a02a 4016		;	                    +  SUM ; soma PACK_INPUT_1 + PACK_INPUT_2
+a02a 4016		;	                    +  PACK_SUM ; soma PACK_INPUT_1 + PACK_INPUT_2
 a02c 9006		;	                    MM OUTPUT_1 ; armazena na saida
 a02e b018		;	                    RS PACK ; Fim da sub rotina
 ;
@@ -117,30 +120,30 @@ a036 8000		;	                    LD INPUT_1_PTR ; Carrega endereco contido em IN
 a038 90e4		;	                    MM TARGET_ADDRESS
 a03a a0e6		;	                    SC LOAD_VALUE ; Carrega conteudo de entrada de UNPACK
 a03c 9032		;	                    MM UNPACK_INPUT_LOCAL ; Salva na variavel local
-d03e 4023		;	                    + CONST_8000 ; soma 8000
+d03e 4026		;	                    + CONST_8000 ; soma 8000
 a040 205a		;	                    JN POSITIVE_CASE ; Caso < 0, o numero é positivo
                     ; caso negativo [ex: F123. Atualmente: F123 + 8000 = 7123]
-d042 7019		;	NEGATIVE_CASE       / CONST_100 ; sem o sinal negativo com shift a direita [71]
+d042 7022		;	NEGATIVE_CASE       / CONST_100 ; sem o sinal negativo com shift a direita [71]
 a044 9030		;	                    MM TEMP ; Armazena na variavel temp
                     ; Parte XY
-d046 4017		;	                    + CONST_80 ; soma 80 para devolver o bit de sinal negativo [F1]
+d046 4020		;	                    + CONST_80 ; soma 80 para devolver o bit de sinal negativo [F1]
 a048 9006		;	                    MM OUTPUT_1 ; Armazena valor 00XY
                     ; Parte ZT
 a04a 8030		;	                    LD TEMP ; Carrega valor em temp [71]
-d04c 6019		;	                    * CONST_100 ; Shift para esquerda [7100]
+d04c 6022		;	                    * CONST_100 ; Shift para esquerda [7100]
 a04e 9030		;	                    MM TEMP ; Salva em temp
 a050 8032		;	                    LD UNPACK_INPUT_LOCAL ; Carrega valor inicial
-d052 4023		;	                    + CONST_8000 ; [F123 + 8000 = 7123]
+d052 4026		;	                    + CONST_8000 ; [F123 + 8000 = 7123]
 a054 5030		;	                    - TEMP ; Obtem 00ZT [7123 - 7100 = 23]
 a056 9008		;	                    MM OUTPUT_2 ; Armazena 00 ZT em OUTPUT_2
 a058 b034		;	                    RS UNPACK ; END da sub rotina
                     ; Caso positivo
                     ; Parte XY
 a05a 8032		;	POSITIVE_CASE       LD UNPACK_INPUT_LOCAL ; Carrega valor inicial
-d05c 7019		;	                    / CONST_100 ; Realiza shift de duas casas para direita
+d05c 7022		;	                    / CONST_100 ; Realiza shift de duas casas para direita
 a05e 9006		;	                    MM OUTPUT_1 ; Salva em OUTPUT_1 00XY
                     ; Parte ZT
-d060 6019		;	                    * CONST_100 ; Realiza shift de duas casa para esquerda, obtendo XY00
+d060 6022		;	                    * CONST_100 ; Realiza shift de duas casa para esquerda, obtendo XY00
 a062 9030		;	                    MM TEMP ; Salva valor temporario
 a064 8032		;	                    LD UNPACK_INPUT_LOCAL ; Carrega valor inicial
 a066 5030		;	                    - TEMP ; Realiza XYZT - XY00 obtendo ZT
@@ -180,21 +183,21 @@ a08e 9090		;	                        MM      UNPACK_EXEC3 ; Armazena em UNPACK_E
 a092 9072		;	                        MM      DESTINATION ; Armazena
                         ; Tratamento de erros de Input
                         ; 1) Endereço inicial + o numero de palavras > endereço maximo
-d094 8026		;	                        LD      MEM_END   ; Carrega o endereço maximo de destino
+d094 8029		;	                        LD      MEM_END   ; Carrega o endereço maximo de destino
 a096 506e		;	                        -       SIZE
 a098 506e		;	                        -       SIZE ; Subtrai numero de enderecos de words que serao copiadas (Duas vezes pois cada palavra ocupa 2 Bytes)
 a09a 5072		;	                        -       DESTINATION  ; Subtrai o endereço inicial do destino
 a09c 20e0		;	                        JN      END_FAIL  ; Caso o endereço inicial + o numero de palavras > endereço maximo, ERRO
                         ; 2) Endereço de destino esta antes do intervalo
 a09e 8072		;	                        LD      DESTINATION
-d0a0 5025		;	                        -       MEM_START
+d0a0 5028		;	                        -       MEM_START
 a0a2 20e0		;	                        JN      END_FAIL
                         ; 3) Origem esta antes do intervalo
 a0a4 8070		;	                        LD      ORIGIN
-d0a6 5025		;	                        -       MEM_START
+d0a6 5028		;	                        -       MEM_START
 a0a8 20e0		;	                        JN      END_FAIL
                         ; 4) Origem esta a frente do intervalo
-d0aa 8026		;	                        LD      MEM_END
+d0aa 8029		;	                        LD      MEM_END
 a0ac 5070		;	                        -       ORIGIN
 a0ae 506e		;	                        -       SIZE
 a0b0 506e		;	                        -       SIZE
@@ -214,22 +217,22 @@ a0c4 a0e6		;	                        SC      LOAD_VALUE ; Carrega valor no ender
 
 80c6 0000		;	MEMCPY_EXEC             K       /0000 ; Armazena o valor no endereco de destino
 a0c8 8072		;	                        LD      DESTINATION  ; Carrega o endereço de destino
-d0ca 4007		;	                        +       CONST_2   ; Avança 2 posições na memoria
+d0ca 4010		;	                        +       CONST_2   ; Avança 2 posições na memoria
 a0cc 9072		;	                        MM      DESTINATION  ; Atualiza DESTINATION
 
 a0ce 8070		;	                        LD      ORIGIN ; Carrega o endereço de origem
-d0d0 4007		;	                        +       CONST_2   ; Avança 2 posições na memoria
+d0d0 4010		;	                        +       CONST_2   ; Avança 2 posições na memoria
 a0d2 9070		;	                        MM      ORIGIN ; Atualiza ORIGIN
 
 a0d4 806c		;	                        LD      COUNT     ; Carrega o contador no acumulador
-d0d6 4006		;	                        +       CONST_1     ; Soma 1
+d0d6 4009		;	                        +       CONST_1     ; Soma 1
 a0d8 906c		;	                        MM      COUNT     ; Atualiza CONT
 
 a0da 00b4		;	                        JP      LOOP
 
-d0dc 8005		;	END_SUCCESS             LD      CONST_0   ; Se o programa finalizar com sucesso, coloca 0x0000 no acumulador
+d0dc 8008		;	END_SUCCESS             LD      CONST_0   ; Se o programa finalizar com sucesso, coloca 0x0000 no acumulador
 a0de 00e2		;	                        JP      RETURN_MEMCPY
-d0e0 8024		;	END_FAIL                LD      CONST_FFFF ; Se o programa finalizar com falhas, coloca 0xFFFF no acumulador
+d0e0 8027		;	END_FAIL                LD      CONST_FFFF ; Se o programa finalizar com falhas, coloca 0xFFFF no acumulador
 
 a0e2 b074		;	RETURN_MEMCPY           RS      MEMCPY
 ;
@@ -290,7 +293,7 @@ a10e a13c		;	                        SC      UITOCH_PROCESS_WORD ; Chama sub-rot
 a110 90f4		;	                        MM      UITOCH_TEMP_1 ; [3739]
 
                         ; Verifica se houve erro
-d112 5024		;	                        -       CONST_FFFF
+d112 5027		;	                        -       CONST_FFFF
 a114 1134		;	                        JZ      UITOCH_ERROR
 
                         ; Segunda palavra
@@ -305,7 +308,7 @@ a124 a13c		;	                        SC      UITOCH_PROCESS_WORD ; Chama sub-rot
 a126 90f6		;	                        MM      UITOCH_TEMP_2 ; [4142]
 
                         ; Verifica se houve erro
-d128 5024		;	                        -       CONST_FFFF
+d128 5027		;	                        -       CONST_FFFF
 a12a 1134		;	                        JZ      UITOCH_ERROR
 
                         ; Se nao houve, armazena na saida
@@ -314,7 +317,7 @@ a12e 9006		;	                        MM      OUTPUT_1
 a130 80f6		;	                        LD      UITOCH_TEMP_2
 a132 9008		;	                        MM      OUTPUT_2
 
-d134 8024		;	UITOCH_ERROR            LD      CONST_FFFF ; Carrega valor de erro
+d134 8027		;	UITOCH_ERROR            LD      CONST_FFFF ; Carrega valor de erro
 
 a136 b0f8		;	END_UITOCH              RS      UITOCH ; END da sub rotina
 ;
@@ -364,19 +367,19 @@ a158 b13c		;	END_UITOCH_PROCESS_WORD     RS      UITOCH_PROCESS_WORD
 
 815e 0000		;	UITOCH_PROCESS_CHAR         K       /0000
 a160 815a		;	                            LD      UITOCH_TEMP_CHAR ; Carrega valor  [exemplo: 0007]
-d162 4013		;	                            +       CONST_30 ; [0037]
+d162 4016		;	                            +       CONST_30 ; [0037]
 a164 915a		;	                            MM      UITOCH_TEMP_CHAR ; Armazena em variavel temporaria
-d166 5014		;	                            -       CONST_3A ; UITOCH_TEMP_CHAR - 3A
+d166 5017		;	                            -       CONST_3A ; UITOCH_TEMP_CHAR - 3A
 a168 2170		;	                            JN      UITOCH_IS_NUMBER ; Se negativo, trata-se de um numero, caso contrario char de A a F
                             ; Caso char
 a16a 815a		;	                            LD      UITOCH_TEMP_CHAR ; Carrega o valor de char [0037]
-d16c 4008		;	                            +       CONST_7 ; soma 7 para encontrar o valor inteiro [0041]
+d16c 4011		;	                            +       CONST_7 ; soma 7 para encontrar o valor inteiro [0041]
 a16e 0176		;	                            JP      END_UITOCH_PROCESS_CHAR ; Encerra
 
 a170 815a		;	UITOCH_IS_NUMBER            LD      UITOCH_TEMP_CHAR ; carrega o numero
 a172 0176		;	                            JP      END_UITOCH_PROCESS_CHAR
 
-d174 8024		;	UITOCH_PROCESS_CHAR_ERROR   LD      CONST_FFFF ; Carrega erro
+d174 8027		;	UITOCH_PROCESS_CHAR_ERROR   LD      CONST_FFFF ; Carrega erro
 
 a176 b15e		;	END_UITOCH_PROCESS_CHAR     RS      UITOCH_PROCESS_CHAR
 ;
@@ -411,7 +414,7 @@ a18e a1ba		;	                        SC      CHTOI_PROCESS_WORD ; Chama sub roti
 a190 917c		;	                        MM      UNPACKED_TEMP_1 ; Armazena na variavel local
 
                         ; Verifica se houve erro
-d192 5024		;	                        -       CONST_FFFF
+d192 5027		;	                        -       CONST_FFFF
 a194 11b0		;	                        JZ      CHTOI_ERROR
 
                         ; Segunda word
@@ -421,7 +424,7 @@ a19a a1ba		;	                        SC      CHTOI_PROCESS_WORD ; Chama sub roti
 a19c 917e		;	                        MM      UNPACKED_TEMP_2 ; Armazena na variavel local
 
                         ; Verifica se houve erro
-d19e 5024		;	                        -       CONST_FFFF
+d19e 5027		;	                        -       CONST_FFFF
 a1a0 11b0		;	                        JZ      CHTOI_ERROR
 
                         ; PACK
@@ -433,7 +436,7 @@ a1aa a018		;	                        SC      PACK ; Chama rotina
 a1ac 8006		;	                        LD      OUTPUT_1 ; Carrega resultado
 a1ae 01b2		;	                        JP      END_CHTOI ; Encerra rotina
 
-d1b0 8024		;	CHTOI_ERROR             LD      CONST_FFFF ; Carrega valor de erro
+d1b0 8027		;	CHTOI_ERROR             LD      CONST_FFFF ; Carrega valor de erro
 
 a1b2 b180		;	END_CHTOI               RS      CHTOI ; END da sub rotina
 ;
@@ -469,7 +472,7 @@ a1ce a1f6		;	                            SC      CHTOI_PROCESS_CHAR ; Chama sub 
 a1d0 91b6		;	                            MM      CHTOI_TEMP_1 ; Armazena na variavel
 
                             ; Verifica se houve erro
-d1d2 5024		;	                            -       CONST_FFFF
+d1d2 5027		;	                            -       CONST_FFFF
 a1d4 11f0		;	                            JZ      CHTOI_PROCESS_WORD_ERROR
 
                             ;segunda metade
@@ -479,7 +482,7 @@ a1da a1f6		;	                            SC      CHTOI_PROCESS_CHAR ; Chama sub 
 a1dc 91b8		;	                            MM      CHTOI_TEMP_2 ; Armazena na variavel
 
                             ; Verifica se houve erro
-d1de 5024		;	                            -       CONST_FFFF
+d1de 5027		;	                            -       CONST_FFFF
 a1e0 11f0		;	                            JZ      CHTOI_PROCESS_WORD_ERROR
 
                             ; Inicio da juncao das duas metades [000A e 0002 viram 00A2]
@@ -491,7 +494,7 @@ a1ea a228		;	                            SC      HALF_PACK ; Chama sub rotina [o
 a1ec 8006		;	                            LD      OUTPUT_1 ; Carrega resultado
 a1ee 01f2		;	                            JP      END_CHTOI_PROCESS_WORD
 
-d1f0 8024		;	CHTOI_PROCESS_WORD_ERROR    LD      CONST_FFFF ; Carrega valor de erro
+d1f0 8027		;	CHTOI_PROCESS_WORD_ERROR    LD      CONST_FFFF ; Carrega valor de erro
 
 a1f2 b1ba		;	END_CHTOI_PROCESS_WORD      RS      CHTOI_PROCESS_WORD
 ;
@@ -510,34 +513,34 @@ a1f2 b1ba		;	END_CHTOI_PROCESS_WORD      RS      CHTOI_PROCESS_WORD
 a1f8 81f4		;	                            LD      CHTOI_TEMP_CHAR ; Carrega valor  [exemplo: 0041]
                             ; Verificacao de char fora dos intervalos [30,39] ou [41,46]
                             ; < 30
-d1fa 5013		;	                            -       CONST_30
+d1fa 5016		;	                            -       CONST_30
 a1fc 2222		;	                            JN      CHTOI_PROCESS_CHAR_ERROR
                             ; x == 40
 a1fe 81f4		;	                            LD      CHTOI_TEMP_CHAR ; Carrega valor
-d200 5015		;	                            -       CONST_40
+d200 5018		;	                            -       CONST_40
 a202 1222		;	                            JZ      CHTOI_PROCESS_CHAR_ERROR
                             ; x > 46
 a204 81f4		;	                            LD      CHTOI_TEMP_CHAR ; Carrega valor
-d206 5016		;	                            -       CONST_47
+d206 5019		;	                            -       CONST_47
 a208 220c		;	                            JN      VALID_INPUT ; Se negativo, é valido
 a20a 0222		;	                            JP      CHTOI_PROCESS_CHAR_ERROR  ; Caso contrario da erro
 
                             ; Caso positivo, continua
 a20c 81f4		;	VALID_INPUT                 LD      CHTOI_TEMP_CHAR ; Carrega valor  [exemplo: 0041]
-d20e 5013		;	                            -       CONST_30 ; Subtrai 30 para encontrar o valor inteiro [0011]
+d20e 5016		;	                            -       CONST_30 ; Subtrai 30 para encontrar o valor inteiro [0011]
 a210 91f4		;	                            MM      CHTOI_TEMP_CHAR ; Armazena em variavel temporaria
-d212 5011		;	                            -       CONST_10 ; CHTOI_TEMP_CHAR - 10
+d212 5014		;	                            -       CONST_10 ; CHTOI_TEMP_CHAR - 10
 a214 221e		;	                            JN      IS_NUMBER ; Se negativo, trata-se de um numero, caso contrario letra de A a F
 
 a216 81f4		;	IS_CHAR                     LD      CHTOI_TEMP_CHAR ; Carrega o valor de char [0011]
 a218 81f4		;	                            LD      CHTOI_TEMP_CHAR ; [0011]
-d21a 5008		;	                            -       CONST_7 ; subtrai 7 para encontrar a letra hexadecimal [000A]
+d21a 5011		;	                            -       CONST_7 ; subtrai 7 para encontrar a letra hexadecimal [000A]
 a21c 0224		;	                            JP      END_CHTOI_PROCESS_CHAR ; Encerra
 
 a21e 81f4		;	IS_NUMBER                   LD      CHTOI_TEMP_CHAR ; carrega o numero
 a220 0224		;	                            JP      END_CHTOI_PROCESS_CHAR
 
-d222 8024		;	CHTOI_PROCESS_CHAR_ERROR    LD      CONST_FFFF ; Carrega erro
+d222 8027		;	CHTOI_PROCESS_CHAR_ERROR    LD      CONST_FFFF ; Carrega erro
 
 a224 b1f6		;	END_CHTOI_PROCESS_CHAR      RS      CHTOI_PROCESS_CHAR
 
@@ -557,7 +560,7 @@ a224 b1f6		;	END_CHTOI_PROCESS_CHAR      RS      CHTOI_PROCESS_CHAR
 a22a 8000		;	                        LD INPUT_1_PTR ; carrega valor do endereco contido em INPUT_1_PTR
 a22c 90e4		;	                        MM TARGET_ADDRESS
 a22e a0e6		;	                        SC LOAD_VALUE ; Carrega valor de HALF_PACK_INPUT_1
-d230 6011		;	                        *  CONST_10 ; Realiza shift de uma casa para esquerda
+d230 6014		;	                        *  CONST_10 ; Realiza shift de uma casa para esquerda
 a232 9226		;	                        MM HALF_PACK_PARTIAL_SUM ; armazena valor em HALF_PACK_PARTIAL_SUM
 
 a234 8002		;	                        LD INPUT_2_PTR ; carrega valor do endereco contido em HALF_PACK_INPUT_2
@@ -589,10 +592,10 @@ a248 90e4		;	                            MM      TARGET_ADDRESS
 a24a a0e6		;	                            SC      LOAD_VALUE ; Carrega conteudo de entrada de HALF_UNPACK
 a24c 9240		;	                            MM      HALF_UNPACK_TEMP1 ; Salva na variavel local [00XY]
                             ; Parte 000X
-d24e 7011		;	                            /       CONST_10 ; Realiza shift de uma casa para direita [000X]
+d24e 7014		;	                            /       CONST_10 ; Realiza shift de uma casa para direita [000X]
 a250 9006		;	                            MM      OUTPUT_1 ; Salva em OUTPUT_1 [000X]
                             ; Parte 000Y
-d252 6011		;	                            *       CONST_10 ; Shif para esquerda [00X0]
+d252 6014		;	                            *       CONST_10 ; Shif para esquerda [00X0]
 a254 9242		;	                            MM      HALF_UNPACK_TEMP2
 a256 3242		;	                            LV      HALF_UNPACK_TEMP2
 d258 4002		;	                            +       SUBTRACT
@@ -628,8 +631,8 @@ a262 b244		;	                            RS HALF_UNPACK ; END da sub rotina
 a26e 8000		;	                            LD      INPUT_1_PTR ; Carrega endereco contido em INPUT_1_PTR
 a270 90e4		;	                            MM      TARGET_ADDRESS
 a272 a0e6		;	                            SC      LOAD_VALUE ; Carrega a Unidade Logica
-d274 4020		;	                            +       CONST_300 ; soma dispositivo tipo disco
-d276 4003		;	                            +       GETDATA ; soma instrucao GD
+d274 4023		;	                            +       CONST_300 ; soma dispositivo tipo disco
+d276 4006		;	                            +       GETDATA ; soma instrucao GD
 a278 9290		;	                            MM      READ_WORD ; Armazena instrucao completa
 
                             ; Carrega valor do tamanho do buffer
@@ -658,31 +661,31 @@ a29a 8006		;	                            LD      OUTPUT_1 ; carrega primeira pal
 a29c 926a		;	                            MM      GL_TEMP
 
                             ; verifica se é EOL
-d29e 5010		;	                            -       CONST_A ; subtrai A
+d29e 5013		;	                            -       CONST_A ; subtrai A
 a2a0 12c4		;	                            JZ      GT_EOL
                             ; verifica se é EOF
 a2a2 826a		;	                            LD      GL_TEMP ; recarrega palavra
-d2a4 5018		;	                            -       CONST_FF
+d2a4 5021		;	                            -       CONST_FF
 a2a6 12c8		;	                            JZ      GT_EOF
 
 a2a8 8008		;	                            LD      OUTPUT_2 ; Carrega segunda palavra
 a2aa 926a		;	                            MM      GL_TEMP
 
                             ; verifica se é EOL
-d2ac 5010		;	                            -       CONST_A ; subtrai A
+d2ac 5013		;	                            -       CONST_A ; subtrai A
 a2ae 12c4		;	                            JZ      GT_EOL
                             ; verifica se é EOF
 a2b0 826a		;	                            LD      GL_TEMP ; recarrega palavra
-d2b2 5018		;	                            -       CONST_FF
+d2b2 5021		;	                            -       CONST_FF
 a2b4 12c8		;	                            JZ      GT_EOF
 
                             ; se nao for EOL nem EOF, continua
 a2b6 8264		;	                            LD      GL_BUFFER_SIZE ; carrega tamanho atual do buffer
-d2b8 5006		;	                            -       CONST_1 ; Atualiza tamanho do buffer subtraindo 1
+d2b8 5009		;	                            -       CONST_1 ; Atualiza tamanho do buffer subtraindo 1
 a2ba 12ce		;	                            JZ      GT_END_NOT_EOF ; Se tamanho é zero, vai para final
 a2bc 9264		;	                            MM      GL_BUFFER_SIZE ; se nao, armazena novo tamanho do buffer
 a2be 8266		;	                            LD      GL_BUFFER_ADDRESS ; atualiza endereco do buffer
-d2c0 4007		;	                            +       CONST_2 ; soma 2 ao endereco atual
+d2c0 4010		;	                            +       CONST_2 ; soma 2 ao endereco atual
                             ; MM      GL_BUFFER_ADDRESS ; armazena endereco atualizado
                             ; JP      SKIP
                             ; NUM     K /0002
@@ -694,10 +697,10 @@ a2c4 a2d2		;	GT_EOL                      SC      GT_PUT_EOS
 a2c6 02ce		;	                            JP      GT_END_NOT_EOF
 
 a2c8 a2d2		;	GT_EOF                      SC      GT_PUT_EOS
-d2ca 8005		;	                            LD      CONST_0 ; Retorna 0 se chegou no final do arquivo
+d2ca 8008		;	                            LD      CONST_0 ; Retorna 0 se chegou no final do arquivo
 a2cc 02d0		;	                            JP      GT_END
 
-d2ce 8006		;	GT_END_NOT_EOF              LD      CONST_1 ; Retorna 1 se nao chegou no final do arquivo
+d2ce 8009		;	GT_END_NOT_EOF              LD      CONST_1 ; Retorna 1 se nao chegou no final do arquivo
 
 a2d0 b26c		;	GT_END                      RS GETLINEF ; END da sub rotina
 
@@ -728,59 +731,212 @@ a2de b2d2		;	                            RS      GT_PUT_EOS ; retorna
 ;
 82e0 0000		;	DUMP_CURRENT_ADDR               K       /0000
 82e2 0000		;	DUMP_COUNTER                    K       /0000
+82e4 0000		;	DUMP_LAST_BLOCK_SIZE            K       /0000
+82e6 0000		;	DUMP_TEMP                       K       /0000
+82e8 0000		;	DUMP_LAST_BLOCK_ADDRESS         K       /0000
+82ea 0000		;	DUMP_CHECKSUM                   K       /0000
+82ec 0000		;	DUMP_CURR_BLOCK_SIZE            K       /0000 ; funciona como counter de um bloco
+82ee abcd		;	ABCD K /ABCD
 ; Rotina
 ;
-82e4 0000		;	DUMPER                          K       /0000
+82f0 0000		;	DUMPER                          K       /0000
                                 ; comando PD
-a2e6 8010		;	                                LD      DUMP_UL ; Carrega unidade logica
-d2e8 4020		;	                                +       CONST_300 ; soma dispositivo tipo disco
-d2ea 4004		;	                                +       PUTDATA ; Adiciona comando de escrita no arquivo
-a2ec 92f2		;	                                MM      DUMP_PD_COMMAND ; Armazena comando PD
+a2f2 8010		;	                                LD      DUMP_UL ; Carrega unidade logica
+d2f4 4023		;	                                +       CONST_300 ; soma dispositivo tipo disco
+d2f6 4007		;	                                +       PUTDATA ; Adiciona comando de escrita no arquivo
+a2f8 92fe		;	                                MM      DUMP_PD_COMMAND ; Armazena comando PD
 
                                 ; Inicio do arquivo
-a2ee 800c		;	                                LD      DUMP_INI ; Carrega endereco inicial a ser lido
-a2f0 92e0		;	                                MM      DUMP_CURRENT_ADDR ; Salva em variavel temporaria
-82f2 0000		;	DUMP_PD_COMMAND                 K       /0000 ; Escreve no arquivo endereço inicial
+a2fa 800c		;	                                LD      DUMP_INI ; Carrega endereco inicial a ser lido
+a2fc 92e0		;	                                MM      DUMP_CURRENT_ADDR ; Salva em variavel temporaria
+82fe 0000		;	DUMP_PD_COMMAND                 K       /0000 ; Escreve no arquivo endereço inicial
 
-a2f4 82f2		;	                                LD      DUMP_PD_COMMAND
-a2f6 92fc		;	                                MM      DUMP_SIZE_PD
+a300 82fe		;	                                LD      DUMP_PD_COMMAND
+a302 9308		;	                                MM      DUMP_SIZE_PD
 
-a2f8 800e		;	                                LD      DUMP_TAM ; Carrega tamanho do dumper
-a2fa 92e2		;	                                MM      DUMP_COUNTER ; Salva em variavel temporaria
-82fc 0000		;	DUMP_SIZE_PD                    K       /0000 ; Escreve tamanho em arquivo
+a304 800e		;	                                LD      DUMP_TAM ; Carrega tamanho do dumper
+a306 92e2		;	                                MM      DUMP_COUNTER ; Salva em variavel temporaria
+8308 0000		;	DUMP_SIZE_PD                    K       /0000 ; Escreve tamanho em arquivo
+
+                                ; LAST BLOCK SIZE
+                                ; lastBlockSize = tamanho - (tamanho/blockSize)  [ 7 - 7/3 = 1]
+                                ; se > 0
+                                ;   lastBlockInitAddress = initialAddress + ((tamanho -1 )* 2)
+                                ; Exemplo
+                                ; tamanho 7
+                                ; blockSize = 3
+                                ; 01 23 45    67 89 AB    CD
+                                ; lastBlockSize = 3 - (7/3) = 1
+                                ; lastBlockInitAddress = 0 + ((7 -1) * 2) C
+                                ; ie, qd chegar no C, escrevo lastBlockSize palavras (1)
+
+                                ; calcula resto da divisao de tamanho do buffer por tamanho do bloco
+a30a 3012		;	                                LV      DUMP_BL ; carrega enderço do tamanho do bloco
+d30c 4004		;	                                +       DIVIDE ; adiciona operador de divisao
+a30e 9312		;	                                MM      DUMP_DIVIDE_BY_BLOCK_SIZE ; armazena comando para a divisao por counter
+a310 800e		;	                                LD      DUMP_TAM ; carrega tamanho do buffer
+8312 0000		;	DUMP_DIVIDE_BY_BLOCK_SIZE       K       /0000 ; Divide tamanho do buffer por tamanho do bloco
+a314 92e6		;	                                MM      DUMP_TEMP
+a316 32e6		;	                                LV      DUMP_TEMP
+d318 4005		;	                                +       MULTIPLY
+a31a 931e		;	                                MM      DUMP_MULT_BY_DIVISOR
+a31c 8012		;	                                LD      DUMP_BL ;
+831e 0000		;	DUMP_MULT_BY_DIVISOR            K       /0000
+a320 92e6		;	                                MM      DUMP_TEMP
+a322 32e6		;	                                LV      DUMP_TEMP
+d324 4002		;	                                +       SUBTRACT ; add comando de subtracao
+a326 932a		;	                                MM      DUMP_SUBTRACT ; armazena
+
+;                                 ; tamanho do bloco
+a328 800e		;	                                LD      DUMP_TAM ; carrega tamanho do buffer
+832a 0000		;	DUMP_SUBTRACT                   K       /0000 ; resultado sera TAM % BL
+a32c 92e4		;	                                MM      DUMP_LAST_BLOCK_SIZE ; armazena tamanho do ultimo bloco
+
+a32e 134a		;	                                JZ      DUMP_LOOP ; inicia o loop se resto igual a zero (ultimo bloco é completo)
+
+;                                 ; LAST BLOCK ADDRESS
+a330 300c		;	                                LV      DUMP_INI ; carrega endereço do endereço inicial
+d332 4003		;	                                +       SUM ; comando soma
+a334 9342		;	                                MM      DUMP_SUM1 ; armazena comando
+
+d336 3010		;	                                LV      CONST_2
+d338 4005		;	                                +       MULTIPLY
+a33a 9340		;	                                MM      DUMP_MULTIPLY
+
+a33c 800e		;	                                LD      DUMP_TAM ; carrega tamanho do buffer
+d33e 5009		;	                                -       CONST_1
+8340 0000		;	DUMP_MULTIPLY                   K       /0000 ; multiplica (tamanho do buffer - 1) por 2
+8342 0000		;	DUMP_SUM1                       K       /0000 ; soma endereco inincial
+a344 92e8		;	                                MM      DUMP_LAST_BLOCK_ADDRESS ; armazena endereço de inicio do ultimo bloco
+
+                                ; Armazena endereco de inicio do primeiro bloco
+a346 800c		;	                                LD      DUMP_INI ; Carrega endereco inicial a ser lido
+a348 92e0		;	                                MM      DUMP_CURRENT_ADDR ; Salva em variavel temporaria
+
+;                                 ; ------------- MAIN LOOP -------------------
+                       ; Verifica se esta no ultimo bloco
+a34a 32e0		;	DUMP_LOOP                       LV      DUMP_CURRENT_ADDR
+d34c 4002		;	                                +       SUBTRACT
+a34e 9352		;	                                MM      DUMP_SUBTRACT1
+a350 82e8		;	                                LD      DUMP_LAST_BLOCK_ADDRESS
+8352 0000		;	DUMP_SUBTRACT1                  K       /0000
+
+a354 135c		;	                                JZ      DUMP_LAST_BLOCK
+
+                                ; se nao é ultimo bloco, DUMP_CURR_BLOCK_SIZE = DUMP_BL
+a356 8012		;	                                LD      DUMP_BL
+a358 92ec		;	                                MM      DUMP_CURR_BLOCK_SIZE
+a35a 0360		;	                                JP      DUMP_BLOCK_CONTINUE ; continua programa
+
+                                ; se ultimo bloco, corrige DUMP_CURR_BLOCK_SIZE para DUMP_LAST_BLOCK_SIZE
+a35c 82e4		;	DUMP_LAST_BLOCK                 LD      DUMP_LAST_BLOCK_SIZE
+a35e 92ec		;	                                MM      DUMP_CURR_BLOCK_SIZE
+
+                                ; atualiza contador do loop principal
+a360 32ec		;	DUMP_BLOCK_CONTINUE             LV      DUMP_CURR_BLOCK_SIZE
+d362 4002		;	                                +       SUBTRACT
+a364 9368		;	                                MM      DUMP_SUBTRACT2
+a366 82e2		;	                                LD      DUMP_COUNTER
+8368 0000		;	DUMP_SUBTRACT2                  K       /0000 ; subtrai tamanho do bloco do counter
+a36a 23c6		;	                                JN      DUMPER_END_LOOP ; pula para o fim se atingiu o maximo numero de palavras (DUMP_TAM)
+
+a36c 92e2		;	                                MM      DUMP_COUNTER ; se nao, atualiza counter
+
+                                ; zera CHECKSUM
+d36e 8008		;	                                LD      CONST_0
+a370 92ea		;	                                MM      DUMP_CHECKSUM
+
+                                ; INICIO DO BLOCO
+                                ; ESCREVE ENDERECO INICIAL
+a372 82fe		;	                                LD      DUMP_PD_COMMAND
+a374 937c		;	                                MM      DUMP_BLOCK_PD
+a376 32e0		;	                                LV      DUMP_CURRENT_ADDR
+a378 90e4		;	                                MM      TARGET_ADDRESS
+a37a a0e6		;	                                SC      LOAD_VALUE
+837c 0000		;	DUMP_BLOCK_PD                   K       /0000 ; Escreve no arquivo endereço atual
+
+                                ; atualiza CHECKSUM para endereco
+a37e 82e0		;	                                LD      DUMP_CURRENT_ADDR
+a380 93d2		;	                                MM      DUMP_CHECKSUM_ADD ; salva valor atual
+a382 a3d4		;	                                SC      DUMP_UPADATE_CHECKSUM
+
+                                ; ESCREVE TAMANHO DO BLOCO
+a384 82fe		;	                                LD      DUMP_PD_COMMAND
+a386 938e		;	                                MM      DUMP_BLOCK_PD1
+a388 32ec		;	                                LV      DUMP_CURR_BLOCK_SIZE
+a38a 90e4		;	                                MM      TARGET_ADDRESS
+a38c a0e6		;	                                SC      LOAD_VALUE
+838e 0000		;	DUMP_BLOCK_PD1                  K       /0000 ; Escreve no arquivo tamanho do bloco atual
+
+                                ; atualiza CHECKSUM para tamanho do bloco
+a390 82ec		;	                                LD      DUMP_CURR_BLOCK_SIZE
+a392 93d2		;	                                MM      DUMP_CHECKSUM_ADD ; salva valor atual
+a394 a3d4		;	                                SC      DUMP_UPADATE_CHECKSUM
+
+                                ; ----****** BLOCK LOOP ******----
+a396 82ec		;	DUMP_BLOCK_LOOP                 LD      DUMP_CURR_BLOCK_SIZE ; carrega tamanho do bloco atual
+d398 5009		;	                                -       CONST_1 ; subtrai 1
+a39a 23bc		;	                                JN      DUMP_LOOP_UPDATE ; sai do loop do bloco
+a39c 92ec		;	                                MM      DUMP_CURR_BLOCK_SIZE ; atualiza contador
+
+a39e 82e0		;	                                LD      DUMP_CURRENT_ADDR ; carrega endereco atual
+d3a0 5024		;	                                -       CONST_FFE ; subtrai endereco maximo disponivel
+a3a2 13c6		;	                                JZ      DUMPER_END_LOOP ; pula para o fim se atingiu o maximo  endereço disponivel na memoria (FFE)
+
+                                ; ESCRITA NO ARQUIVO
+a3a4 82fe		;	                                LD      DUMP_PD_COMMAND
+a3a6 93ae		;	                                MM      DUMP_PD
+a3a8 82e0		;	                                LD      DUMP_CURRENT_ADDR ; carrega endereco atual
+a3aa 90e4		;	                                MM      TARGET_ADDRESS ; armazena na variavel
+a3ac a0e6		;	                                SC      LOAD_VALUE ; chama subrotina que carrega conteudo
+83ae 0000		;	DUMP_PD                         K       /0000 ; Escreve valor no arquivo
+
+                                ; atualiza CHECKSUM
+a3b0 93d2		;	                                MM      DUMP_CHECKSUM_ADD ; salva valor atual
+a3b2 a3d4		;	                                SC      DUMP_UPADATE_CHECKSUM
+
+                                ; atualiza proximo endereço
+a3b4 82e0		;	                                LD      DUMP_CURRENT_ADDR ; carrega valor do endereco
+d3b6 4010		;	                                +       CONST_2 ; soma 2
+a3b8 92e0		;	                                MM      DUMP_CURRENT_ADDR ; atualiza valor do endereco
+
+a3ba 0396		;	                                JP      DUMP_BLOCK_LOOP
+
+                                ; ----****** END BLOCK LOOP ******----
+
+                                ; escreve CHECKSUM
+a3bc 82fe		;	DUMP_LOOP_UPDATE                LD      DUMP_PD_COMMAND
+a3be 93c2		;	                                MM      DUMP_PD1
+a3c0 82ea		;	                                LD      DUMP_CHECKSUM ; carrega checksum do bloco atual
+83c2 0000		;	DUMP_PD1                        K       /0000 ; Escreve valor no arquivo
 
 
+a3c4 034a		;	                                JP      DUMP_LOOP
 
-                                ; ------------- LOOP -------------------
-a2fe 82f2		;	DUMP_LOOP                       LD      DUMP_PD_COMMAND
-a300 9308		;	                                MM      DUMP_PD
+                                ; ------------- END MAIN LOOP -------------------
+a3c6 82fe		;	DUMPER_END_LOOP                 LD      DUMP_PD_COMMAND
+a3c8 93ce		;	                                MM      DUMP_PD2
+a3ca 82ee		;	                                LD ABCD
+a3cc 8014		;	                                LD      DUMP_EXE
+83ce 0000		;	DUMP_PD2                        K       /0000 ; Escreve valor no arquivo
 
-a302 82e0		;	                                LD      DUMP_CURRENT_ADDR ; carrega endereco atual
-a304 90e4		;	                                MM      TARGET_ADDRESS ; armazena na variavel
-a306 a0e6		;	                                SC      LOAD_VALUE ; chama subrotina que carrega conteudo
-
-8308 0000		;	DUMP_PD                         K /0000 ; Escreve valor no arquivo
-
-a30a 82e0		;	                                LD      DUMP_CURRENT_ADDR ; carrega endereco atual
-d30c 5021		;	                                -       CONST_FFE ; subtrai endereco maximo disponivel
-
-a30e 1320		;	                                JZ      DUMPER_END ; pula para o fim se atingiu o maximo  enderço disponivel na memoria (FFE)
-
-a310 82e2		;	                                LD      DUMP_COUNTER ; carrega valor do contador
-d312 5006		;	                                -       CONST_1 ; subtrai 1
-
-a314 1320		;	                                JZ      DUMPER_END ; pula para o fim se atingiu o maximo numero de palavras (DUMP_TAM)
-
-a316 92e2		;	                                MM      DUMP_COUNTER ; atualiza valor do contador
-
-a318 82e0		;	                                LD      DUMP_CURRENT_ADDR ; carrega valor do endereco
-d31a 4007		;	                                +       CONST_2 ; soma 2
-a31c 92e0		;	                                MM      DUMP_CURRENT_ADDR ; atualiza valor do endereco
-
-a31e 02fe		;	                                JP      DUMP_LOOP
-                                ; ------------- END LOOP -------------------
-
-a320 b2e4		;	DUMPER_END                      RS      DUMPER ; END da sub rotina
-
+a3d0 b2f0		;	DUMPER_END                      RS      DUMPER ; END da sub rotina
 ;
+; ###################################
+; DUMP_UPADATE_CHECKSUM
+; ###################################
+;
+; Sub rotina de DUMPER que realiza a soma de DUMP_CHECKSUM_ADD a checksum
+;
+83d2 0000		;	DUMP_CHECKSUM_ADD               K       /0000
+83d4 0000		;	DUMP_UPADATE_CHECKSUM           K       /0000
+                                ; atualiza CHECKSUM
+a3d6 83d2		;	                                LD      DUMP_CHECKSUM_ADD ; salva valor atual
+a3d8 32ea		;	                                LV      DUMP_CHECKSUM
+d3da 4003		;	                                +       SUM
+a3dc 93e0		;	                                MM      DUMP_SUM2
+a3de 83d2		;	                                LD      DUMP_CHECKSUM_ADD
+83e0 0000		;	DUMP_SUM2                       K       /0000
+a3e2 92ea		;	                                MM      DUMP_CHECKSUM
+a3e4 b3d4		;	                                RS      DUMP_UPADATE_CHECKSUM
 ;
