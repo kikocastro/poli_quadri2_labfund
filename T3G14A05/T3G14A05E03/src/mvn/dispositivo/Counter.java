@@ -109,10 +109,9 @@ public class Counter implements Dispositivo {
      */
     @Override
     public Bits8 skip(Bits8 val) throws MVNException {
-    	Bits8 maxLimit = new Bits8(0xff);
-        if(this.count.compareTo(ff) < 0){
-            this.count.add(val);
-        }
-    	return this.count;
+		if(this.count.compareTo(maxCount) < 0){
+			this.count.add(val);
+		}
+		return this.count;
     }
 }
