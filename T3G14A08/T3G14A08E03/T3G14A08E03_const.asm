@@ -29,6 +29,7 @@ CONST_FFE               >
 CONST_1000              >
 CONST_1001              >
 CONST_8000              >
+CONST_F000              >
 CONST_FFFC              >
 CONST_FFFE              >
 CONST_FFFF              >
@@ -79,6 +80,7 @@ CONST_FFE               K   /0FFE
 CONST_1001              K   /1001
 CONST_1000              K   /1000
 CONST_8000              K   /8000
+CONST_F000              K   /F000
 CONST_FFFC  			K   /FFFC
 CONST_FFFE  			K   /FFFE
 CONST_FFFF  			K   /FFFF
