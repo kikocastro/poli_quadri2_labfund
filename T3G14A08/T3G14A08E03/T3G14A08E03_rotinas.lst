@@ -148,8 +148,8 @@ d062 4005		;	                                +       MULTIPLY
 a064 906a		;	                                MM      DUMP_MULTIPLY
 
 a066 8002		;	                                LD      DUMP_TAM ; carrega tamanho do buffer
-d068 5009		;	                                -       CONST_1
-806a 0000		;	DUMP_MULTIPLY                   K       /0000 ; multiplica (tamanho do buffer - 1) por 2
+d068 5010		;	                                -       CONST_2
+806a 0000		;	DUMP_MULTIPLY                   K       /0000 ; multiplica (tamanho do buffer - 2) por 2
 806c 0000		;	DUMP_SUM1                       K       /0000 ; soma endereco inincial
 a06e 9014		;	                                MM      DUMP_LAST_BLOCK_ADDRESS ; armazena endereço de inicio do ultimo bloco
 

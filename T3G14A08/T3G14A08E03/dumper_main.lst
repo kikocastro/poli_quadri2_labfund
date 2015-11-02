@@ -10,8 +10,8 @@
 a000 000c		;	MAIN      JP  START ; Salta para in�cio do main
 
 ; PARAMETROS
-8002 0500		;	END_INICIAL   K /0500 ; Endere�o onde come�a o dump
-8004 0031		;	TAMANHO_TEST  K /0031 ; Numero total de palavras a serem "dumpadas"
+8002 0700		;	END_INICIAL   K /0700 ; Endere�o onde come�a o dump
+8004 0032		;	TAMANHO_TEST  K /0032 ; Numero total de palavras a serem "dumpadas"
 8006 0000		;	UL_TEST     K /0000 ; Unidade logica do disco a ser usado
 8008 0010		;	BL_TEST     K /0010 ; Tamanho do bloco
 800a 0400		;	EXE_TEST    K /0400 ; Endere�o onde come�aria a execu��o (valor dummy, apenas para manter o formato)
