@@ -24,3 +24,14 @@ java -cp MLR.jar linker.MvnLinker dumper_main.mvn T3G14A08E03_const.mvn T3G14A08
 
 # Relocador
 java -cp MLR.jar relocator.MvnRelocator T3G14A08E03_final.mvn d.mvn 0000 0000
+
+# Montador
+java -cp MLR.jar montador.MvnAsm test.asm
+java -cp MLR.jar montador.MvnAsm T3G14A08E03_const.asm
+java -cp MLR.jar montador.MvnAsm T3G14A08E03_rotinas.asm
+
+# Linker
+java -cp MLR.jar linker.MvnLinker test.mvn T3G14A08E03_const.mvn T3G14A08E03_rotinas.mvn -s T3G14A08E03_final.mvn
+
+# Relocador
+java -cp MLR.jar relocator.MvnRelocator T3G14A08E03_final.mvn t.mvn 0000 0000

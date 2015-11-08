@@ -10,8 +10,8 @@ DUMP_EXE  <
 MAIN      JP  START ; Salta para in�cio do main
 
 ; PARAMETROS
-END_INICIAL   K /0500 ; Endere�o onde come�a o dump
-TAMANHO_TEST  K /0031 ; Numero total de palavras a serem "dumpadas"
+END_INICIAL   K /0700 ; Endere�o onde come�a o dump
+TAMANHO_TEST  K /0032 ; Numero total de palavras a serem "dumpadas"
 UL_TEST     K /0000 ; Unidade logica do disco a ser usado
 BL_TEST     K /0010 ; Tamanho do bloco
 EXE_TEST    K /0400 ; Endere�o onde come�aria a execu��o (valor dummy, apenas para manter o formato)
