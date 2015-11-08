@@ -1,0 +1,119 @@
+; Exporta constantes
+;
+2000 0000 ; "LOAD>"		;	LOAD        >
+2002 0000 ; "WRITE>"		;	WRITE       >
+2004 0000 ; "SUBTRACT>"		;	SUBTRACT    >
+2006 0000 ; "SUM>"		;	SUM         >
+2008 0000 ; "DIVIDE>"		;	DIVIDE      >
+200a 0000 ; "MULTIPLY>"		;	MULTIPLY    >
+200c 0000 ; "GETDATA>"		;	GETDATA     >
+200e 0000 ; "PUTDATA>"		;	PUTDATA     >
+
+2010 0000 ; "CONST_0>"		;	CONST_0                 >
+2012 0000 ; "CONST_1>"		;	CONST_1                 >
+2014 0000 ; "CONST_2>"		;	CONST_2                 >
+2016 0000 ; "CONST_7>"		;	CONST_7                 >
+2018 0000 ; "CONST_9>"		;	CONST_9                 >
+201a 0000 ; "CONST_A>"		;	CONST_A                 >
+201c 0000 ; "CONST_10>"		;	CONST_10                >
+201e 0000 ; "CONST_F>"		;	CONST_F                 >
+2020 0000 ; "CONST_30>"		;	CONST_30                >
+2022 0000 ; "CONST_3A>"		;	CONST_3A                >
+2024 0000 ; "CONST_40>"		;	CONST_40                >
+2026 0000 ; "CONST_47>"		;	CONST_47                >
+2028 0000 ; "CONST_80>"		;	CONST_80                >
+202a 0000 ; "CONST_FF>"		;	CONST_FF                >
+202c 0000 ; "CONST_100>"		;	CONST_100               >
+202e 0000 ; "CONST_300>"		;	CONST_300               >
+2030 0000 ; "CONST_FFE>"		;	CONST_FFE               >
+2034 0000 ; "CONST_1000>"		;	CONST_1000              >
+2032 0000 ; "CONST_1001>"		;	CONST_1001              >
+2036 0000 ; "CONST_8000>"		;	CONST_8000              >
+2038 0000 ; "CONST_F000>"		;	CONST_F000              >
+203a 0000 ; "CONST_FFFC>"		;	CONST_FFFC              >
+203c 0000 ; "CONST_FFFE>"		;	CONST_FFFE              >
+203e 0000 ; "CONST_FFFF>"		;	CONST_FFFF              >
+
+2040 0000 ; "WORD_BARS>"		;	WORD_BARS 		>
+2042 0000 ; "WORD_BARS_END>"		;	WORD_BARS_END	>
+2044 0000 ; "WORD_JB>"		;	WORD_JB 		>
+2046 0000 ; "WORD_DU>"		;	WORD_DU 		>
+2048 0000 ; "WORD_LO>"		;	WORD_LO 		>
+204a 0000 ; "WORD_SPACES>"		;	WORD_SPACES		>
+204c 0000 ; "WORD_EOL>"		;	WORD_EOL 		>
+204e 0000 ; "WORD_EOF>"		;	WORD_EOF 		>
+
+2050 0000 ; "MEM_START>"		;	MEM_START   >
+2052 0000 ; "MEM_END>"		;	MEM_END     >
+;
+;
+				;	& /0000 ; Origem relocavel
+;
+;
+; CONSTANTES
+;
+; ###################################
+; Operacoes
+; ###################################
+;
+8000 8000		;	LOAD                    LD  /0000
+8002 9000		;	WRITE		            MM  /0000
+8004 5000		;	SUBTRACT                -   /0000
+8006 4000		;	SUM                     +   /0000
+8008 7000		;	DIVIDE                  /   /0000
+800a 6000		;	MULTIPLY	        	*   /0000
+800c d000		;	GETDATA                 GD  /0000
+800e e000		;	PUTDATA                 PD  /0000
+;
+; ###################################
+; Numeros
+; ###################################
+;
+8010 0000		;	CONST_0                 K   /0000
+8012 0001		;	CONST_1                 K   /0001
+8014 0002		;	CONST_2                 K   /0002
+8016 0007		;	CONST_7                 K   /0007
+8018 0009		;	CONST_9                 K   /0009
+801a 000a		;	CONST_A                 K   /000A
+801c 0010		;	CONST_10                K   /0010
+801e 000f		;	CONST_F                 K   /000F
+8020 0030		;	CONST_30                K   /0030
+8022 003a		;	CONST_3A                K   /003A
+8024 0040		;	CONST_40                K   /0040
+8026 0047		;	CONST_47                K   /0047
+8028 0080		;	CONST_80                K   /0080
+802a 00ff		;	CONST_FF                K   /00FF
+802c 0100		;	CONST_100               K   /0100
+802e 0300		;	CONST_300               K   /0300
+8030 0ffe		;	CONST_FFE               K   /0FFE
+8032 1001		;	CONST_1001              K   /1001
+8034 1000		;	CONST_1000              K   /1000
+8036 8000		;	CONST_8000              K   /8000
+8038 f000		;	CONST_F000              K   /F000
+803a fffc		;	CONST_FFFC  			K   /FFFC
+803c fffe		;	CONST_FFFE  			K   /FFFE
+803e ffff		;	CONST_FFFF  			K   /FFFF
+;
+; ###################################
+; Words
+; ###################################
+;
+8040 2f2f		;	WORD_BARS               K   /2F2F ; //
+8042 2f2f		;	WORD_BARS_END           K   /2F2F ; /*
+8044 4a42		;	WORD_JB                 K   /4A42
+8046 4455		;	WORD_DU                 K   /4455
+8048 4c4f		;	WORD_LO                 K   /4C4F
+804a 2020		;	WORD_SPACES				K	/2020 ; bb
+; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+804c 0a0a		;	WORD_EOL				K 	/0A0A ; Linux
+804e ffff		;	WORD_EOF 				K 	/FFFF
+;
+; ###################################
+; Sub rotinas
+; ###################################
+;
+; Limite de memoria para aa sequencia de UNPACK
+8050 0014		;	MEM_START               K       /0014 ; Inicio do intervalo determinado
+8052 0024		;	MEM_END                 K       /0024 ; Fim do intervalo determinado
+;
+;

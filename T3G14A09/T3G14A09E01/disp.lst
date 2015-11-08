@@ -1,0 +1,8 @@
+0     0     mvn.dispositivo.Teclado
+1     0     mvn.dispositivo.Monitor
+3     0     mvn.dispositivo.Disco     test.txt      b
+3     1     mvn.dispositivo.Disco     disco1.txt    b
+3     2     mvn.dispositivo.Disco     disco2.txt    b
+3     3     mvn.dispositivo.Disco     disco3.txt    b
+3     4     mvn.dispositivo.Disco     disco4.txt    b
+3     5     mvn.dispositivo.Disco     disco5.txt    b
