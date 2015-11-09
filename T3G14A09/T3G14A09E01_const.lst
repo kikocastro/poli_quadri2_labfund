@@ -99,7 +99,7 @@
 ; ###################################
 ;
 8040 2f2f		;	WORD_BARS               K   /2F2F ; //
-8042 2f2f		;	WORD_BARS_END           K   /2F2F ; /*
+8042 2f2a		;	WORD_BARS_END           K   /2F2A ; /*
 8044 4a42		;	WORD_JB                 K   /4A42
 8046 4455		;	WORD_DU                 K   /4455
 8048 4c4f		;	WORD_LO                 K   /4C4F

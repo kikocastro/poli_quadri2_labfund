@@ -99,7 +99,7 @@ CONST_FFFF  			K   /FFFF
 ; ###################################
 ;
 WORD_BARS               K   /2F2F ; //
-WORD_BARS_END           K   /2F2F ; /*
+WORD_BARS_END           K   /2F2A ; /*
 WORD_JB                 K   /4A42
 WORD_DU                 K   /4455
 WORD_LO                 K   /4C4F
