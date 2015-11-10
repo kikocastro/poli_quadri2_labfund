@@ -104,8 +104,8 @@ WORD_JB                 K   /4A42
 WORD_DU                 K   /4455
 WORD_LO                 K   /4C4F
 WORD_SPACES				K	/2020 ; bb
-; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-WORD_EOL				K 	/0A0A ; Linux
+; WORD_EOL				K 	/0A0A ; Linux (com 2 enter para quebra de linha)
+WORD_EOL				K 	/0D0A ; Windows
 WORD_EOF 				K 	/FFFF
 ;
 ; ###################################

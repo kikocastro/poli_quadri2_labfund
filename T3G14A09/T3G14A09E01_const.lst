@@ -104,8 +104,8 @@
 8046 4455		;	WORD_DU                 K   /4455
 8048 4c4f		;	WORD_LO                 K   /4C4F
 804a 2020		;	WORD_SPACES				K	/2020 ; bb
-; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-804c 0a0a		;	WORD_EOL				K 	/0A0A ; Linux
+; WORD_EOL				K 	/0A0A ; Linux (com 2 enter para quebra de linha)
+804c 0d0a		;	WORD_EOL				K 	/0D0A ; Windows
 804e ffff		;	WORD_EOF 				K 	/FFFF
 ;
 ; ###################################
