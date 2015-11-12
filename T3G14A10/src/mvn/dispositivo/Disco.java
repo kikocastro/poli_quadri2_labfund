@@ -15,8 +15,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 import mvn.Bits8;
 import mvn.Dispositivo;
+import mvn.Word;
 import mvn.controle.MVNException;
 
 /**
@@ -315,12 +317,17 @@ public class Disco implements Dispositivo{
      */
 	@Override
 	public void reset() throws MVNException{
-        try {
-            inFile.close();
-            inFile.read();
-        } catch(Exception e) {
-
-        }
+		if (podeLer()) {
+			try {
+				inFile.close();
+				inFile = new FileInputStream(arquivo);
+			} catch (IOException ex) {
+				throw new MVNException(ERR_IOERROR, arquivo.getName());
+			}
+		} else {
+			// modo de operacao inadequado
+			throw new MVNException(ERR_WRITEONLYDEVICE, this);
+		}
 	}
 	
 	
@@ -333,14 +340,31 @@ public class Disco implements Dispositivo{
 	@Override
 	public Bits8 skip(Bits8 val) throws MVNException{
 
-        int skiped = 0;
-
-        for (int i = 0; i < val.toInt(); i++) {
-            if (this.podeLer()) {
-                this.ler();
-                skiped ++;
-            }
-        }
-		return new Bits8(skiped);
+		Bits8 ret = new Bits8();
+		
+		if (this.podeLer()) {
+			int counter = 0;
+			Word EOF = new Word(-1);
+			
+			Bits8 read_bits1, read_bits2;
+			Word read_word = new Word();
+			
+			int word_val = val.toInt();
+			
+			for (int i = 0; i < word_val; i++) {
+				read_bits1 = this.ler();
+				read_bits2 = this.ler();
+				read_word.setValue(read_bits1, read_bits2);
+				
+				if (read_word.toInt() == EOF.toInt()) 
+					break;
+				
+				counter++;
+			}
+			ret.setValue(counter);
+		} else {
+			ret.setValue(-1);
+		}
+		return ret;
 	}
 } // Disco

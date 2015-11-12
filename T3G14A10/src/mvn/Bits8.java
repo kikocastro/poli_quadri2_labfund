@@ -130,7 +130,7 @@ public class Bits8 extends BitSet implements Comparable<Bits8>{
 	 * @param value
 	 *          Valor a ser definido.
 	 */
-	private void setValue(int value){
+	public void setValue(int value){
 		setValue((byte) value);
 	}
 	
