@@ -827,6 +827,9 @@ public class UnidadeControle {
             case 4:
                 errorMessage = new int[] {0x45, 0x52, 0x3a, 0x45, 0x4e, 0x44}; //"ER:END"
                 break;
+            case 5:
+                errorMessage = new int[] {0x45, 0x52, 0x3a, 0x45, 0x58, 0x45}; //"ER:END"
+                break;
             default:
                 break;
         }
