@@ -372,6 +372,28 @@ public class PainelControle {
      */
     private Terminal terminal = null;
 
+    public boolean getExecutaPassByPass() {
+        return executaPassByPass;
+    }
+
+    public void setExecutaPassByPass(boolean executaPassByPass) {
+        this.executaPassByPass = executaPassByPass;
+    }
+
+    public boolean getExecutaShowRegs() {
+        return executaShowRegs;
+    }
+
+    public void setExecutaShowRegs(boolean executaShowRegs) {
+        this.executaShowRegs = executaShowRegs;
+    }
+
+    /**
+     * Parametros de executa
+     */
+    private boolean executaShowRegs;
+    private boolean executaPassByPass;
+
     /**
      * Contrutor da classe, recebe uma MVN para gerenciar com modo de depuração
      * inicialmente inativo.<br/>
@@ -710,6 +732,9 @@ public class PainelControle {
         boolean passByPass = showRegs ? Character.toLowerCase(parseParam(args, 2,
                 MSG_PROMPT_EXECUTA_PASSO_A_PASSO, String.valueOf(LETTER_NO)).charAt(0)) == Character
                 .toLowerCase(LETTER_YES) : false;
+
+        setExecutaPassByPass(passByPass);
+        setExecutaShowRegs(showRegs);
 
         mvn.start(addr, showRegs);
         StringBuilder outputBuffer = mvn.getOutputBuffer();

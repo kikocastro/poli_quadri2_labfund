@@ -218,7 +218,6 @@ public class UnidadeControle {
 
     public void setPainel(PainelControle painel) {
         this.painel = painel;
-        System.out.println("hi");
     }
 
     /**
@@ -782,9 +781,16 @@ public class UnidadeControle {
           retorno = regs.getRegister(AC).toInt();
           logError(lu, retorno);
           break;
-
-	default:
-		break;
+      /**
+       * Tratamento de excecoes do MBS
+       */
+      case 0xEF:
+          int acValue = regs.getRegister(AC).toInt();
+          boolean executaPassByPass = this.painel.getExecutaPassByPass();
+          boolean executaShowRegs = this.painel.getExecutaShowRegs();
+          break;
+	  default:
+		  break;
 	}
       
       // Armazena o valor de retorno no acumulador
@@ -843,7 +849,7 @@ public class UnidadeControle {
                 errorMessage = new int[] {0x45, 0x52, 0x3a, 0x45, 0x4e, 0x44}; //"ER:END"
                 break;
             case 5:
-                errorMessage = new int[] {0x45, 0x52, 0x3a, 0x45, 0x58, 0x45}; //"ER:END"
+                errorMessage = new int[] {0x45, 0x52, 0x3a, 0x45, 0x58, 0x45}; //"ER:EXE"
                 break;
             default:
                 break;
