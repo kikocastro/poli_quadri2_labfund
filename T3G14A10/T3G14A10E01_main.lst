@@ -1,0 +1,288 @@
+4000 0000 ; "DUMPER<"		;	DUMPER 		<
+4001 0000 ; "DUMP_INI<"		;	DUMP_INI 	<
+4002 0000 ; "DUMP_TAM<"		;	DUMP_TAM 	<
+4003 0000 ; "DUMP_UL<"		;	DUMP_UL 	<
+4004 0000 ; "DUMP_BL<"		;	DUMP_BL 	<
+4005 0000 ; "DUMP_EXE<"		;	DUMP_EXE 	<
+;
+4006 0000 ; "LOADER<"		;	LOADER	  	<
+4007 0000 ; "LOADER_UL<"		;	LOADER_UL 	<
+;
+4008 0000 ; "CHTOI<"		;	CHTOI		<
+4009 0000 ; "INPUT_1_PTR<"		;	INPUT_1_PTR	<
+4010 0000 ; "INPUT_2_PTR<"		;	INPUT_2_PTR	<
+;
+4011 0000 ; "GETDATA<"		;	GETDATA 	<
+;
+4012 0000 ; "CONST_1<"		;	CONST_1 	<
+4013 0000 ; "CONST_2<"		;	CONST_2 	<
+4014 0000 ; "CONST_300<"		;	CONST_300	<
+4015 0000 ; "CONST_FFFC<"		;	CONST_FFFC	<
+4016 0000 ; "CONST_FFFE<"		;	CONST_FFFE	<
+4017 0000 ; "CONST_FFFF<"		;	CONST_FFFF	<
+;
+4018 0000 ; "WORD_BARS<"		;	WORD_BARS 		<
+4019 0000 ; "WORD_BARS_END<"		;	WORD_BARS_END	<
+4020 0000 ; "WORD_JB<"		;	WORD_JB			<
+4021 0000 ; "WORD_DU<"		;	WORD_DU			<
+4022 0000 ; "WORD_LO<"		;	WORD_LO			<
+4023 0000 ; "WORD_SPACES<"		;	WORD_SPACES		<
+4024 0000 ; "WORD_EOL<"		;	WORD_EOL		<
+4025 0000 ; "WORD_EOF<"		;	WORD_EOF 		<
+;
+				;			& 	/0000
+a000 0004		;	MAIN	JP 	INI		; salta para o início do programa
+8002 0000		;	UL		K 	/0000 	; parâmetro: UL onde está o arquivo de batch
+;
+a004 a062		;	INI 		SC 	MAIN_RESET
+			; Leitura de JB
+a006 a0a4		;				SC 	READ_CMD
+d008 5012		;				- 	CONST_1
+a00a 100e		;				JZ 	GET_CMD
+a00c 0040		;				JP	ERRO_JB
+			; Leitura de DU, LO ou /* (final)
+a00e a0a4		;	GET_CMD		SC 	READ_CMD
+a010 1046		;				JZ 	ERRO_CMD
+d012 5013		;				-	CONST_2
+a014 1020		;				JZ 	GET_ARGS_DU
+d016 5012		;				-	CONST_1
+a018 1028		;				JZ	GET_ARGS_LO
+d01a 5012		;				-	CONST_1
+a01c 1058		;				JZ	DONE_OK
+a01e 0052		;				JP	ERRO_FIM
+;
+			; Leitura dos parametros de DU
+a020 a0f2		;	GET_ARGS_DU	SC 	READ_ARGS_DU
+a022 104c		;				JZ	ERRO_ARG
+d024 a000		;				SC	DUMPER
+a026 000e		;				JP	GET_CMD
+			; Leitura dos parametros de LO
+a028 a138		;	GET_ARGS_LO	SC 	READ_ARGS_LO
+a02a 104c		;				JZ	ERRO_ARG
+d02c 8007		;				LD 	LOADER_UL
+d02e a006		;				SC	LOADER
+			; O codigo abaixo deveria tratar os erros de LOAD (memoria insuficiente ou erro de checksum)
+			; Todavia nao tratamos erros aqui, pois nos foi permitido assumir que as entradas estarao corretas
+d030 5016		;				-	CONST_FFFE
+a032 103c		;				JZ	ERRO_LO_FFFE
+d034 4016		;	CONTINUE1	+	CONST_FFFE
+d036 5015		;				-	CONST_FFFC
+a038 103e		;				JZ	ERRO_LO_FFFC
+a03a 000e		;	CONTINUE2	JP	GET_CMD
+;
+a03c 0034		;	ERRO_LO_FFFE	JP	CONTINUE1 ; Houve erro do tipo FFFE (falta de memória disponível pra load)
+a03e 003a		;	ERRO_LO_FFFC	JP	CONTINUE2 ; Houve erro do tipo FFFC (checksum error) no Loader
+;
+8040 3001		;	ERRO_JB		LV	/0001
+8042 f0ee		;				OS	/00EE
+a044 005e		;				JP	FIM
+8046 3002		;	ERRO_CMD	LV	/0002
+8048 f0ee		;				OS 	/00EE
+a04a 005e		;				JP	FIM
+804c 3003		;	ERRO_ARG	LV	/0003
+804e f0ee		;				OS 	/00EE
+a050 005e		;				JP	FIM
+8052 3004		;	ERRO_FIM	LV	/0004
+8054 f0ee		;				OS 	/00EE
+a056 005e		;				JP	FIM
+8058 3000		;	DONE_OK		LV	/0000
+805a f0ee		;				OS	/00EE
+a05c 005e		;				JP	FIM
+a05e c05e		;	FIM 	 	HM	FIM		; fim do programa
+;
+; ###################################
+; MAIN_RESET
+; ###################################
+;
+; Reseta variaveis da main
+;
+8060 0000		;	MAIN_READ_WORD 	K 	/0000
+;
+8062 0000		;	MAIN_RESET 	K       /0000
+a064 8002		;				LD      UL
+d066 4014		;				+       CONST_300
+d068 4011		;				+       GETDATA
+a06a 9060		;				MM      MAIN_READ_WORD
+a06c b062		;				RS 		MAIN_RESET
+;
+; ###################################
+; GETWORD
+; ###################################
+;
+; Escanea um par de caracteres ASCII, salvando-os no acumulador
+;
+806e 0000		;	GETWORD 	K       /0000
+a070 8060		;				LD      MAIN_READ_WORD
+a072 9074		;				MM		GW_NEXT
+8074 0000		;	GW_NEXT		K 		/0000
+a076 b06e		;				RS 		GETWORD
+;
+; ###################################
+; GETPARAM
+; ###################################
+;
+; Escanea dois pares de caracteres ASCII e os converte ao hexadecimal correspondente, salvando-o no acumulador
+;
+8078 0000		;	GP_IN_1 	K		/0000
+807a 0000		;	GP_IN_2 	K		/0000
+;
+807c 0000		;	GETPARAM 	K       /0000
+a07e a06e		;				SC 		GETWORD
+d080 5024		;				- 		WORD_EOL
+a082 109e		;				JZ 		GP_ERRO
+d084 4024		;				+ 		WORD_EOL
+d086 5025		;				-		WORD_EOF
+a088 109e		;				JZ		GP_ERRO
+d08a 4025		;				+ 		WORD_EOF
+a08c 9078		;				MM 		GP_IN_1
+a08e a06e		;				SC 		GETWORD
+a090 907a		;				MM 		GP_IN_2
+;			
+a092 3078		;				LV		GP_IN_1
+d094 9009		;				MM 		INPUT_1_PTR
+a096 307a		;				LV		GP_IN_2
+d098 9010		;				MM 		INPUT_2_PTR
+d09a a008		;				SC 		CHTOI
+a09c 00a0		;				JP		GP_END
+; GP_ERRO 	LD 		CONST_FFFF ; FFFF pode ser retorno do parametro EXE (instr. executavel) do DUMPER
+a09e b07c		;	GP_ERRO 	RS 		GETPARAM
+a0a0 b07c		;	GP_END		RS 		GETPARAM
+;
+; ###################################
+; READ_CMD
+; ###################################
+;
+; Le uma linha do batch. Retorna 1, 2, 3 se leu JB, DU ou LO, respectivamente
+; Retorna 4 se leu /* (final)
+; Retorna 0 em caso de erro (ausência de quebra de linha também produzirá erro)
+;
+80a2 0000		;	ANS			K 		/0000 ; Valor de retorno da sub-rotina
+;
+80a4 0000		;	READ_CMD	K       /0000
+a0a6 a06e		;				SC		GETWORD
+d0a8 5018		;				-		WORD_BARS
+a0aa 10b4		;				JZ		RC_BARS ; Escaneou o "//"
+d0ac 4018		;				+ 		WORD_BARS
+d0ae 5019		;				- 		WORD_BARS_END
+a0b0 10e2		;				JZ		RC_FINAL ; Escaneou o "/*"
+a0b2 00ec		;				JP		RC_ERRO
+a0b4 a06e		;	RC_BARS		SC 		GETWORD
+d0b6 5020		;				-		WORD_JB
+a0b8 10d0		;				JZ 		RC_JB ;	Escaneou o "JB"
+d0ba 4020		;				+ 		WORD_JB
+d0bc 5021		;				- 		WORD_DU
+a0be 10d6		;				JZ		RC_DU ; Escaneou o "DU"
+d0c0 4021		;				+ 		WORD_DU
+d0c2 5022		;				- 		WORD_LO
+a0c4 10dc		;				JZ 		RC_LO ; Escaneou o "LO"
+a0c6 00ec		;				JP		RC_ERRO
+a0c8 a06e		;	RC_CMD		SC		GETWORD ; Essa linha e executada apos obter um comando ("//JB", "//DU" ou "//LO")
+d0ca 5024		;				-		WORD_EOL
+a0cc 10e8		;				JZ		RC_DONE_OK
+a0ce 00ec		;				JP 		RC_ERRO
+;
+80d0 3001		;	RC_JB		LV 		/0001
+a0d2 90a2		;				MM		ANS
+a0d4 00c8		;				JP 		RC_CMD
+80d6 3002		;	RC_DU		LV 		/0002
+a0d8 90a2		;				MM		ANS
+a0da 00c8		;				JP		RC_CMD
+80dc 3003		;	RC_LO		LV		/0003
+a0de 90a2		;				MM		ANS
+a0e0 00c8		;				JP		RC_CMD
+80e2 3004		;	RC_FINAL	LV		/0004
+a0e4 90a2		;				MM		ANS
+a0e6 00e8		;				JP		RC_DONE_OK
+;
+a0e8 80a2		;	RC_DONE_OK	LD 		ANS
+a0ea 00f0		;				JP 		RC_END
+80ec 3000		;	RC_ERRO		LV 		/0000
+a0ee 00f0		;				JP		RC_END
+a0f0 b0a4		;	RC_END 		RS 		READ_CMD
+;
+;
+; ###################################
+; READ_ARGS_DU
+; ###################################
+;
+; Le a linha de argumentos para um comando DUMP
+; e os armazena nas posicoes de memoria correspondentes (DUMP_BL, DUMP_INI, DUMP_TAM, DUMP_EXE, DUMP_UL)
+; Retorna 0 em caso de erro, 1 caso contrario
+;
+80f2 0000		;	READ_ARGS_DU	K       /0000
+a0f4 a07c		;	RAD_BL		SC		GETPARAM
+			; - 		CONST_FFFF
+			; JZ		RAD_ERRO
+			; + 		CONST_FFFF
+d0f6 9004		;				MM 		DUMP_BL
+a0f8 a06e		;				SC		GETWORD
+d0fa 5023		;				- 		WORD_SPACES
+a0fc 1100		;				JZ		RAD_INI
+a0fe 0130		;				JP 		RAD_ERRO
+;			
+a100 a07c		;	RAD_INI		SC		GETPARAM
+			; - 		CONST_FFFF
+			; JZ		RAD_ERRO
+			; + 		CONST_FFFF
+d102 9001		;				MM 		DUMP_INI
+a104 a06e		;				SC		GETWORD
+d106 5023		;				- 		WORD_SPACES
+a108 110c		;				JZ		RAD_TAM
+a10a 0130		;				JP 		RAD_ERRO
+;
+a10c a07c		;	RAD_TAM		SC		GETPARAM
+			; - 		CONST_FFFF
+			; JZ		RAD_ERRO
+			; + 		CONST_FFFF
+d10e 9002		;				MM 		DUMP_TAM
+a110 a06e		;				SC		GETWORD
+d112 5023		;				- 		WORD_SPACES
+a114 1118		;				JZ		RAD_EXE
+a116 0130		;				JP 		RAD_ERRO
+a118 a07c		;	RAD_EXE		SC		GETPARAM
+			; - 		CONST_FFFF
+			; JZ		RAD_ERRO
+			; + 		CONST_FFFF
+d11a 9005		;				MM 		DUMP_EXE
+a11c a06e		;				SC		GETWORD
+d11e 5023		;				- 		WORD_SPACES
+a120 1124		;				JZ		RAD_UL
+a122 0130		;				JP 		RAD_ERRO
+a124 a07c		;	RAD_UL		SC		GETPARAM
+			; - 		CONST_FFFF
+			; JZ		RAD_ERRO
+			; + 		CONST_FFFF
+d126 9003		;				MM 		DUMP_UL
+a128 a06e		;				SC 		GETWORD ; BUG AQUI ?
+d12a 5024		;				-		WORD_EOL
+a12c 1134		;				JZ		RAD_DONE_OK
+a12e 0130		;				JP		RAD_ERRO
+;
+8130 3000		;	RAD_ERRO	LV		/0000
+a132 0136		;				JP 		RAD_END
+8134 3001		;	RAD_DONE_OK	LV 		/0001
+a136 b0f2		;	RAD_END		RS 		READ_ARGS_DU
+;
+; ###################################
+; READ_ARGS_LO
+; ###################################
+;
+; Le a linha de argumentos para um comando LOAD
+; Retorna 0 em caso de erro, 1 caso contrario
+;
+8138 0000		;	READ_ARGS_LO	K       /0000
+a13a a07c		;				SC		GETPARAM
+d13c 5017		;				- 		CONST_FFFF
+a13e 114c		;				JZ		RAL_ERRO
+d140 4017		;				+ 		CONST_FFFF
+d142 9007		;				MM 		LOADER_UL
+a144 a06e		;				SC		GETWORD
+d146 5024		;				- 		WORD_EOL
+a148 1150		;				JZ		RAL_DONE_OK
+a14a 014c		;				JP 		RAL_ERRO
+;			
+814c 3000		;	RAL_ERRO	LV		/0000
+a14e 0152		;				JP 		RAL_END
+8150 3001		;	RAL_DONE_OK	LV 		/0001
+a152 b138		;	RAL_END		RS 		READ_ARGS_LO
+;
