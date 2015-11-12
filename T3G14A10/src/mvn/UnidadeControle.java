@@ -782,7 +782,7 @@ public class UnidadeControle {
           logError(lu, retorno);
           break;
       /**
-       * Tratamento de excecoes do MBS
+       * Execucao de programa na memoria do MBS
        */
       case 0xEF:
           mbsExecutaPrograma();
