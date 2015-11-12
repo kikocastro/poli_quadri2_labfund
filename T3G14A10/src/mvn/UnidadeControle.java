@@ -785,9 +785,7 @@ public class UnidadeControle {
        * Tratamento de excecoes do MBS
        */
       case 0xEF:
-          int acValue = regs.getRegister(AC).toInt();
-          boolean executaPassByPass = this.painel.getExecutaPassByPass();
-          boolean executaShowRegs = this.painel.getExecutaShowRegs();
+          mbsExecutaPrograma();
           break;
 	  default:
 		  break;
@@ -802,6 +800,33 @@ public class UnidadeControle {
       regs.getRegister(AC).setValue(saida);
 
       IncrementaIC();
+    }
+
+    private void mbsExecutaPrograma() throws MVNException {
+        int acValue = regs.getRegister(AC).toInt();
+        int opValue = regs.getRegister(OP).toInt();
+
+        boolean executaPassByPass = this.painel.getExecutaPassByPass();
+        boolean executaShowRegs = this.painel.getExecutaShowRegs();
+
+        String executaParams = prepareExecutaParams(acValue, executaPassByPass, executaShowRegs);
+
+        this.painel.executaComando('r', executaParams);
+
+        regs.getRegister(OP).setValue(opValue);
+        regs.getRegister(AC).setValue(acValue);
+    }
+
+    private String prepareExecutaParams(int acValue, boolean passByPassParam, boolean showRegsParam) {
+        String n = "n";
+        String s = "s";
+
+        String passByPass = passByPassParam ? s : n;
+        String showRegs = showRegsParam ? s : n;
+
+        String params = acValue + " " + passByPass + " " + showRegs;
+
+        return params;
     }
 
     private void logError(int lu, int errorCode) {
