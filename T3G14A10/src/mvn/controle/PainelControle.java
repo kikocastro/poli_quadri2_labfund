@@ -399,6 +399,7 @@ public class PainelControle {
      */
     public PainelControle(MvnControle mvn, boolean debug) {
         this.mvn = mvn;
+        this.mvn.setUnidadeDeControlePainel(this);
         this.terminal = new TerminalPadrao(debug);
 
         initialize();

@@ -12,6 +12,7 @@
 package mvn;
 
 import mvn.controle.MVNException;
+import mvn.controle.PainelControle;
 
 /**
  * Representa a unidade de controle para a MVN. Eh essa a abstracao responsavel
@@ -210,6 +211,20 @@ public class UnidadeControle {
      * * Gerenciador de dispositivos da MVN
      */
     private GerenciadorDispositivos io;
+
+    public PainelControle getPainel() {
+        return painel;
+    }
+
+    public void setPainel(PainelControle painel) {
+        this.painel = painel;
+        System.out.println("hi");
+    }
+
+    /**
+     * Painel de controle
+     */
+    private PainelControle painel;
 
     /**
      * Instancia a unidade de controle com o Gerenciador de Dispositivos e

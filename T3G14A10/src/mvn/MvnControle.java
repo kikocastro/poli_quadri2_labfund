@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import mvn.controle.MVNException;
+import mvn.controle.PainelControle;
 
 /**
  * Contém a classe MVN que define uma interface, constantes e outros literais
@@ -433,4 +434,7 @@ public class MvnControle {
         }
     }
 
+    public void setUnidadeDeControlePainel(PainelControle painelControle) {
+        this.cpu.setPainel(painelControle);
+    }
 } // Fim da classe MVN
