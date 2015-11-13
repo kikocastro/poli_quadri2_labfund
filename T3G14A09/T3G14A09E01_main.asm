@@ -35,12 +35,10 @@ MAIN	JP 	INI		; salta para o início do programa
 UL		K 	/0000 	; parâmetro: UL onde está o arquivo de batch
 ;
 INI 		SC 	MAIN_RESET
-			; Leitura de JB
 			SC 	READ_CMD
 			- 	CONST_1
 			JZ 	GET_CMD
 			JP	ERRO_JB
-			; Leitura de DU, LO ou /* (final)
 GET_CMD		SC 	READ_CMD
 			JZ 	ERRO_CMD
 			-	CONST_2
@@ -51,18 +49,15 @@ GET_CMD		SC 	READ_CMD
 			JZ	DONE_OK
 			JP	ERRO_FIM
 ;
-			; Leitura dos parametros de DU
 GET_ARGS_DU	SC 	READ_ARGS_DU
 			JZ	ERRO_ARG
 			SC	DUMPER
 			JP	GET_CMD
-			; Leitura dos parametros de LO
 GET_ARGS_LO	SC 	READ_ARGS_LO
 			JZ	ERRO_ARG
+			LV 	/0CAA ; DEBUG
 			LD 	LOADER_UL
 			SC	LOADER
-			; O codigo abaixo deveria tratar os erros de LOAD (memoria insuficiente ou erro de checksum)
-			; Todavia nao tratamos erros aqui, pois nos foi permitido assumir que as entradas estarao corretas
 			-	CONST_FFFE
 			JZ	ERRO_LO_FFFE
 CONTINUE1	+	CONST_FFFE
@@ -94,8 +89,6 @@ FIM 	 	HM	FIM		; fim do programa
 ; MAIN_RESET
 ; ###################################
 ;
-; Reseta variaveis da main
-;
 MAIN_READ_WORD 	K 	/0000
 ;
 MAIN_RESET 	K       /0000
@@ -109,8 +102,6 @@ MAIN_RESET 	K       /0000
 ; GETWORD
 ; ###################################
 ;
-; Escanea um par de caracteres ASCII, salvando-os no acumulador
-;
 GETWORD 	K       /0000
 			LD      MAIN_READ_WORD
 			MM		GW_NEXT
@@ -120,8 +111,6 @@ GW_NEXT		K 		/0000
 ; ###################################
 ; GETPARAM
 ; ###################################
-;
-; Escanea dois pares de caracteres ASCII e os converte ao hexadecimal correspondente, salvando-o no acumulador
 ;
 GP_IN_1 	K		/0000
 GP_IN_2 	K		/0000
@@ -137,7 +126,7 @@ GETPARAM 	K       /0000
 			MM 		GP_IN_1
 			SC 		GETWORD
 			MM 		GP_IN_2
-;			
+;
 			LV		GP_IN_1
 			MM 		INPUT_1_PTR
 			LV		GP_IN_2
@@ -206,11 +195,11 @@ RC_END 		RS 		READ_CMD
 ; ###################################
 ;
 ; Le a linha de argumentos para um comando DUMP
-; e os armazena nas posicoes de memoria correspondentes (DUMP_BL, DUMP_INI, DUMP_TAM, DUMP_EXE, DUMP_UL)
+; e os armazena nas posicoes de memoria correspondentes (DUMP_INI, DUMP_TAM, ETC)
 ; Retorna 0 em caso de erro, 1 caso contrario
 ;
 READ_ARGS_DU	K       /0000
-RAD_BL		SC		GETPARAM
+			SC		GETPARAM
 			; - 		CONST_FFFF
 			; JZ		RAD_ERRO
 			; + 		CONST_FFFF
@@ -219,7 +208,7 @@ RAD_BL		SC		GETPARAM
 			- 		WORD_SPACES
 			JZ		RAD_INI
 			JP 		RAD_ERRO
-;			
+;
 RAD_INI		SC		GETPARAM
 			; - 		CONST_FFFF
 			; JZ		RAD_ERRO
@@ -261,6 +250,7 @@ RAD_UL		SC		GETPARAM
 RAD_ERRO	LV		/0000
 			JP 		RAD_END
 RAD_DONE_OK	LV 		/0001
+			LV 		/0DDD ; DEBUG
 RAD_END		RS 		READ_ARGS_DU
 ;
 ; ###################################
@@ -280,7 +270,7 @@ READ_ARGS_LO	K       /0000
 			- 		WORD_EOL
 			JZ		RAL_DONE_OK
 			JP 		RAL_ERRO
-;			
+;
 RAL_ERRO	LV		/0000
 			JP 		RAL_END
 RAL_DONE_OK	LV 		/0001
