@@ -785,6 +785,7 @@ public class UnidadeControle {
        * Execucao de programa na memoria do MBS
        */
       case 0xEF:
+    	  retorno = regs.getRegister(AC).toInt();
           mbsExecutaPrograma();
           break;
 	  default:
@@ -803,8 +804,9 @@ public class UnidadeControle {
     }
 
     private void mbsExecutaPrograma() throws MVNException {
-        int acValue = regs.getRegister(AC).toInt();
+        String acValue = regs.getRegister(AC).toHexString();
         int opValue = regs.getRegister(OP).toInt();
+        int icValue = regs.getRegister(IC).toInt();
 
         boolean executaPassByPass = this.painel.getExecutaPassByPass();
         boolean executaShowRegs = this.painel.getExecutaShowRegs();
@@ -814,17 +816,17 @@ public class UnidadeControle {
         this.painel.executaComando('r', executaParams);
 
         regs.getRegister(OP).setValue(opValue);
-        regs.getRegister(AC).setValue(acValue);
+        regs.getRegister(IC).setValue(icValue);
     }
 
-    private String prepareExecutaParams(int acValue, boolean passByPassParam, boolean showRegsParam) {
+    private String prepareExecutaParams(String acValue, boolean passByPassParam, boolean showRegsParam) {
         String n = "n";
         String s = "s";
 
         String passByPass = passByPassParam ? s : n;
         String showRegs = showRegsParam ? s : n;
 
-        String params = acValue + " " + passByPass + " " + showRegs;
+        String params = acValue + " " + showRegs + " " + passByPass;
 
         return params;
     }

@@ -39,12 +39,13 @@
 2044 0000 ; "WORD_JB>"		;	WORD_JB 		>
 2046 0000 ; "WORD_DU>"		;	WORD_DU 		>
 2048 0000 ; "WORD_LO>"		;	WORD_LO 		>
-204a 0000 ; "WORD_SPACES>"		;	WORD_SPACES		>
-204c 0000 ; "WORD_EOL>"		;	WORD_EOL 		>
-204e 0000 ; "WORD_EOF>"		;	WORD_EOF 		>
+204a 0000 ; "WORD_EX>"		;	WORD_EX 		>
+204c 0000 ; "WORD_SPACES>"		;	WORD_SPACES		>
+204e 0000 ; "WORD_EOL>"		;	WORD_EOL 		>
+2050 0000 ; "WORD_EOF>"		;	WORD_EOF 		>
 
-2050 0000 ; "MEM_START>"		;	MEM_START   >
-2052 0000 ; "MEM_END>"		;	MEM_END     >
+2052 0000 ; "MEM_START>"		;	MEM_START   >
+2054 0000 ; "MEM_END>"		;	MEM_END     >
 ;
 ;
 				;	& /0000 ; Origem relocavel
@@ -103,17 +104,18 @@
 8044 4a42		;	WORD_JB                 K   /4A42
 8046 4455		;	WORD_DU                 K   /4455
 8048 4c4f		;	WORD_LO                 K   /4C4F
-804a 2020		;	WORD_SPACES				K	/2020 ; bb
+804a 4558		;	WORD_EX 				K	/4558
+804c 2020		;	WORD_SPACES				K	/2020 ; bb
 ; WORD_EOL				K 	/0A0A ; Linux (com 2 enter para quebra de linha)
-804c 0d0a		;	WORD_EOL				K 	/0D0A ; Windows
-804e ffff		;	WORD_EOF 				K 	/FFFF
+804e 0d0a		;	WORD_EOL				K 	/0D0A ; Windows
+8050 ffff		;	WORD_EOF 				K 	/FFFF
 ;
 ; ###################################
 ; Sub rotinas
 ; ###################################
 ;
 ; Limite de memoria para aa sequencia de UNPACK
-8050 0014		;	MEM_START               K       /0014 ; Inicio do intervalo determinado
-8052 0024		;	MEM_END                 K       /0024 ; Fim do intervalo determinado
+8052 0014		;	MEM_START               K       /0014 ; Inicio do intervalo determinado
+8054 0024		;	MEM_END                 K       /0024 ; Fim do intervalo determinado
 ;
 ;
