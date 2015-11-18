@@ -13,6 +13,7 @@ package mvn;
 
 import mvn.controle.MVNException;
 import mvn.controle.PainelControle;
+import mvn.dispositivo.Disco;
 
 /**
  * Representa a unidade de controle para a MVN. Eh essa a abstracao responsavel
@@ -788,6 +789,12 @@ public class UnidadeControle {
     	  retorno = regs.getRegister(AC).toInt();
           mbsExecutaPrograma();
           break;
+      /**
+       * MBS - clearfile
+       */
+      case 0xC0:
+    	  retorno = clearFiles(numeroDeParametros);
+          break;
 	  default:
 		  break;
 	}
@@ -801,6 +808,39 @@ public class UnidadeControle {
       regs.getRegister(AC).setValue(saida);
 
       IncrementaIC();
+    }
+
+    private int clearFiles(int numeroDeParametros) {
+
+        int currentUl;
+        int currentRegAddress = regs.getRegister(MAR).toInt();
+        int retorno = 0;
+        Dispositivo[] discos = new Disco[15];
+
+        for (int i = 0; i < numeroDeParametros; i++) {
+            currentRegAddress -= 2;
+
+            try {
+                currentUl = mem.read(currentRegAddress + 1).toInt();
+                Dispositivo disco = io.getDevice(3, currentUl);
+
+                if(disco != null) {
+                    discos[i] = disco;
+                }
+            } catch (MVNException e) {
+                return -1;
+            }
+        }
+
+        for (int i = 0; i < numeroDeParametros; i++) {
+            retorno = ((Disco) discos[i]).clear();
+
+            if(retorno != 0) {
+                return -1;
+            }
+        }
+
+        return retorno;
     }
 
     private void mbsExecutaPrograma() throws MVNException {

@@ -1,5 +1,6 @@
 0 0 mvn.dispositivo.Teclado
 1 0 mvn.dispositivo.Monitor
 3 0 mvn.dispositivo.Disco batch.txt b
-3 1 mvn.dispositivo.Disco T3G14A10E01_prog10.exe b
+3 1 mvn.dispositivo.Disco test1.txt b
+3 2 mvn.dispositivo.Disco test2.txt b
 3 255 mvn.dispositivo.Disco log.txt b
