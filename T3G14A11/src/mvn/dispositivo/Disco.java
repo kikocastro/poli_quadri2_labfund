@@ -378,9 +378,13 @@ public class Disco implements Dispositivo{
 			if(this.outFile != null) {
 				this.outFile.close();
 			}
-			this.arquivo.delete();
-
-			this.initializeDevice();
+			if(this.podeEscrever()) {
+				this.arquivo.delete();
+				this.initializeDevice();
+			} else {
+				retorno = -1;
+			}
+			
 
 		} catch (IOException e) {
             retorno = -1;

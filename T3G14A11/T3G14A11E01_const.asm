@@ -8,6 +8,7 @@ DIVIDE      >
 MULTIPLY    >
 GETDATA     >
 PUTDATA     >
+OS_COMMAND  >
 
 CONST_0                 >
 CONST_1                 >
@@ -22,6 +23,7 @@ CONST_3A                >
 CONST_40                >
 CONST_47                >
 CONST_80                >
+CONST_C0                >
 CONST_FF                >
 CONST_100               >
 CONST_300               >
@@ -40,6 +42,7 @@ WORD_JB 		>
 WORD_DU 		>
 WORD_LO 		>
 WORD_EX 		>
+WORD_CL 		>
 WORD_SPACES		>
 WORD_EOL 		>
 WORD_EOF 		>
@@ -65,6 +68,7 @@ DIVIDE                  /   /0000
 MULTIPLY	        	*   /0000
 GETDATA                 GD  /0000
 PUTDATA                 PD  /0000
+OS_COMMAND              OS  /0000
 ;
 ; ###################################
 ; Numeros
@@ -83,6 +87,7 @@ CONST_3A                K   /003A
 CONST_40                K   /0040
 CONST_47                K   /0047
 CONST_80                K   /0080
+CONST_C0                K   /00C0
 CONST_FF                K   /00FF
 CONST_100               K   /0100
 CONST_300               K   /0300
@@ -105,6 +110,7 @@ WORD_JB                 K   /4A42
 WORD_DU                 K   /4455
 WORD_LO                 K   /4C4F
 WORD_EX 				K	/4558
+WORD_CL 				K	/434C
 WORD_SPACES				K	/2020 ; bb
 ; WORD_EOL				K 	/0A0A ; Linux (com 2 enter para quebra de linha)
 WORD_EOL				K 	/0D0A ; Windows
