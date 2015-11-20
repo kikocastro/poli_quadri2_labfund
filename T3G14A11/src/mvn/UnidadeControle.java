@@ -11,6 +11,8 @@
  */
 package mvn;
 
+import java.io.IOException;
+
 import mvn.controle.MVNException;
 import mvn.controle.PainelControle;
 import mvn.dispositivo.Disco;
@@ -833,7 +835,13 @@ public class UnidadeControle {
         }
 
         for (int i = 0; i < numeroDeParametros; i++) {
-            retorno = ((Disco) discos[i]).clear();
+            try {
+				retorno = ((Disco) discos[i]).clear();
+			} catch (IOException e) {
+				 return -1;
+			} catch (MVNException e) {
+				 return -1;
+			}
 
             if(retorno != 0) {
                 return -1;

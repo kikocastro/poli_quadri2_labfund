@@ -368,27 +368,19 @@ public class Disco implements Dispositivo{
 		return ret;
 	}
 
-	public int clear() {
+	public int clear() throws IOException, MVNException {
 		int retorno = 0;
 
-		try {
-			if(this.inFile != null) {
-				this.inFile.close();
-			}
-			if(this.outFile != null) {
-				this.outFile.close();
-			}
-			if(this.podeEscrever()) {
-				this.arquivo.delete();
-				this.initializeDevice();
-			} else {
-				retorno = -1;
-			}
-			
-
-		} catch (IOException e) {
-            retorno = -1;
-		} catch (MVNException e) {
+		if(this.inFile != null) {
+			this.inFile.close();
+		}
+		if(this.outFile != null) {
+			this.outFile.close();
+		}
+		if(this.podeEscrever()) {
+			this.arquivo.delete();
+			this.initializeDevice();
+		} else {
 			retorno = -1;
 		}
 
