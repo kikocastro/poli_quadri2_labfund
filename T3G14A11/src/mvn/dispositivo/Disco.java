@@ -371,12 +371,8 @@ public class Disco implements Dispositivo{
 	public int clear() throws IOException, MVNException {
 		int retorno = 0;
 
-		if(this.inFile != null) {
-			this.inFile.close();
-		}
-		if(this.outFile != null) {
-			this.outFile.close();
-		}
+		this.finalizeDevice();
+		
 		if(this.podeEscrever()) {
 			this.arquivo.delete();
 			this.initializeDevice();

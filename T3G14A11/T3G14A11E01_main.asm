@@ -110,7 +110,7 @@ CL_OS		K  	/0000 ; soma instrucao os
 			CL_UL1			K 		/0000
 
 CL_CALL		K 	/0000 ; linha 74
-LD ABCD
+
 			JP	GET_CMD
 
 			; Leitura dos parametros de DU
@@ -423,7 +423,7 @@ RAE_END		RS 		READ_ARGS_EX
 ;
 ; Le a para um comando CL
 ; Retorna 0 em caso de sucesso ou FFFF em caso de erro
-; nao foram tratados erros de UL fora do range 0-FF e numero de ULs fora do range 0-15
+; nao foram tratados erros de UL fora do range 0-FF e numero de ULs fora do range 1-15
 ;
 ;
 RACL_COUNTER 			K 		/0000
@@ -431,15 +431,19 @@ RACL_CURR_ADDR 			K 		/0000
 ABCD K /ABCD
 ;
 READ_ARGS_CL			K       /0000
+LD ABCD ; linha 214
 						LV 		CL_UL1
 						MM 		RACL_CURR_ADDR ; endereco da primeira UL
+
+						LD 		CONST_0
+						MM 		RACL_COUNTER ; zera counter
 
 						; ******** LOOP *********
 RACL_LOOP				LD 		RACL_CURR_ADDR
 						+ 		WRITE
 						MM 		RACL_STORE
 						SC		GETPARAM ; carega numero da UL
-RACL_STORE 				K 		/0000 ; armazena numero da UL nos parametros de CL     ;linha 212
+RACL_STORE 				K 		/0000 ; armazena numero da UL nos parametros de CL
 
 						; atualiza contador
 						LV 		CONST_1
@@ -469,7 +473,9 @@ RACL_UPDATE_CURR_ADDR	K 		/0000
 						JP 		RACL_ERROR
 
 						; ******** END LOOP *********
-RACL_ERROR 				LD 		CONST_FFFF
+
+RACL_ERROR 				LD ABCD
+LD 		CONST_FFFF
 						JP 		RACL_END
 
 RACL_END_OK 			LD 		RACL_COUNTER  ; linha 23e
